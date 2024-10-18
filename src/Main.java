@@ -1,21 +1,23 @@
 import CustomTypes.Gender;
+import DataHandling.SaveManager;
 import Model.Appointment;
-import Model.Patient;
 import Model.User;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
 import Singletons.UserLoginManager;
 import Controller.Controller;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Main {
     public static void main(String[] args) {
-        createDummyUsers();
+        SaveManager saveManager = new SaveManager();
+        saveManager.initialLoad(); // load initial data
+        saveManager.savePatients(); // to test the save functionality
+
         createDummyAppointments();
         createDummyAvailableDates();
+
         if (showLoginMenu())
             Controller.getInstance().startMainMenu();
     }
@@ -38,18 +40,5 @@ public class Main {
             return true;
         }
         return false;
-    }
-
-    private static void createDummyUsers() {
-        User user1 = new Patient("1", "password", "John", new Date(2323223232L), Gender.MALE);
-        UserLoginManager.getInstance().addUser(user1);
-    }
-
-    public static Date parseDate(String date) {
-        try {
-            return new SimpleDateFormat("yyyy-MM-dd").parse(date);
-        } catch (ParseException e) {
-            return null;
-        }
     }
 }

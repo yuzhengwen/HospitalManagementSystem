@@ -3,7 +3,7 @@ package View;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-/*
+/**
  * Abstract class for all views
  */
 public abstract class ViewObject {
