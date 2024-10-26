@@ -1,9 +1,6 @@
-import CustomTypes.Gender;
-import DataHandling.SaveManager;
+import Controller.Controller;
 import Model.Appointment;
 import Singletons.AppointmentManager;
-import Controller.Controller;
-
 import java.util.Date;
 
 public class Main {
@@ -11,7 +8,7 @@ public class Main {
         createDummyAppointments();
         createDummyAvailableDates();
 
-        Controller.getInstance().showLoginMenu();
+        Controller.getInstance().showLoginMenu(); // create a new instance of Controller and call showLoginMenu
     }
 
     private static void createDummyAvailableDates() {
