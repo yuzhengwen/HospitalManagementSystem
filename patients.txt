@@ -1,3 +1,0 @@
-P1001,Alice Brown,1980-05-14,FEMALE,A+,CustomTypes.ContactInfo@238e0d81,
-P1002,Bob Stone,1975-11-22,MALE,B+,CustomTypes.ContactInfo@5c29bfd,
-P1003,Charlie White,1990-07-08,MALE,O-,CustomTypes.ContactInfo@7aec35a,

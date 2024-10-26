@@ -1,22 +1,22 @@
 package Controller;
 
 import CustomTypes.OperationMode;
+import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.Patient;
 import Model.User;
 import Singletons.AppointmentManager;
-import View.EnumView;
-import View.PatientView;
-import View.SelectionView;
-import View.ViewObject;
+import View.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Controller {
     private static Controller instance;
+    private final SaveManager saveManager = new SaveManager();
 
     private Controller() {
+        saveManager.loadPatients();
     }
 
     public static synchronized Controller getInstance() {
@@ -35,19 +35,42 @@ public class Controller {
     private ViewObject previousView;
 
     public void navigateBack() {
-        previousView.showMenu();
+        previousView.display();
     }
 
     public void setPreviousView(ViewObject view) {
         previousView = view;
     }
 
+    public void showLoginMenu() {
+        LoginView loginView = new LoginView();
+        loginView.display();
+        if (loginView.getUser() != null) {
+            setCurrentUser(loginView.getUser());
+            startMainMenu();
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
+    public boolean changePassword(String newPassword) {
+        if (currentUser != null) {
+            currentUser.changePassword(newPassword);
+            saveManager.savePatients();
+            return true;
+        }
+        return false;
+    }
+
+    public void logout() {
+        setCurrentUser(null);
+        showLoginMenu();
+    }
     /**
      * Start the main menu for the current user
      */
     public void startMainMenu() {
         if (currentUser instanceof Patient) {
-            new PatientView((Patient) currentUser).showMenu();
+            new PatientView((Patient) currentUser).display();
         }
     }
 
@@ -61,7 +84,7 @@ public class Controller {
                 Date selectedDate = getSelectedDate(AppointmentManager.getInstance().getAvailableDates());
                 if (selectedDate != null) {
                     EnumView<Appointment.Type> aptTypeView = new EnumView<>(Appointment.Type.class);
-                    aptTypeView.showMenu();
+                    aptTypeView.display();
                     AppointmentManager.getInstance().add(new Appointment(currentUser.getId(), selectedDate, aptTypeView.getSelected()));
                     return true;
                 }
@@ -90,13 +113,13 @@ public class Controller {
     private Date getSelectedDate(ArrayList<Date> list) {
         System.out.println("Choose date: ");
         SelectionView<Date> view = new SelectionView<>(list);
-        view.showMenu();
+        view.display();
         return view.getSelected();
     }
 
     private Appointment getSelectedAppointment(ArrayList<Appointment> list) {
         SelectionView<Appointment> view = new SelectionView<>(list);
-        view.showMenu();
+        view.display();
         return view.getSelected();
     }
 }

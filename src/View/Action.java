@@ -9,9 +9,8 @@ public class Action{
     public int choice;
     public Runnable function;
 
-    public Action(String description, int choice, Runnable function){
+    public Action(String description, Runnable function){
         this.description = description;
-        this.choice = choice;
         this.function = function;
     }
     public Action(String description, int choice){
@@ -20,5 +19,8 @@ public class Action{
     }
     public String getString(){
         return choice + ". " + description;
+    }
+    public void setChoice(int choice){
+        this.choice = choice;
     }
 }

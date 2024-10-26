@@ -17,7 +17,7 @@ public abstract class User {
         return password;
     }
 
-    private void changePassword(String password) {
+    public void changePassword(String password) {
         this.password = password;
     }
 }

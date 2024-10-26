@@ -9,20 +9,21 @@ import Singletons.InputManager;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PatientView extends ViewObject {
+public class PatientView extends UserView {
     Patient patient;
 
     public PatientView(Patient patient) {
+        super(patient);
         this.patient = patient;
         System.out.println("Welcome, " + patient.getName());
-        actions.add(new Action("View Available Slots", 1, this::viewAvailableSlots));
-        actions.add(new Action("Schedule Appointments", 2, this::scheduleAppointments));
-        actions.add(new Action("Reschedule Appointments", 3, this::rescheduleAppointments));
-        actions.add(new Action("Cancel Appointments", 4, this::cancelAppointments));
+        actions.add(new Action("View Available Slots", this::viewAvailableSlots));
+        actions.add(new Action("Schedule Appointments", this::scheduleAppointments));
+        actions.add(new Action("Reschedule Appointments", this::rescheduleAppointments));
+        actions.add(new Action("Cancel Appointments", this::cancelAppointments));
     }
 
     @Override
-    public void showMenu() {
+    public void display() {
         System.out.println("Patient Menu");
         System.out.println("----------------");
         printActions();

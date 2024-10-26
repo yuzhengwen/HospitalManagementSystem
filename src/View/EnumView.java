@@ -6,16 +6,14 @@ package View;
  */
 public class EnumView<E extends Enum<E>> extends ViewObject {
     private E selected;
-    private Class<E> enumType;
 
     public EnumView(Class<E> enumType) {
-        this.enumType = enumType;
         E[] values = enumType.getEnumConstants(); // Retrieve all possible enum values
 
         for (int i = 0; i < values.length; i++) {  // Iterate through the enum constants
             int finalI = i;
             actions.add(new Action(
-                    values[i].toString(), i + 1, () -> {  // Lambda to handle user selection
+                    values[i].toString(), () -> {  // Lambda to handle user selection
                         selected = values[finalI];  // Set the selected enum value
                     }
             ));
@@ -23,7 +21,7 @@ public class EnumView<E extends Enum<E>> extends ViewObject {
     }
 
     @Override
-    public void showMenu() {
+    public void display() {
         System.out.println("Choose Type: ");
         printActions();
         getInput();

@@ -48,12 +48,11 @@ public class Schedule {
     // for testing
     public static void main(String[] args) {
         Schedule schedule = new Schedule();
-        schedule.setWorkingHours(DayOfWeek.MONDAY, 8, 17);
-        schedule.setWorkingHours(DayOfWeek.TUESDAY, 8, 17);
+        schedule.setWorkingHours(DayOfWeek.MONDAY, 8, 20);
+        schedule.setWorkingHours(DayOfWeek.TUESDAY, 10, 12);
         schedule.setWorkingHours(DayOfWeek.WEDNESDAY, 8, 17);
         schedule.setWorkingHours(DayOfWeek.THURSDAY, 8, 17);
         schedule.setWorkingHours(DayOfWeek.FRIDAY, 8, 17);
-        schedule.getAvailableTimeSlots(DayOfWeek.MONDAY);
     }
 }
 

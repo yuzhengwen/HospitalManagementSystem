@@ -1,15 +1,14 @@
 package View;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
  * Abstract class for all views
  */
-public abstract class ViewObject {
-    public ArrayList<Action> actions = new ArrayList<>();
+public abstract class ViewObject implements IView{
+    public ActionsList actions = new ActionsList();
 
-    public abstract void showMenu();
+    public abstract void display();
 
     protected void getInput() {
         System.out.println("Enter your choice:");
@@ -28,13 +27,11 @@ public abstract class ViewObject {
         // if no choice is matched, show the menu again
         System.out.println("Invalid choice");
         System.out.println();
-        showMenu();
+        display();
     }
 
     protected void printActions() {
-        actions.sort((a1, a2) -> a1.choice - a2.choice);
-        for (Action action : actions) {
-            System.out.println(action.getString());
-        }
+        actions.printActions();
     }
 }
+

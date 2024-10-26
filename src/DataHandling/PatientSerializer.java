@@ -1,5 +1,6 @@
 package DataHandling;
 
+import CustomTypes.ContactInfo;
 import CustomTypes.Gender;
 import Model.Patient;
 
@@ -11,6 +12,7 @@ import java.util.StringTokenizer;
  */
 public class PatientSerializer implements ISerializer<Patient> {
     private final DateSerializer dateSerializer = new DateSerializer();
+    private final ContactInfoSerializer contactInfoSerializer = new ContactInfoSerializer();
 
     @Override
     public String serialize(Patient object) {
@@ -19,7 +21,7 @@ public class PatientSerializer implements ISerializer<Patient> {
                 dateSerializer.serialize(object.getDob()) + SEPARATOR +
                 object.getGender() + SEPARATOR +
                 object.getBloodType() + SEPARATOR +
-                object.getContactInfo() + SEPARATOR +
+                contactInfoSerializer.serialize(object.getContactInfo()) + SEPARATOR +
                 object.getPassword();
     }
 
@@ -34,12 +36,14 @@ public class PatientSerializer implements ISerializer<Patient> {
         Date dob = dateSerializer.deserialize(star.nextToken().trim());
         Gender gender = Gender.valueOf(star.nextToken().trim().toUpperCase());
         String bloodType = star.nextToken().trim();
-        String contactInfo = star.nextToken().trim();
+        ContactInfo contactInfo = contactInfoSerializer.deserialize(star.nextToken().trim());
         String password = "";
         if (star.hasMoreTokens()) {
             password = star.nextToken().trim();
         }
 
-        return new Patient(id, password, name, dob, bloodType, gender);
+        Patient p = new Patient(id, password, name, dob, bloodType, gender);
+        p.setContactInfo(contactInfo);
+        return p;
     }
 }
