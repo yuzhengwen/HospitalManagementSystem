@@ -2,7 +2,6 @@ package Singletons;
 
 import Model.Patient;
 import Model.User;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,18 +11,18 @@ public class UserLoginManager {
     private static UserLoginManager instance;
     private UserLoginManager(){}
     public static synchronized UserLoginManager getInstance() {
-        if (instance == null) {
+        if (instance == null) { // if instance is null, create a new instance
             instance = new UserLoginManager();
         }
         return instance;
     }
     public User getUserById(String id){
-        for(User user : users){
+        for(User user : users){ // iterate through all users to find the user with the given ID
             if(user.getId().equals(id)){
                 return user;
             }
         }
-        return null;
+        return null; // return null if user is not found
     }
     public List<Patient> getAllPatients(){
         List<Patient> patients = new ArrayList<>();

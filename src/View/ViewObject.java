@@ -10,7 +10,7 @@ public abstract class ViewObject implements IView{
 
     public abstract void display();
 
-    protected void getInput() {
+    protected void getInput() { // get user input and handle it
         System.out.println("Enter your choice:");
         Scanner scanner = new Scanner(System.in);
         int choice = scanner.nextInt();
@@ -19,9 +19,9 @@ public abstract class ViewObject implements IView{
 
     public void handleInput(int choice) {
         for (Action action : actions) {
-            if (action.choice == choice) {
+            if (action.choice == choice) { // if choice matches, run the function
                 action.function.run();
-                return;
+                return; // exit method and get user input again
             }
         }
         // if no choice is matched, show the menu again

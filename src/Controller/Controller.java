@@ -7,7 +7,6 @@ import Model.Patient;
 import Model.User;
 import Singletons.AppointmentManager;
 import View.*;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -20,7 +19,7 @@ public class Controller {
     }
 
     public static synchronized Controller getInstance() {
-        if (instance == null) {
+        if (instance == null) { // if instance is null, create a new instance
             instance = new Controller();
         }
         return instance;
@@ -44,10 +43,10 @@ public class Controller {
 
     public void showLoginMenu() {
         LoginView loginView = new LoginView();
-        loginView.display();
-        if (loginView.getUser() != null) {
+        loginView.display(); // display the login menu and let user login
+        if (loginView.getUser() != null) { // if successful login
             setCurrentUser(loginView.getUser());
-            startMainMenu();
+            startMainMenu(); // start main menu for the user
         } else {
             throw new RuntimeException("User not found");
         }
@@ -69,8 +68,8 @@ public class Controller {
      * Start the main menu for the current user
      */
     public void startMainMenu() {
-        if (currentUser instanceof Patient) {
-            new PatientView((Patient) currentUser).display();
+        if (currentUser instanceof Patient) { // if the user is a patient
+            new PatientView((Patient) currentUser).display(); // downcast the user to a patient and display the patient menu
         }
     }
 

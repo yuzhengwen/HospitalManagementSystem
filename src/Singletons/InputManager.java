@@ -1,7 +1,6 @@
 package Singletons;
 
 import Controller.Controller;
-
 import java.util.Scanner;
 
 public class InputManager {
@@ -9,7 +8,7 @@ public class InputManager {
     private Scanner scanner = new Scanner(System.in);
     private InputManager(){}
     public static synchronized InputManager getInstance() {
-        if (instance == null) {
+        if (instance == null) { // if instance is null, create a new instance
             instance = new InputManager();
         }
         return instance;
@@ -21,11 +20,11 @@ public class InputManager {
     public String getString(){
         return scanner.nextLine();
     }
-    public int getInt(String message){
+    public int getInt(String message){ // print message and get input(int)
         System.out.println(message);
         return scanner.nextInt();
     }
-    public String getString(String message){
+    public String getString(String message){ // print message and get input(string)
         System.out.println(message);
         return scanner.nextLine();
     }
