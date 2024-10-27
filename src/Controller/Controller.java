@@ -1,9 +1,11 @@
 package Controller;
 
 import CustomTypes.OperationMode;
+import CustomTypes.Role;
 import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.Patient;
+import Model.Staff;
 import Model.User;
 import Singletons.AppointmentManager;
 import View.*;
@@ -71,6 +73,18 @@ public class Controller {
     public void startMainMenu() {
         if (currentUser instanceof Patient) { // if the user is a patient
             new PatientView((Patient) currentUser).display(); // downcast the user to a patient and display the patient menu
+        }
+        if (currentUser instanceof Staff) { // if the user is a staff
+            Role role = ((Staff) currentUser).getRole(); // downcast the user to a staff and check role
+            if (role == Role.DOCTOR) { // if the role is doctor
+                new DoctorView((Staff)currentUser).display(); // display the doctor menu
+            }
+            if (role == Role.ADMINISTRATOR){
+                //new AdminView(currentUser).display();
+            }
+            if (role == Role.PHARMACIST){
+                //new PharmacistView(currentUser).display();
+            }
         }
     }
 

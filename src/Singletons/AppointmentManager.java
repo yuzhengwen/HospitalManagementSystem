@@ -1,13 +1,19 @@
 package Singletons;
 
 import Model.Appointment;
-
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AppointmentManager {
     private static AppointmentManager instance;
-    private AppointmentManager(){}
+    private Map<String, Map<Date, Boolean>> doctorAvailability;
+    // we use a map of maps to store the availability of each doctor
+    // the outer map is keyed by doctorId, and the inner map is keyed by date
+    private AppointmentManager() { 
+        doctorAvailability = new HashMap<>();
+    }
     public static synchronized AppointmentManager getInstance() {
         if (instance == null) {
             instance = new AppointmentManager();

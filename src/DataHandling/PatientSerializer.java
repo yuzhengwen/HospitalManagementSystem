@@ -3,7 +3,6 @@ package DataHandling;
 import CustomTypes.ContactInfo;
 import CustomTypes.Gender;
 import Model.Patient;
-
 import java.util.Date;
 import java.util.StringTokenizer;
 
@@ -37,7 +36,7 @@ public class PatientSerializer implements ISerializer<Patient> {
         Gender gender = Gender.valueOf(star.nextToken().trim().toUpperCase());
         String bloodType = star.nextToken().trim();
         ContactInfo contactInfo = contactInfoSerializer.deserialize(star.nextToken().trim());
-        String password = "";
+        String password = ""; // default password is empty
         if (star.hasMoreTokens()) {
             password = star.nextToken().trim();
         }

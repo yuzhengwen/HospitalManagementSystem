@@ -1,6 +1,9 @@
 package Singletons;
 
 import Controller.Controller;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class InputManager {
@@ -31,5 +34,22 @@ public class InputManager {
     public void goBackPrompt(){
         getString("Press enter to go back");
         Controller.getInstance().navigateBack();
+    }
+
+    public Date getDate(String message) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        boolean valid = false;
+        while (!valid) {
+            System.out.println(message);
+            String dateString = scanner.nextLine();
+            try {
+                date = dateFormat.parse(dateString);
+                valid = true;
+            } catch (ParseException e) {
+                System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format.");
+            }
+        }
+        return date;
     }
 }

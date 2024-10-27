@@ -1,11 +1,7 @@
 package Model;
 
-import CustomTypes.ContactInfo;
 import CustomTypes.Gender;
-import Singletons.AppointmentManager;
 import CustomTypes.Role;
-
-import java.util.Scanner;
 
 
 // Staff ID,Name,Role,Gender,Age

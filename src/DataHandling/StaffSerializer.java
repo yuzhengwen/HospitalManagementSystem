@@ -32,7 +32,7 @@ public class StaffSerializer implements ISerializer<Staff> {
         Role role = Role.valueOf(star.nextToken().trim().toUpperCase());
         Gender gender = Gender.valueOf(star.nextToken().trim().toUpperCase());
         int age = Integer.parseInt(star.nextToken().trim());
-        String password = "";
+        String password = ""; // default password is empty
         if (star.hasMoreTokens()) {
             password = star.nextToken().trim();
         }
