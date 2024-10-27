@@ -9,12 +9,13 @@ import java.util.List;
 public class SaveManager {
     private final ISaveService saveService = new LocalFileHandler();
     private final PatientSerializer patientSerializer = new PatientSerializer();
+    private final StaffSerializer staffSerializer = new StaffSerializer();
 
     private final String FOLDER_PATH = "./src/SaveData/";
     private final String APPOINTMENT_FILE = "appointments.txt";
 
     private final String PATIENT_FILE = "./src/CSV/Patient_List.csv";
-    private final String INITIAL_STAFF = "./src/CSV/Staff_List.csv";
+    private final String STAFF_FILE = "./src/CSV/Staff_List.csv";
     private final String INITIAL_MEDICINE = "./src/CSV/Medicine_List.csv";
 
     public void savePatients() {
@@ -43,6 +44,14 @@ public class SaveManager {
         for (String serializedPatient : serializedPatients) {
             Patient p = patientSerializer.deserialize(serializedPatient);
             UserLoginManager.getInstance().addUser(p);
+        }
+    }
+    public void loadStaffs() {
+        List<String> serializedStaffs = saveService.readData(STAFF_FILE);
+        serializedStaffs.remove(0); // remove the header
+        for (String serializedStaff : serializedStaffs) {
+            Staff s = staffSerializer.deserialize(serializedStaff);
+            UserLoginManager.getInstance().addUser(s);
         }
     }
 }

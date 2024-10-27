@@ -16,6 +16,7 @@ public class Controller {
 
     private Controller() {
         saveManager.loadPatients();
+        saveManager.loadStaffs();
     }
 
     public static synchronized Controller getInstance() {
