@@ -1,6 +1,7 @@
 package Singletons;
 
 import Model.Patient;
+import Model.Staff;
 import Model.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,16 @@ public class UserLoginManager {
         }
         return patients;
     }
+    public List<Staff> getAllStaffs() {
+    List<Staff> staffs = new ArrayList<>();
+    for (User user : users) {
+        if (user instanceof Staff) {
+            staffs.add((Staff) user);
+        }
+    }
+    return staffs;
+    }
+    
 
     public void addUser(User user){
         users.add(user);

@@ -27,6 +27,16 @@ public class SaveManager {
         }
         saveService.saveData(PATIENT_FILE, stringsToWrite);
     }
+
+    public void saveStaffs() {
+        List<Staff> staffs = UserLoginManager.getInstance().getAllStaffs();
+        List<String> stringsToWrite = new ArrayList<>();
+        stringsToWrite.add("Staff ID,Name,Role,Gender,Age,Password");
+        for (Staff staff : staffs) {
+            stringsToWrite.add(staffSerializer.serialize(staff));
+        }
+        saveService.saveData(STAFF_FILE, stringsToWrite);
+    }
     /*
     TODO: Implement saveAppointments
     public void saveAppointments() {
