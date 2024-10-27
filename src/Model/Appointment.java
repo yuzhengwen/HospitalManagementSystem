@@ -21,6 +21,9 @@ public class Appointment {
         this.date = date;
     }
 
+    public Date getDate() {
+        return date;
+    }
     public String toString(){
         return "Patient ID: " + patientId + " Doctor ID: " + doctorId + " Type: " + type + " Status: " + status;
     }

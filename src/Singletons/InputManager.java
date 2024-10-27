@@ -9,35 +9,41 @@ import java.util.Scanner;
 public class InputManager {
     private static InputManager instance;
     private Scanner scanner = new Scanner(System.in);
-    private InputManager(){}
+
+    private InputManager() {}
+
     public static synchronized InputManager getInstance() {
-        if (instance == null) { // if instance is null, create a new instance
+        if (instance == null) {
             instance = new InputManager();
         }
         return instance;
     }
 
-    public int getInt(){
+    public int getInt() {
         return scanner.nextInt();
     }
-    public String getString(){
+
+    public String getString() {
         return scanner.nextLine();
     }
-    public int getInt(String message){ // print message and get input(int)
+
+    public int getInt(String message) {
         System.out.println(message);
         return scanner.nextInt();
     }
-    public String getString(String message){ // print message and get input(string)
+
+    public String getString(String message) {
         System.out.println(message);
         return scanner.nextLine();
     }
-    public void goBackPrompt(){
+
+    public void goBackPrompt() {
         getString("Press enter to go back");
         Controller.getInstance().navigateBack();
     }
 
     public Date getDate(String message) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Date date = null;
         boolean valid = false;
         while (!valid) {
@@ -47,9 +53,26 @@ public class InputManager {
                 date = dateFormat.parse(dateString);
                 valid = true;
             } catch (ParseException e) {
-                System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format.");
+                System.out.println("Invalid date format. Please enter the date in dd-MM-yyyy format.");
             }
         }
         return date;
+    }
+
+    public Date getTime(String message) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        Date time = null;
+        boolean valid = false;
+        while (!valid) {
+            System.out.println(message);
+            String timeString = scanner.nextLine();
+            try {
+                time = timeFormat.parse(timeString);
+                valid = true;
+            } catch (ParseException e) {
+                System.out.println("Invalid time format. Please enter the time in HH:mm format.");
+            }
+        }
+        return time;
     }
 }

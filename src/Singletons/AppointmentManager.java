@@ -1,19 +1,23 @@
 package Singletons;
 
 import Model.Appointment;
+import Model.Staff;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class AppointmentManager {
     private static AppointmentManager instance;
+
+    // nested map to store doctor availability - first key is doctorId, second key is date, boolean value is availability
     private Map<String, Map<Date, Boolean>> doctorAvailability;
-    // we use a map of maps to store the availability of each doctor
-    // the outer map is keyed by doctorId, and the inner map is keyed by date
-    private AppointmentManager() { 
+
+    private AppointmentManager() {
         doctorAvailability = new HashMap<>();
     }
+    
     public static synchronized AppointmentManager getInstance() {
         if (instance == null) {
             instance = new AppointmentManager();
@@ -60,4 +64,39 @@ public class AppointmentManager {
         }
         return appointmentsByDoctor;
     }
+
+    // Sets the availability of a doctor for a specific date and time range.
+    public void setAvailability(Staff staff, Date date, Date startTime, Date endTime) {
+        String doctorId = staff.getId();
+        
+        // Initialize the doctor's availability map if it doesn't exist
+        doctorAvailability.putIfAbsent(doctorId, new HashMap<>());
+        
+        // Create calendar instances for the date, start time, and end time
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(startTime);
+        
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(endTime);
+        
+        // Loop through the time range
+        while (startCalendar.before(endCalendar)) {
+            // Set the calendar time to the current slot
+            calendar.set(Calendar.HOUR_OF_DAY, startCalendar.get(Calendar.HOUR_OF_DAY));
+            calendar.set(Calendar.MINUTE, startCalendar.get(Calendar.MINUTE));
+            
+            // Get the current slot as a Date object
+            Date availableDateTime = calendar.getTime();
+            
+            // Mark the current slot as available for the doctor
+            doctorAvailability.get(doctorId).put(availableDateTime, true);
+            
+            // Move to the next 30-minute slot
+            startCalendar.add(Calendar.MINUTE, 30);
+        }
+    }
+
 }

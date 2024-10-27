@@ -1,6 +1,7 @@
 package View;
 
 import CustomTypes.OperationMode;
+import Model.Appointment;
 import Model.Staff;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
@@ -41,9 +42,11 @@ public class DoctorView extends UserView { // to do: implement all the methods
 
     private void setAvailability() {
         Controller.getInstance().setPreviousView(this);
-        Date availableDate = InputManager.getInstance().getDate("Enter the date you are available (yyyy-mm-dd): ");
-        AppointmentManager.getInstance().setAvailability(staff, availableDate);
-        System.out.println("Availability set for " + availableDate);
+        Date date = InputManager.getInstance().getDate("Enter the date you are available (dd-MM-yyyy): ");
+        Date startTime = InputManager.getInstance().getTime("Enter the start time you are available (HH:mm): ");
+        Date endTime = InputManager.getInstance().getTime("Enter the end time you are available (HH:mm): ");
+        AppointmentManager.getInstance().setAvailability(staff, date, startTime, endTime);
+        System.out.println("Availability set for " + date + " from " + startTime + " to " + endTime + " for doctor " + staff.getName());
         InputManager.getInstance().getString("Press enter to go back");
         Controller.getInstance().navigateBack();
     }
