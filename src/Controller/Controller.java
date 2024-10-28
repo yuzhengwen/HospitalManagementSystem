@@ -19,6 +19,7 @@ public class Controller {
     private Controller() {
         saveManager.loadPatients();
         saveManager.loadStaffs();
+        saveManager.loadAppointments();
     }
 
     public static synchronized Controller getInstance() {
@@ -66,6 +67,7 @@ public class Controller {
     public void logout() {
         saveManager.savePatients();
         saveManager.saveStaffs();
+        saveManager.saveAppointments();
         setCurrentUser(null);
         showLoginMenu();
     }
@@ -99,10 +101,22 @@ public class Controller {
                 // show view to select date from available dates
                 Date selectedDate = getSelectedDate(AppointmentManager.getInstance().getAvailableDates());
                 if (selectedDate != null) {
-                    EnumView<Appointment.Type> aptTypeView = new EnumView<>(Appointment.Type.class);
-                    aptTypeView.display();
-                    AppointmentManager.getInstance().add(new Appointment(currentUser.getId(), selectedDate, aptTypeView.getSelected()));
-                    return true;
+                    // Get available doctors for the selected date
+                    ArrayList<Staff> availableDoctors = AppointmentManager.getInstance().getAvailableDoctors(selectedDate);
+                    if (!availableDoctors.isEmpty()) { // if there are available doctors
+                        // Prompt user to select a doctor
+                        Staff selectedDoctor = getSelectedDoctor(availableDoctors);
+                        if (selectedDoctor != null) {
+                            EnumView<Appointment.Type> aptTypeView = new EnumView<>(Appointment.Type.class);
+                            aptTypeView.display();
+                            AppointmentManager.getInstance().add(new Appointment(selectedDoctor.getId(), selectedDate, currentUser.getId(), aptTypeView.getSelected(), Appointment.Status.PENDING));
+                            return true;
+                        } else {
+                            System.out.println("No doctor selected.");
+                        }
+                    } else {
+                        System.out.println("No doctors available on the selected date.");
+                    }
                 }
             } else if (mode == OperationMode.EDIT) {
                 // show view to select appointment from patient's appointments
@@ -124,6 +138,12 @@ public class Controller {
             }
         }
         return false;
+    }
+    private Staff getSelectedDoctor(ArrayList<Staff> list) {
+        System.out.println("Choose doctor: ");
+        SelectionView<Staff> view = new SelectionView<>(list);
+        view.display();
+        return view.getSelected();
     }
 
     private Date getSelectedDate(ArrayList<Date> list) {

@@ -10,10 +10,11 @@ public class Appointment {
     private AppointmentOutcomeRecord outcome;
     private Date date;
 
-    public Appointment(String patientId, Date date, Type type) {
+    public Appointment(String doctorId, Date date, String patientId, Type type, Status status) {
+        this.doctorId = doctorId;
         this.patientId = patientId;
         this.type = type;
-        this.status = Status.PENDING;
+        this.status = status;
         this.date = date;
     }
 

@@ -9,9 +9,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import Controller.Controller;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Scanner;
 
 public class DoctorView extends UserView { // to do: implement all the methods
     private Staff staff;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public DoctorView(Staff staff) {
         super(staff);
@@ -42,11 +46,26 @@ public class DoctorView extends UserView { // to do: implement all the methods
 
     private void setAvailability() {
         Controller.getInstance().setPreviousView(this);
-        Date date = InputManager.getInstance().getDate("Enter the date you are available (dd-MM-yyyy): ");
-        Date startTime = InputManager.getInstance().getTime("Enter the start time you are available (HH:mm): ");
-        Date endTime = InputManager.getInstance().getTime("Enter the end time you are available (HH:mm): ");
-        AppointmentManager.getInstance().setAvailability(staff, date, startTime, endTime);
-        System.out.println("Availability set for " + date + " from " + startTime + " to " + endTime + " for doctor " + staff.getName());
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the available date (yyyy-MM-dd): ");
+        String dateString = scanner.nextLine();
+        System.out.println("Enter the start time (HH:mm): ");
+        String startTimeString = scanner.nextLine();
+        System.out.println("Enter the end time (HH:mm): ");
+        String endTimeString = scanner.nextLine();
+
+        try {
+            Date date = dateFormat.parse(dateString + " " + startTimeString);
+            Date endTime = dateFormat.parse(dateString + " " + endTimeString);
+
+            while (date.before(endTime)) {
+                AppointmentManager.getInstance().addAppointment(new Appointment(staff.getId(), date, null, null, null));
+                // Increment the time by 30 minutes for each slot
+                date = new Date(date.getTime() + 30 * 60 * 1000);
+            }
+        } catch (ParseException e) {
+            System.out.println("Invalid date or time format.");
+        }
         InputManager.getInstance().getString("Press enter to go back");
         Controller.getInstance().navigateBack();
     }

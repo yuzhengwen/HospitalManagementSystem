@@ -43,7 +43,7 @@ public class InputManager {
     }
 
     public Date getDate(String message) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         boolean valid = false;
         while (!valid) {
@@ -53,7 +53,7 @@ public class InputManager {
                 date = dateFormat.parse(dateString);
                 valid = true;
             } catch (ParseException e) {
-                System.out.println("Invalid date format. Please enter the date in dd-MM-yyyy format.");
+                System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format.");
             }
         }
         return date;

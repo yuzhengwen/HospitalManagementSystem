@@ -1,0 +1,3 @@
+doctorId,date,patientId,type,status
+D001,2313223232L,P1001,CHECKUP,PENDING
+D001,2343223235L

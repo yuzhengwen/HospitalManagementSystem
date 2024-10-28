@@ -1,7 +1,9 @@
 package DataHandling;
 
+import Model.Appointment;
 import Model.Patient;
 import Model.Staff;
+import Singletons.AppointmentManager;
 import Singletons.UserLoginManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +12,10 @@ public class SaveManager {
     private final ISaveService saveService = new LocalFileHandler();
     private final PatientSerializer patientSerializer = new PatientSerializer();
     private final StaffSerializer staffSerializer = new StaffSerializer();
+    private final AppointmentSerializer appointmentSerializer = new AppointmentSerializer();
 
     private final String FOLDER_PATH = "./src/SaveData/";
-    private final String APPOINTMENT_FILE = "appointments.txt";
+    private final String APPOINTMENT_FILE = "./src/CSV/Appointment_List.csv";
 
     private final String PATIENT_FILE = "./src/CSV/Patient_List.csv";
     private final String STAFF_FILE = "./src/CSV/Staff_List.csv";
@@ -36,6 +39,14 @@ public class SaveManager {
             stringsToWrite.add(staffSerializer.serialize(staff));
         }
         saveService.saveData(STAFF_FILE, stringsToWrite);
+    }
+    public void saveAppointments() {
+        List<Appointment> appointments = AppointmentManager.getInstance().getAppointments();
+        List<String> stringsToWrite = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            stringsToWrite.add(appointmentSerializer.serialize(appointment));
+        }
+        saveService.saveData(APPOINTMENT_FILE, stringsToWrite);
     }
     /*
     TODO: Implement saveAppointments
@@ -62,6 +73,13 @@ public class SaveManager {
         for (String serializedStaff : serializedStaffs) {
             Staff s = staffSerializer.deserialize(serializedStaff);
             UserLoginManager.getInstance().addUser(s);
+        }
+    }
+    public void loadAppointments() {
+        List<String> serializedAppointments = saveService.readData(APPOINTMENT_FILE);
+        for (String serializedAppointment : serializedAppointments) {
+            Appointment appointment = appointmentSerializer.deserialize(serializedAppointment);
+            AppointmentManager.getInstance().addAppointment(appointment);
         }
     }
 }

@@ -2,21 +2,15 @@ package Singletons;
 
 import Model.Appointment;
 import Model.Staff;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AppointmentManager {
     private static AppointmentManager instance;
 
-    // nested map to store doctor availability - first key is doctorId, second key is date, boolean value is availability
-    private Map<String, Map<Date, Boolean>> doctorAvailability;
-
-    private AppointmentManager() {
-        doctorAvailability = new HashMap<>();
-    }
     
     public static synchronized AppointmentManager getInstance() {
         if (instance == null) {
@@ -26,16 +20,6 @@ public class AppointmentManager {
     }
 
     private final ArrayList<Appointment> appointments = new ArrayList<>();
-    private final ArrayList<Date> availableDates = new ArrayList<>();
-
-    public void updateAvailableDates(){
-        // TODO implement this properly
-        availableDates.add(new Date(2313223232L));
-        availableDates.add(new Date(2343223235L));
-    }
-    public ArrayList<Date> getAvailableDates() {
-        return availableDates;
-    }
 
     public void add(Appointment appointment) {
         appointments.add(appointment);
@@ -45,6 +29,19 @@ public class AppointmentManager {
     }
     public ArrayList<Appointment> getAppointments() {
         return appointments;
+    }
+    public ArrayList<Date> getAvailableDates() {
+        Set<Date> availableDates = new HashSet<>();
+
+        for (Appointment appointment : appointments) {
+            if (appointment.getPatientId() == null &&
+                appointment.getType() == null &&
+                appointment.getStatus() == null) {
+                availableDates.add(appointment.getDate());
+            }
+        }
+
+        return new ArrayList<>(availableDates);
     }
     public ArrayList<Appointment> getAppointmentsByPatientId(String patientId) {
         ArrayList<Appointment> appointmentsByPatient = new ArrayList<>();
@@ -58,45 +55,37 @@ public class AppointmentManager {
     public ArrayList<Appointment> getAppointmentsByDoctorId(String doctorId) {
         ArrayList<Appointment> appointmentsByDoctor = new ArrayList<>();
         for (Appointment appointment : appointments) {
-            if (appointment.getDoctorId().equals(doctorId)) {
+            if (appointment.getDoctorId().equals(doctorId) && appointment.getPatientId() != null) { // only add appointments with patients
                 appointmentsByDoctor.add(appointment);
             }
         }
         return appointmentsByDoctor;
     }
-
-    // Sets the availability of a doctor for a specific date and time range.
-    public void setAvailability(Staff staff, Date date, Date startTime, Date endTime) {
-        String doctorId = staff.getId();
-        
-        // Initialize the doctor's availability map if it doesn't exist
-        doctorAvailability.putIfAbsent(doctorId, new HashMap<>());
-        
-        // Create calendar instances for the date, start time, and end time
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.setTime(startTime);
-        
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.setTime(endTime);
-        
-        // Loop through the time range
-        while (startCalendar.before(endCalendar)) {
-            // Set the calendar time to the current slot
-            calendar.set(Calendar.HOUR_OF_DAY, startCalendar.get(Calendar.HOUR_OF_DAY));
-            calendar.set(Calendar.MINUTE, startCalendar.get(Calendar.MINUTE));
-            
-            // Get the current slot as a Date object
-            Date availableDateTime = calendar.getTime();
-            
-            // Mark the current slot as available for the doctor
-            doctorAvailability.get(doctorId).put(availableDateTime, true);
-            
-            // Move to the next 30-minute slot
-            startCalendar.add(Calendar.MINUTE, 30);
-        }
+    public void addAppointment(Appointment appointment) {
+        appointments.add(appointment);
     }
 
+    public ArrayList<Staff> getAvailableDoctors(Date date) {
+        Set<String> availableDoctorIds = new HashSet<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        for (Appointment appointment : appointments) {
+            if (dateFormat.format(appointment.getDate()).equals(dateFormat.format(date)) &&
+                appointment.getPatientId() == null &&
+                appointment.getType() == null &&
+                appointment.getStatus() == null) {
+                availableDoctorIds.add(appointment.getDoctorId());
+            }
+        }
+
+        ArrayList<Staff> availableDoctors = new ArrayList<>();
+        for (String doctorId : availableDoctorIds) {
+            Staff doctor = (Staff)UserLoginManager.getInstance().getUserById(doctorId);
+            if (doctor != null) {
+                availableDoctors.add(doctor);
+            }
+        }
+
+        return availableDoctors;
+    }
 }
