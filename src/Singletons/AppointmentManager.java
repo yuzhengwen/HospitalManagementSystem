@@ -71,8 +71,20 @@ public class AppointmentManager {
         appointmentsByDoctor.sort((a1, a2) -> a1.getDate().compareTo(a2.getDate()));
         return appointmentsByDoctor;
     }
+
     public void addAppointment(Appointment appointment) {
         appointments.add(appointment);
+    }
+   
+    public ArrayList<Appointment> getAvailabilitiesByDoctorId(String doctorId) { 
+        ArrayList<Appointment> appointmentsByDoctor = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            if (appointment.getDoctorId().equals(doctorId) && appointment.getPatientId() == null) {
+                appointmentsByDoctor.add(appointment);
+            }
+        }
+        appointmentsByDoctor.sort((a1, a2) -> a1.getDate().compareTo(a2.getDate()));
+        return appointmentsByDoctor;
     }
 
     public ArrayList<Staff> getAvailableDoctors(Date date) {
@@ -95,7 +107,6 @@ public class AppointmentManager {
                 availableDoctors.add(doctor);
             }
         }
-
         return availableDoctors;
     }
 }

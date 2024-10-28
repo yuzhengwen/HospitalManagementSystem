@@ -56,9 +56,33 @@ public class DoctorView extends UserView { // to do: implement all except for fi
         try {
             Date date = dateFormat.parse(dateString + " " + startTimeString);
             Date endTime = dateFormat.parse(dateString + " " + endTimeString);
-
+            List<Appointment> existingAppointments = AppointmentManager.getInstance().getAppointmentsByDoctorId(staff.getId());
+            List<Appointment> existingAvailabilities = AppointmentManager.getInstance().getAvailabilitiesByDoctorId(staff.getId());
             while (date.before(endTime)) {
-                AppointmentManager.getInstance().addAppointment(new Appointment(staff.getId(), date, null, null, null));
+                boolean appointmentExists = false;
+                for (Appointment appointment : existingAppointments) { // check if appointment already exists
+                    if (appointment.getDate().equals(date)) {
+                        appointmentExists = true;
+                        break;
+                    }
+                }
+                if (appointmentExists) {
+                    System.out.println("Appointment already exists for " + dateFormat.format(date));
+                } else {
+                    for (Appointment appointment : existingAvailabilities) { // check if availabiliy already set
+                        if (appointment.getDate().equals(date)) {
+                            appointmentExists = true;
+                            break;
+                        }
+                    }
+                    if (appointmentExists) {
+                        System.out.println("Availability already set for " + dateFormat.format(date));
+                    } else { // if both appointment and availability don't exist, add availability
+                    AppointmentManager.getInstance().addAppointment(new Appointment(staff.getId(), date, null, null, null));
+                    System.out.println("Availability set for " + dateFormat.format(date));
+                    }
+                }
+
                 // Increment the time by 30 minutes for each slot
                 date = new Date(date.getTime() + 30 * 60 * 1000);
             }
