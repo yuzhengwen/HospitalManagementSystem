@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 
 public class AppointmentSerializer implements ISerializer<Appointment> {
     private static final String SEPARATOR = ",";
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     @Override
     public String serialize(Appointment object) {
@@ -30,21 +30,25 @@ public class AppointmentSerializer implements ISerializer<Appointment> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String patientId = tokenizer.nextToken().trim();
-        if (patientId.isEmpty()) {
+        String patientId;
+        String typeString;
+        String statusString;
+        Appointment.Type type;
+        Appointment.Status status;
+        if (!tokenizer.hasMoreTokens()) { // if there are no more tokens, set the values to null, i.e. doctor is available
             patientId = null;
+            typeString = null;
+            statusString = null;
+            type = null;
+            status = null;
         }
-        String typeString = tokenizer.nextToken().trim();
-        Appointment.Type type = null;
-        if (!typeString.isEmpty()) {
+        else{
+            patientId = tokenizer.nextToken().trim();
+            typeString = tokenizer.nextToken().trim();
             type = Appointment.Type.valueOf(typeString.toUpperCase());
-        }
-        String statusString = tokenizer.nextToken().trim();
-        Appointment.Status status = null;
-        if (!statusString.isEmpty()) {
+            statusString = tokenizer.nextToken().trim();
             status = Appointment.Status.valueOf(statusString.toUpperCase());
         }
-
         return new Appointment(doctorId, date, patientId, type, status);
     }
 }

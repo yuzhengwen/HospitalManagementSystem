@@ -24,12 +24,15 @@ public class AppointmentManager {
     public void add(Appointment appointment) {
         appointments.add(appointment);
     }
+
     public void remove(Appointment appointment) {
         appointments.remove(appointment);
     }
+
     public ArrayList<Appointment> getAppointments() {
         return appointments;
     }
+
     public ArrayList<Date> getAvailableDates() {
         Set<Date> availableDates = new HashSet<>();
 
@@ -40,18 +43,24 @@ public class AppointmentManager {
                 availableDates.add(appointment.getDate());
             }
         }
-
-        return new ArrayList<>(availableDates);
+        ArrayList<Date> sortedAvailableDates = new ArrayList<>(availableDates);
+        sortedAvailableDates.sort(Date::compareTo);
+        return sortedAvailableDates;
     }
+
     public ArrayList<Appointment> getAppointmentsByPatientId(String patientId) {
         ArrayList<Appointment> appointmentsByPatient = new ArrayList<>();
         for (Appointment appointment : appointments) {
-            if (appointment.getPatientId().equals(patientId)) {
-                appointmentsByPatient.add(appointment);
+            if (appointment.getPatientId() != null) { // only add appointments with patients
+                if (appointment.getPatientId().equals(patientId)) {
+                    appointmentsByPatient.add(appointment);
+                }
             }
         }
+        appointmentsByPatient.sort((a1, a2) -> a1.getDate().compareTo(a2.getDate()));
         return appointmentsByPatient;
     }
+
     public ArrayList<Appointment> getAppointmentsByDoctorId(String doctorId) {
         ArrayList<Appointment> appointmentsByDoctor = new ArrayList<>();
         for (Appointment appointment : appointments) {
@@ -59,6 +68,7 @@ public class AppointmentManager {
                 appointmentsByDoctor.add(appointment);
             }
         }
+        appointmentsByDoctor.sort((a1, a2) -> a1.getDate().compareTo(a2.getDate()));
         return appointmentsByDoctor;
     }
     public void addAppointment(Appointment appointment) {

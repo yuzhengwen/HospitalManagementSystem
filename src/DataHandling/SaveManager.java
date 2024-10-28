@@ -77,6 +77,7 @@ public class SaveManager {
     }
     public void loadAppointments() {
         List<String> serializedAppointments = saveService.readData(APPOINTMENT_FILE);
+        serializedAppointments.remove(0); // remove the header
         for (String serializedAppointment : serializedAppointments) {
             Appointment appointment = appointmentSerializer.deserialize(serializedAppointment);
             AppointmentManager.getInstance().addAppointment(appointment);

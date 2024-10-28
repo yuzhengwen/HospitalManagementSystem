@@ -38,5 +38,8 @@ public class Staff extends User {
     public int getAge() {
         return age;
     }
+    public String toString() {
+        return name;
+    }
 }
 

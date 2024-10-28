@@ -13,7 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
-public class DoctorView extends UserView { // to do: implement all the methods
+public class DoctorView extends UserView { // to do: implement all except for first two methods
     private Staff staff;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
@@ -53,7 +53,6 @@ public class DoctorView extends UserView { // to do: implement all the methods
         String startTimeString = scanner.nextLine();
         System.out.println("Enter the end time (HH:mm): ");
         String endTimeString = scanner.nextLine();
-
         try {
             Date date = dateFormat.parse(dateString + " " + startTimeString);
             Date endTime = dateFormat.parse(dateString + " " + endTimeString);
