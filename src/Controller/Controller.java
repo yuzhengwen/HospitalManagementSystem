@@ -64,6 +64,8 @@ public class Controller {
     }
 
     public void logout() {
+        saveManager.savePatients();
+        saveManager.saveStaffs();
         setCurrentUser(null);
         showLoginMenu();
     }
