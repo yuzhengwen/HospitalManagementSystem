@@ -51,6 +51,10 @@ public class AppointmentManager {
         return appointmentsByDoctor;
     }
 
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
     public void add(Appointment appointment) {
         appointments.add(appointment);
     }

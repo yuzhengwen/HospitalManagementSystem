@@ -90,6 +90,7 @@ public class Controller {
     public void logout() {
         saveManager.savePatients();
         saveManager.saveStaffs();
+        saveManager.saveAppointments();
         setCurrentUser(null);
         showLoginMenu();
     }
