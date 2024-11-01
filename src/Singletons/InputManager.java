@@ -1,16 +1,22 @@
 package Singletons;
 
 import Controller.Controller;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Scanner;
 
 public class InputManager {
     private static InputManager instance;
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
-    private InputManager() {}
+    private InputManager() {
+    }
 
     public static synchronized InputManager getInstance() {
         if (instance == null) {
@@ -37,42 +43,57 @@ public class InputManager {
         return scanner.nextLine();
     }
 
+    public boolean getBoolean(String message) {
+        System.out.println(message);
+        String input = scanner.nextLine();
+        return input.equalsIgnoreCase("Y");
+    }
+
     public void goBackPrompt() {
         getString("Press enter to go back");
         Controller.getInstance().navigateBack();
     }
 
-    public Date getDate(String message) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        Date date = null;
+    public LocalTime getTime() {
+        System.out.println("Enter time (HH:mm): ");
+        DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime time = null;
         boolean valid = false;
         while (!valid) {
-            System.out.println(message);
+            String timeString = scanner.nextLine();
+            try {
+                time = LocalTime.parse(timeString, timeFormat);
+                valid = true;
+            } catch (Exception e) {
+                System.out.println("Invalid time format. Please enter the time in HH:mm format.");
+            }
+        }
+        return time;
+    }
+
+    public LocalDate getDate() {
+        System.out.println("Enter date (dd-MM-yyyy): ");
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate date = null;
+        boolean valid = false;
+        while (!valid) {
             String dateString = scanner.nextLine();
             try {
-                date = dateFormat.parse(dateString);
+                date = LocalDate.parse(dateString, dateFormat);
                 valid = true;
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 System.out.println("Invalid date format. Please enter the date in dd-MM-yyyy format.");
             }
         }
         return date;
     }
+    public LocalDateTime getDateTime(){
+        LocalDate date = getDate();
+        LocalTime time = getTime();
+        return LocalDateTime.of(date, time);
+    }
 
-    public Date getTime(String message) {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        Date time = null;
-        boolean valid = false;
-        while (!valid) {
-            System.out.println(message);
-            String timeString = scanner.nextLine();
-            try {
-                time = timeFormat.parse(timeString);
-                valid = true;
-            } catch (ParseException e) {
-                System.out.println("Invalid time format. Please enter the time in HH:mm format.");
-            }
-        }
-        return time;
+    public Scanner getScanner() {
+        return scanner;
     }
 }

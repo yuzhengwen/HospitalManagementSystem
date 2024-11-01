@@ -1,13 +1,12 @@
 package View;
 
-import CustomTypes.OperationMode;
-import Model.Appointment;
+import Model.ScheduleManagement.Schedule;
 import Model.Staff;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import java.time.DayOfWeek;
+
 import Controller.Controller;
 
 public class DoctorView extends UserView { // to do: implement all the methods
@@ -17,11 +16,11 @@ public class DoctorView extends UserView { // to do: implement all the methods
         super(staff);
         this.staff = staff;
         System.out.println("Welcome, " + staff.getName());
-        actions.add(new Action("View Personal Schedule", this::viewPersonalSchedule));
-        actions.add(new Action("Set Availability", this::setAvailability));
+        actions.add(new Action("View/Edit Personal Schedule", this::manageSchedule));
+        /*
         actions.add(new Action("Accept/Decline Appointment Requests", this::manageAppointmentRequests));
         actions.add(new Action("View Upcoming Appointments", this::viewUpcomingAppointments));
-        actions.add(new Action("Record Appointment Outcome", this::recordAppointmentOutcome));
+        actions.add(new Action("Record Appointment Outcome", this::recordAppointmentOutcome));*/
     }
 
     @Override
@@ -32,25 +31,26 @@ public class DoctorView extends UserView { // to do: implement all the methods
         getInput();
     }
 
-    private void viewPersonalSchedule() {
+    private void manageSchedule() {
         Controller.getInstance().setPreviousView(this);
-        List<Appointment> personalSchedule = AppointmentManager.getInstance().getAppointmentsByDoctorId(staff.getId());
-        personalSchedule.forEach(appointment -> System.out.println(appointment.toString()));
-        InputManager.getInstance().getString("Press enter to go back");
-        Controller.getInstance().navigateBack();
+        Schedule schedule = AppointmentManager.getInstance().getScheduleOfDoctor(staff);
+        System.out.println(schedule.printScheduleCompact());
+        while (InputManager.getInstance().getBoolean("Change schedule? (Y/N): ")) {
+            System.out.println("Select Day of Week:");
+            EnumView<DayOfWeek> dayOfWeekEnumView = new EnumView<>(DayOfWeek.class);
+            dayOfWeekEnumView.display();
+            DayOfWeek day = dayOfWeekEnumView.getSelected();
+            int startHour = InputManager.getInstance().getInt("Enter start hour: ");
+            int endHour = InputManager.getInstance().getInt("Enter end hour: ");
+            InputManager.getInstance().getScanner().nextLine(); // consume newline
+            schedule.setWorkingHours(day, startHour, endHour);
+            AppointmentManager.getInstance().setSchedule(staff, schedule);
+        }
+        System.out.println("Schedule updated.");
+        System.out.println(schedule.printScheduleCompact());
+        InputManager.getInstance().goBackPrompt();
     }
-
-    private void setAvailability() {
-        Controller.getInstance().setPreviousView(this);
-        Date date = InputManager.getInstance().getDate("Enter the date you are available (dd-MM-yyyy): ");
-        Date startTime = InputManager.getInstance().getTime("Enter the start time you are available (HH:mm): ");
-        Date endTime = InputManager.getInstance().getTime("Enter the end time you are available (HH:mm): ");
-        AppointmentManager.getInstance().setAvailability(staff, date, startTime, endTime);
-        System.out.println("Availability set for " + date + " from " + startTime + " to " + endTime + " for doctor " + staff.getName());
-        InputManager.getInstance().getString("Press enter to go back");
-        Controller.getInstance().navigateBack();
-    }
-
+/*
     private void manageAppointmentRequests() {
         Controller.getInstance().setPreviousView(this);
         List<AppointmentRequest> requests = AppointmentManager.getInstance().getAppointmentRequests(staff);
@@ -92,4 +92,6 @@ public class DoctorView extends UserView { // to do: implement all the methods
         InputManager.getInstance().getString("Press enter to go back");
         Controller.getInstance().navigateBack();
     }
+
+ */
 }

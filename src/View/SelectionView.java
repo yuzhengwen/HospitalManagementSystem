@@ -3,6 +3,7 @@ package View;
 import Controller.Controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A view that displays a list of items and allows the user to select one.
@@ -13,7 +14,7 @@ public class SelectionView<T> extends ViewObject {
 
     private T selected;
 
-    public SelectionView(ArrayList<T> list) {
+    public SelectionView(List<T> list) {
         actions.add(new Action("Back", () -> {
             Controller.getInstance().navigateBack();
         }));

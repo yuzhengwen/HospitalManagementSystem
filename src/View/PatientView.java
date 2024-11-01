@@ -3,10 +3,15 @@ package View;
 import Controller.Controller;
 import CustomTypes.OperationMode;
 import Model.Patient;
+import Model.ScheduleManagement.TimeSlot;
+import Model.Staff;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
-import java.util.ArrayList;
-import java.util.Date;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 public class PatientView extends UserView {
     Patient patient;
@@ -15,7 +20,7 @@ public class PatientView extends UserView {
         super(patient);
         this.patient = patient;
         System.out.println("Welcome, " + patient.getName());
-        actions.add(new Action("View Available Slots", this::viewAvailableSlots)); // add actions to the ActionList
+        actions.add(new Action("View Available Slots by Day", this::viewAvailableSlotsByDay));
         actions.add(new Action("Schedule Appointments", this::scheduleAppointments));
         actions.add(new Action("Reschedule Appointments", this::rescheduleAppointments));
         actions.add(new Action("Cancel Appointments", this::cancelAppointments));
@@ -28,11 +33,12 @@ public class PatientView extends UserView {
         printActions(); // print list of available actions
         getInput(); // get user input and handle it
     }
-
-    private void viewAvailableSlots() {
+    private void viewAvailableSlotsByDay() {
         Controller.getInstance().setPreviousView(this);
-        ArrayList<Date> availableDates = AppointmentManager.getInstance().getAvailableDates();
-        availableDates.forEach(date -> System.out.println(date.toString()));
+
+        LocalDate date = InputManager.getInstance().getDate();
+        Controller.getInstance().scheduleAppointmentByDayView(date);
+
         InputManager.getInstance().getString("Press enter to go back");
         Controller.getInstance().navigateBack();
     }

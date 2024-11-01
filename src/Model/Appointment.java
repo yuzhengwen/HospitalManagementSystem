@@ -1,5 +1,11 @@
 package Model;
 
+import Model.ScheduleManagement.Schedule;
+import Model.ScheduleManagement.TimeSlot;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 public class Appointment {
@@ -8,24 +14,27 @@ public class Appointment {
     private Type type;
     private Status status;
     private AppointmentOutcomeRecord outcome;
-    private Date date;
+    private LocalDate date;
+    private TimeSlot timeSlot;
 
-    public Appointment(String patientId, Date date, Type type) {
+    public Appointment(String patientId, LocalDate date, TimeSlot timeSlot, Type type) {
         this.patientId = patientId;
         this.type = type;
         this.status = Status.PENDING;
+        this.timeSlot = timeSlot;
         this.date = date;
     }
-
-    public void setDate(Date date) {
-        this.date = date;
+    public void setStatus(Status status) {
+        this.status = status;
     }
-
-    public Date getDate() {
-        return date;
+    public TimeSlot getTimeSlot() {
+        return timeSlot;
     }
     public String toString(){
         return "Patient ID: " + patientId + " Doctor ID: " + doctorId + " Type: " + type + " Status: " + status;
+    }
+    public LocalDate getDate() {
+        return date;
     }
 
     public Type getType() {

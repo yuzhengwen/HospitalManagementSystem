@@ -2,6 +2,7 @@ package Model.ScheduleManagement;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class CalendarUtils {
     public static LocalDate getNextDayOfWeek(DayOfWeek targetDay) {
@@ -17,5 +18,9 @@ public class CalendarUtils {
         }
 
         return today.plusDays(daysToAdd); // Add the days and return the result
+    }
+
+    public static TimeSlot getTimeSlotFromStartTime(LocalTime startTime) {
+        return new TimeSlot(startTime, startTime.plusMinutes(Schedule.APPOINTMENT_DURATION));
     }
 }

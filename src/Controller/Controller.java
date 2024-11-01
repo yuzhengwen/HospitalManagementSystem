@@ -5,12 +5,19 @@ import CustomTypes.Role;
 import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.Patient;
+import Model.ScheduleManagement.CalendarUtils;
+import Model.ScheduleManagement.TimeSlot;
 import Model.Staff;
 import Model.User;
 import Singletons.AppointmentManager;
 import View.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class Controller {
     private static Controller instance;
@@ -54,6 +61,7 @@ public class Controller {
             throw new RuntimeException("User not found");
         }
     }
+
     public boolean changePassword(String newPassword) {
         if (currentUser != null) {
             currentUser.changePassword(newPassword);
@@ -69,6 +77,7 @@ public class Controller {
         setCurrentUser(null);
         showLoginMenu();
     }
+
     /**
      * Start the main menu for the current user
      */
@@ -79,42 +88,53 @@ public class Controller {
         if (currentUser instanceof Staff) { // if the user is a staff
             Role role = ((Staff) currentUser).getRole(); // downcast the user to a staff and check role
             if (role == Role.DOCTOR) { // if the role is doctor
-                new DoctorView((Staff)currentUser).display(); // display the doctor menu
+                new DoctorView((Staff) currentUser).display(); // display the doctor menu
             }
-            if (role == Role.ADMINISTRATOR){
+            if (role == Role.ADMINISTRATOR) {
                 //new AdminView(currentUser).display();
             }
-            if (role == Role.PHARMACIST){
+            if (role == Role.PHARMACIST) {
                 //new PharmacistView(currentUser).display();
             }
         }
+    }
+
+    public boolean scheduleAppointmentByDayView(LocalDate date) {
+        // choose a time slot
+        Map<TimeSlot, List<Staff>> timeSlotListMap = AppointmentManager.getInstance().getTimeslotToDoctorMap(date);
+        SelectionView<TimeSlot> timeSlotSelectionView = new SelectionView<>(timeSlotListMap.keySet().stream().toList());
+        timeSlotSelectionView.display();
+        TimeSlot selectedTimeSlot = timeSlotSelectionView.getSelected();
+
+                /*
+                SelectionView<Staff> staffSelectionView = new SelectionView<>(timeSlotListMap.get(selectedTimeSlot));
+                staffSelectionView.display();
+                Staff selectedStaff = staffSelectionView.getSelected();*/
+
+        // choose appointment type
+        EnumView<Appointment.Type> aptTypeView = new EnumView<>(Appointment.Type.class);
+        aptTypeView.display();
+        Appointment.Type selectedType = aptTypeView.getSelected();
+
+        // create and add appointment
+        Appointment newAppointment = new Appointment(currentUser.getId(), date, selectedTimeSlot, selectedType);
+        AppointmentManager.getInstance().add(newAppointment);
+        return true;
     }
 
     public boolean showAppointments(OperationMode mode) {
         ArrayList<Appointment> list = AppointmentManager.getInstance().getAppointments();
         if (currentUser instanceof Patient) {
             list = AppointmentManager.getInstance().getAppointmentsByPatientId((currentUser.getId()));
-
-            if (mode == OperationMode.SCHEDULE) {
-                // show view to select date from available dates
-                Date selectedDate = getSelectedDate(AppointmentManager.getInstance().getAvailableDates());
-                if (selectedDate != null) {
-                    EnumView<Appointment.Type> aptTypeView = new EnumView<>(Appointment.Type.class);
-                    aptTypeView.display();
-                    AppointmentManager.getInstance().add(new Appointment(currentUser.getId(), selectedDate, aptTypeView.getSelected()));
-                    return true;
-                }
-            } else if (mode == OperationMode.EDIT) {
+/*
+            if (mode == OperationMode.EDIT) {
                 // show view to select appointment from patient's appointments
                 Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsByPatientId(currentUser.getId()));
                 if (selected != null) {
-                    Date selectedDate = getSelectedDate(AppointmentManager.getInstance().getAvailableDates());
-                    if (selectedDate != null) {
-                        selected.setDate(selectedDate);
-                        return true;
-                    }
+                    new PatientView((Patient) currentUser).viewAvailableSlotsByDay();
                 }
-            } else if (mode == OperationMode.DELETE) {
+            } else*/
+            if (mode == OperationMode.DELETE) {
                 // show view to select appointment from patient's appointments
                 Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsByPatientId(currentUser.getId()));
                 if (selected != null) {
