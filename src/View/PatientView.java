@@ -16,10 +16,20 @@ public class PatientView extends UserView {
         super(patient);
         this.patient = patient;
         System.out.println("Welcome, " + patient.getName());
+        actions.add(new Action("View Patient Info", this::viewPatientInfo));
         actions.add(new Action("View Appointments", this::viewAppointments));
         actions.add(new Action("Schedule Appointments", this::scheduleAppointments));
         actions.add(new Action("Reschedule Appointments", this::rescheduleAppointments));
         actions.add(new Action("Cancel Appointments", this::cancelAppointments));
+    }
+
+    private void viewPatientInfo() {
+        Controller.getInstance().setPreviousView(this);
+        System.out.println("Patient Info:");
+        System.out.println("Name: " + patient.getName());
+        System.out.println("Date of Birth: " + patient.getDob());
+        System.out.println("Gender: " + patient.getGender());
+        InputManager.getInstance().goBackPrompt();
     }
 
     private void viewAppointments() {

@@ -3,6 +3,8 @@ package DataHandling;
 import CustomTypes.ContactInfo;
 import CustomTypes.Gender;
 import Model.Patient;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.StringTokenizer;
 
@@ -32,7 +34,7 @@ public class PatientSerializer implements ISerializer<Patient> {
 
         String id = star.nextToken().trim();
         String name = star.nextToken().trim();
-        Date dob = dateSerializer.deserialize(star.nextToken().trim());
+        LocalDate dob = dateSerializer.deserialize(star.nextToken().trim());
         Gender gender = Gender.valueOf(star.nextToken().trim().toUpperCase());
         String bloodType = star.nextToken().trim();
         ContactInfo contactInfo = contactInfoSerializer.deserialize(star.nextToken().trim());

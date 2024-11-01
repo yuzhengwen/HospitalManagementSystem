@@ -2,25 +2,28 @@ package DataHandling;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
- * This class is responsible for serializing and deserializing Date objects to and from String.
+ * This class is responsible for serializing and deserializing LocalDate objects to and from String.
  */
-public class DateSerializer implements ISerializer<Date> {
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+public class DateSerializer implements ISerializer<LocalDate> {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
 
     @Override
-    public String serialize(Date object) {
-        return formatter.format(object);
+    public String serialize(LocalDate object) {
+        return object.format(formatter);
     }
 
     @Override
-    public Date deserialize(String data) {
+    public LocalDate deserialize(String data) {
         try {
-            return formatter.parse(data);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            return LocalDate.parse(data, formatter);
+        } catch (Exception e) {
+            return null;
         }
     }
 }

@@ -4,18 +4,19 @@ import CustomTypes.ContactInfo;
 import CustomTypes.Gender;
 import Singletons.AppointmentManager;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Scanner;
 
-public class Patient extends User{
+public class Patient extends User {
     private String name;
-    private Date dob;
+    private LocalDate dob;
     private Gender gender;
     private ContactInfo contactInfo = new ContactInfo();
     private String bloodType;
     // to add blood type, past diagnosis/treatment
 
-    public Patient(String id, String password, String name, Date dob, String bloodType, Gender gender) {
+    public Patient(String id, String password, String name, LocalDate dob, String bloodType, Gender gender) {
         super(id, password);
         this.name = name;
         this.dob = dob;
@@ -26,6 +27,7 @@ public class Patient extends User{
     public String getBloodType() {
         return bloodType;
     }
+
     public ContactInfo getContactInfo() {
         return contactInfo;
     }
@@ -34,7 +36,7 @@ public class Patient extends User{
         this.contactInfo = contactInfo;
     }
 
-    public Date getDob() {
+    public LocalDate getDob() {
         return dob;
     }
 
