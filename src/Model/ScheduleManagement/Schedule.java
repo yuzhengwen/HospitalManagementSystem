@@ -46,14 +46,6 @@ public class Schedule {
         return timeSlots;
     }
 
-    public void bookTimeSlot(DayOfWeek day, TimeSlot timeSlot) {
-        for (TimeSlot slot : timeSlots.get(day)) {
-            if (slot.equals(timeSlot)) {
-                slot.available = false;
-            }
-        }
-    }
-
     public String printScheduleCompact() {
         StringBuilder sb = new StringBuilder();
         sb.append("Schedule:\n");
@@ -67,16 +59,6 @@ public class Schedule {
         return sb.toString();
     }
 
-    // for testing
-    public static void main(String[] args) {
-        Schedule schedule = new Schedule(null);
-        schedule.setWorkingHours(DayOfWeek.MONDAY, 8, 20);
-        schedule.setWorkingHours(DayOfWeek.TUESDAY, 10, 12);
-        schedule.setWorkingHours(DayOfWeek.WEDNESDAY, 8, 17);
-        schedule.setWorkingHours(DayOfWeek.THURSDAY, 8, 17);
-        schedule.setWorkingHours(DayOfWeek.FRIDAY, 8, 17);
-    }
-
     public boolean isWorking(DayOfWeek dayOfWeek, LocalTime time) {
         if (!schedule.containsKey(dayOfWeek)) {
             return false;
@@ -86,15 +68,9 @@ public class Schedule {
         return (time.isAfter(timeSlot.getStart()) || time.equals(timeSlot.getStart())) && time.isBefore(timeSlot.getEnd());
     }
 
-    public List<TimeSlot> getAvailableTimeSlots(LocalDate date) {
-        List<TimeSlot> availableTimeSlots = new ArrayList<>();
+    public List<TimeSlot> getAvailableTimeSlotsOnDate(LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
-        for (TimeSlot timeSlot : timeSlots.get(dayOfWeek)) {
-            if (timeSlot.available) {
-                availableTimeSlots.add(timeSlot);
-            }
-        }
-        return availableTimeSlots;
+        return new ArrayList<>(timeSlots.get(dayOfWeek));
     }
 
     public Staff getStaff() {

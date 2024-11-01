@@ -1,26 +1,58 @@
 package View;
 
+import Model.Appointment;
 import Model.ScheduleManagement.Schedule;
 import Model.Staff;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
 
 import java.time.DayOfWeek;
+import java.util.List;
 
 import Controller.Controller;
 
 public class DoctorView extends UserView { // to do: implement all the methods
-    private Staff staff;
+    private final Staff staff;
 
     public DoctorView(Staff staff) {
         super(staff);
         this.staff = staff;
         System.out.println("Welcome, " + staff.getName());
         actions.add(new Action("View/Edit Personal Schedule", this::manageSchedule));
-        /*
+        actions.add(new Action("View Accepted Appointments", this::viewAcceptedAppointments));
         actions.add(new Action("Accept/Decline Appointment Requests", this::manageAppointmentRequests));
+        /*
         actions.add(new Action("View Upcoming Appointments", this::viewUpcomingAppointments));
         actions.add(new Action("Record Appointment Outcome", this::recordAppointmentOutcome));*/
+    }
+
+    private void viewAcceptedAppointments() {
+        Controller.getInstance().setPreviousView(this);
+        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByDoctorId(staff.getId(), Appointment.Status.ACCEPTED);
+        if (appointments.isEmpty()) {
+            System.out.println("No appointments accepted yet");
+        } else
+            appointments.forEach(appointment -> System.out.println(appointment.toString()));
+        InputManager.getInstance().goBackPrompt();
+    }
+
+    private void manageAppointmentRequests() {
+        Controller.getInstance().setPreviousView(this);
+
+        System.out.println("Choose an appointment request to accept: ");
+        List<Appointment> appointments = AppointmentManager.getInstance().getPendingAppointmentsWithinAvailableTime(staff.getId());
+        if (appointments.isEmpty()) {
+            System.out.println("No appointment requests found.");
+        } else {
+            SelectionView<Appointment> selectionView = new SelectionView<>(appointments);
+            selectionView.display();
+            Appointment selectedAppointment = selectionView.getSelected();
+
+            AppointmentManager.getInstance().acceptAppointment(selectedAppointment, staff.getId());
+            System.out.println("Appointment accepted.");
+            System.out.println(selectedAppointment.toString());
+        }
+        InputManager.getInstance().goBackPrompt();
     }
 
     @Override

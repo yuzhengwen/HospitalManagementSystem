@@ -1,14 +1,12 @@
 package Singletons;
 
 import Model.Appointment;
-import Model.ScheduleManagement.CalendarUtils;
 import Model.ScheduleManagement.Schedule;
 import Model.ScheduleManagement.TimeSlot;
+import Model.ScheduleManagement.TimeSlotWithDoctor;
 import Model.Staff;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -29,10 +27,6 @@ public class AppointmentManager {
         doctorScheduleMap.put(doctor.getId(), schedule);
     }
 
-    public ArrayList<Appointment> getAppointments() {
-        return appointments;
-    }
-
     public ArrayList<Appointment> getAppointmentsByPatientId(String patientId) {
         ArrayList<Appointment> appointmentsByPatient = new ArrayList<>();
         for (Appointment appointment : appointments) {
@@ -43,10 +37,14 @@ public class AppointmentManager {
         return appointmentsByPatient;
     }
 
-    public ArrayList<Appointment> getAppointmentsByDoctorId(String doctorId) {
-        ArrayList<Appointment> appointmentsByDoctor = new ArrayList<>();
+    public List<Appointment> getAppointmentsByDoctorId(String id, Appointment.Status status) {
+        List<Appointment> appointmentsByDoctor = new ArrayList<>();
+        if (appointments.isEmpty()) {
+            return appointmentsByDoctor;
+        }
         for (Appointment appointment : appointments) {
-            if (appointment.getDoctorId().equals(doctorId)) {
+            if (appointment.getDoctorId() == null || appointment.getDoctorId().isEmpty()) continue;
+            if (appointment.getDoctorId().equals(id) && appointment.getStatus() == status) {
                 appointmentsByDoctor.add(appointment);
             }
         }
@@ -68,22 +66,94 @@ public class AppointmentManager {
         return new Schedule(doctor);
     }
 
-    public Map<TimeSlot, List<Staff>> getTimeslotToDoctorMap(LocalDate date) {
+    /**
+     * Create a map of TimeSlot to List of Staff objects for a given date<br/>
+     * Used internally for getTimeslotWithDoctorList()
+     */
+    private Map<TimeSlot, List<Staff>> getTimeslotToDoctorMap(LocalDate date) {
         Map<TimeSlot, List<Staff>> timeslotToDoctorMap = new HashMap<>();
+        // reverse map doctor to timeslot
         for (Map.Entry<String, Schedule> entry : doctorScheduleMap.entrySet()) {
             Schedule schedule = entry.getValue();
-            for (TimeSlot timeSlot : schedule.getAvailableTimeSlots(date)) {
+            for (TimeSlot timeSlot : schedule.getAvailableTimeSlotsOnDate(date)) {
                 if (!timeslotToDoctorMap.containsKey(timeSlot)) {
                     timeslotToDoctorMap.put(timeSlot, new ArrayList<>());
                 }
                 timeslotToDoctorMap.get(timeSlot).add(schedule.getStaff());
             }
         }
+        // remove timeslots that are already booked
+        for (Appointment appointment : appointments) {
+            if (appointment.getDate().equals(date) && appointment.getStatus() == Appointment.Status.ACCEPTED) {
+                timeslotToDoctorMap.get(appointment.getTimeSlot()).removeIf(doctor -> doctor.getId().equals(appointment.getDoctorId()));
+            }
+        }
+        // remove empty timeslots
+        timeslotToDoctorMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
         return timeslotToDoctorMap;
     }
 
-    public void acceptAppointment(Appointment appointment, Staff doctor) {
-        appointment.setDoctorId(doctor.getId());
+    /**
+     * Get a list of TimeSlotWithDoctor objects for a given date<br/>
+     * Each entry in the list contains a TimeSlot object and a list of available Staff
+     */
+    public List<TimeSlotWithDoctor> getTimeslotWithDoctorList(LocalDate date) {
+        Map<TimeSlot, List<Staff>> timeslotToDoctorMap = getTimeslotToDoctorMap(date);
+        List<TimeSlotWithDoctor> timeSlotWithDoctorList = new ArrayList<>();
+        for (Map.Entry<TimeSlot, List<Staff>> entry : timeslotToDoctorMap.entrySet()) {
+            timeSlotWithDoctorList.add(new TimeSlotWithDoctor(entry.getKey(), entry.getValue()));
+        }
+        // sort time slots by start time
+        timeSlotWithDoctorList.sort(Comparator.comparing(ts -> ts.getTimeSlot().getStart()));
+        return timeSlotWithDoctorList;
+    }
+
+    /**
+     * gets a list of appointments that are pending and within the available time of the doctor
+     */
+    public List<Appointment> getPendingAppointmentsWithinAvailableTime(String doctorId) {
+        List<Appointment> pendingAppointments = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            // check if appointment is pending and doctor is available
+            if (appointment.getStatus() == Appointment.Status.PENDING &&
+                    isDoctorAvailable(doctorId, appointment.getDate(), appointment.getTimeSlot().getStart())) {
+                pendingAppointments.add(appointment);
+            }
+        }
+        return pendingAppointments;
+    }
+
+    /**
+     * Check if a doctor is available at a given date and time <br/>
+     * Will check based on the doctor's schedule and appointments accepted by the doctor
+     */
+    public boolean isDoctorAvailable(String doctorId, LocalDate date, LocalTime time) {
+        Schedule schedule = doctorScheduleMap.get(doctorId);
+        // check if doctor is working on the given day and time
+        if (schedule.isWorking(date.getDayOfWeek(), time)) {
+            // check if doctor has an appointment at the given time
+            List<Appointment> acceptedAppointments = getAppointmentsByDoctorId(doctorId, Appointment.Status.ACCEPTED);
+            if (acceptedAppointments == null || acceptedAppointments.isEmpty()) {
+                return true;
+            }
+            for (Appointment appointment : acceptedAppointments) {
+                if (appointment.getDate().equals(date) && appointment.getTimeSlot().isTimeWithin(time)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Accept an appointment request
+     *
+     * @param appointment the appointment to accept
+     * @param doctorId    the id of the doctor accepting the appointment
+     */
+    public void acceptAppointment(Appointment appointment, String doctorId) {
+        appointment.setDoctorId(doctorId);
         appointment.setStatus(Appointment.Status.ACCEPTED);
     }
 }

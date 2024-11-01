@@ -2,16 +2,12 @@ package View;
 
 import Controller.Controller;
 import CustomTypes.OperationMode;
+import Model.Appointment;
 import Model.Patient;
-import Model.ScheduleManagement.TimeSlot;
-import Model.Staff;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public class PatientView extends UserView {
     Patient patient;
@@ -20,10 +16,23 @@ public class PatientView extends UserView {
         super(patient);
         this.patient = patient;
         System.out.println("Welcome, " + patient.getName());
-        actions.add(new Action("View Available Slots by Day", this::viewAvailableSlotsByDay));
+        actions.add(new Action("View Appointments", this::viewAppointments));
         actions.add(new Action("Schedule Appointments", this::scheduleAppointments));
         actions.add(new Action("Reschedule Appointments", this::rescheduleAppointments));
         actions.add(new Action("Cancel Appointments", this::cancelAppointments));
+    }
+
+    private void viewAppointments() {
+        Controller.getInstance().setPreviousView(this);
+        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByPatientId(patient.getId());
+        if (appointments.isEmpty()) {
+            System.out.println("No appointments found");
+        } else {
+            System.out.println("Appointments:");
+            for (Appointment appointment : appointments)
+                System.out.println(appointment.toString());
+        }
+        InputManager.getInstance().goBackPrompt();
     }
 
     @Override
@@ -33,40 +42,38 @@ public class PatientView extends UserView {
         printActions(); // print list of available actions
         getInput(); // get user input and handle it
     }
-    private void viewAvailableSlotsByDay() {
-        Controller.getInstance().setPreviousView(this);
-
-        LocalDate date = InputManager.getInstance().getDate();
-        Controller.getInstance().scheduleAppointmentByDayView(date);
-
-        InputManager.getInstance().getString("Press enter to go back");
-        Controller.getInstance().navigateBack();
-    }
 
     private void scheduleAppointments() {
         Controller.getInstance().setPreviousView(this);
-        System.out.println("Choose an appointment to schedule: ");
-        if (Controller.getInstance().showAppointments(OperationMode.SCHEDULE))
+
+        Appointment newAppointment = Controller.getInstance().manageAppointments(OperationMode.SCHEDULE);
+        if (newAppointment != null) {
             System.out.println("Appointment scheduled successfully");
-        else
+            System.out.println(newAppointment.toString());
+        } else
             System.out.println("Appointment scheduling failed");
+
         InputManager.getInstance().goBackPrompt();
     }
 
     private void rescheduleAppointments() {
         Controller.getInstance().setPreviousView(this);
+
         System.out.println("Choose an appointment to reschedule: ");
-        if (Controller.getInstance().showAppointments(OperationMode.EDIT))
+        Appointment appointment = Controller.getInstance().manageAppointments(OperationMode.EDIT);
+        if (appointment != null) {
             System.out.println("Appointment rescheduled successfully");
-        else
+            System.out.println(appointment.toString());
+        } else
             System.out.println("Appointment rescheduling failed");
+
         InputManager.getInstance().goBackPrompt();
     }
 
     private void cancelAppointments() {
         Controller.getInstance().setPreviousView(this);
         System.out.println("Choose an appointment to cancel: ");
-        if (Controller.getInstance().showAppointments(OperationMode.DELETE))
+        if (Controller.getInstance().manageAppointments(OperationMode.DELETE) != null)
             System.out.println("Appointment cancelled successfully");
         else
             System.out.println("Appointment cancellation failed");

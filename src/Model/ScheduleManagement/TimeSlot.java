@@ -1,20 +1,16 @@
 package Model.ScheduleManagement;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class TimeSlot {
     private final LocalTime start;
     private final LocalTime end;
-    public boolean available;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
     public TimeSlot(LocalTime start, LocalTime end) {
         this.start = start;
         this.end = end;
-        this.available = true;
     }
 
     // Getters for start and end time
@@ -40,5 +36,9 @@ public class TimeSlot {
         String startTime = start.format(formatter);
         String endTime = end.format(formatter);
         return startTime + " - " + endTime;
+    }
+
+    public boolean isTimeWithin(LocalTime time) {
+        return time.equals(start) || (time.isAfter(start) && time.isBefore(end));
     }
 }

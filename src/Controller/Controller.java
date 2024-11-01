@@ -5,19 +5,20 @@ import CustomTypes.Role;
 import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.Patient;
-import Model.ScheduleManagement.CalendarUtils;
+import Model.ScheduleManagement.Schedule;
 import Model.ScheduleManagement.TimeSlot;
 import Model.Staff;
 import Model.User;
 import Singletons.AppointmentManager;
+import Singletons.InputManager;
+import Model.ScheduleManagement.TimeSlotWithDoctor;
+import Singletons.UserLoginManager;
 import View.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 public class Controller {
     private static Controller instance;
@@ -26,6 +27,21 @@ public class Controller {
     private Controller() {
         saveManager.loadPatients();
         saveManager.loadStaffs();
+
+        // Create a test schedule for a doctor
+        Staff testDoctor = (Staff) UserLoginManager.getInstance().getUserById("D001");
+
+        Schedule schedule = new Schedule(testDoctor);
+        schedule.setWorkingHours(DayOfWeek.MONDAY, 8, 20);
+        schedule.setWorkingHours(DayOfWeek.TUESDAY, 10, 12);
+        schedule.setWorkingHours(DayOfWeek.WEDNESDAY, 8, 17);
+        schedule.setWorkingHours(DayOfWeek.THURSDAY, 8, 17);
+        schedule.setWorkingHours(DayOfWeek.FRIDAY, 8, 17);
+
+        AppointmentManager.getInstance().setSchedule(testDoctor, schedule);
+
+        // Create test appointment requests
+        AppointmentManager.getInstance().add(new Appointment("P1001", LocalDate.of(2024, 11, 4), new TimeSlot(LocalTime.of(9, 0), LocalTime.of(10, 0)), Appointment.Type.CHECKUP));
     }
 
     public static synchronized Controller getInstance() {
@@ -99,58 +115,43 @@ public class Controller {
         }
     }
 
-    public boolean scheduleAppointmentByDayView(LocalDate date) {
-        // choose a time slot
-        Map<TimeSlot, List<Staff>> timeSlotListMap = AppointmentManager.getInstance().getTimeslotToDoctorMap(date);
-        SelectionView<TimeSlot> timeSlotSelectionView = new SelectionView<>(timeSlotListMap.keySet().stream().toList());
-        timeSlotSelectionView.display();
-        TimeSlot selectedTimeSlot = timeSlotSelectionView.getSelected();
-
-                /*
-                SelectionView<Staff> staffSelectionView = new SelectionView<>(timeSlotListMap.get(selectedTimeSlot));
-                staffSelectionView.display();
-                Staff selectedStaff = staffSelectionView.getSelected();*/
-
-        // choose appointment type
-        EnumView<Appointment.Type> aptTypeView = new EnumView<>(Appointment.Type.class);
-        aptTypeView.display();
-        Appointment.Type selectedType = aptTypeView.getSelected();
-
-        // create and add appointment
-        Appointment newAppointment = new Appointment(currentUser.getId(), date, selectedTimeSlot, selectedType);
-        AppointmentManager.getInstance().add(newAppointment);
-        return true;
-    }
-
-    public boolean showAppointments(OperationMode mode) {
-        ArrayList<Appointment> list = AppointmentManager.getInstance().getAppointments();
-        if (currentUser instanceof Patient) {
-            list = AppointmentManager.getInstance().getAppointmentsByPatientId((currentUser.getId()));
-/*
-            if (mode == OperationMode.EDIT) {
-                // show view to select appointment from patient's appointments
-                Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsByPatientId(currentUser.getId()));
-                if (selected != null) {
-                    new PatientView((Patient) currentUser).viewAvailableSlotsByDay();
-                }
-            } else*/
-            if (mode == OperationMode.DELETE) {
-                // show view to select appointment from patient's appointments
-                Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsByPatientId(currentUser.getId()));
-                if (selected != null) {
-                    AppointmentManager.getInstance().remove(selected);
-                    return true;
-                }
+    public Appointment manageAppointments(OperationMode mode) {
+        if (OperationMode.SCHEDULE == mode) {
+            LocalDate date = InputManager.getInstance().getDate();
+            TimeSlot timeSlot = selectTimeSlot(date);
+            Appointment.Type type = selectAppointmentType();
+            Appointment newAppointment = new Appointment(currentUser.getId(), date, timeSlot, type);
+            AppointmentManager.getInstance().add(newAppointment);
+            return newAppointment;
+        } else if (OperationMode.EDIT == mode) {
+            Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsByPatientId(currentUser.getId()));
+            if (selected != null) {
+                LocalDate date = InputManager.getInstance().getDate();
+                TimeSlot timeSlot = selectTimeSlot(date);
+                selected.setDate(date);
+                selected.setTimeSlot(timeSlot);
+                return selected;
+            }
+        } else if (OperationMode.DELETE == mode) {
+            Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsByPatientId(currentUser.getId()));
+            if (selected != null) {
+                AppointmentManager.getInstance().remove(selected);
+                return selected;
             }
         }
-        return false;
+        return null;
     }
 
-    private Date getSelectedDate(ArrayList<Date> list) {
-        System.out.println("Choose date: ");
-        SelectionView<Date> view = new SelectionView<>(list);
-        view.display();
-        return view.getSelected();
+    public TimeSlot selectTimeSlot(LocalDate date) {
+        SelectionView<TimeSlotWithDoctor> timeSlotSelectionView = new SelectionView<>(AppointmentManager.getInstance().getTimeslotWithDoctorList(date));
+        timeSlotSelectionView.display();
+        return timeSlotSelectionView.getSelected().getTimeSlot();
+    }
+
+    public Appointment.Type selectAppointmentType() {
+        EnumView<Appointment.Type> aptTypeView = new EnumView<>(Appointment.Type.class);
+        aptTypeView.display();
+        return aptTypeView.getSelected();
     }
 
     private Appointment getSelectedAppointment(ArrayList<Appointment> list) {

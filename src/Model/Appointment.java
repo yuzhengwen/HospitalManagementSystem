@@ -24,15 +24,27 @@ public class Appointment {
         this.timeSlot = timeSlot;
         this.date = date;
     }
+
     public void setStatus(Status status) {
         this.status = status;
     }
+
     public TimeSlot getTimeSlot() {
         return timeSlot;
     }
-    public String toString(){
-        return "Patient ID: " + patientId + " Doctor ID: " + doctorId + " Type: " + type + " Status: " + status;
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
+
+    public void setTimeSlot(TimeSlot timeSlot) {
+        this.timeSlot = timeSlot;
+    }
+
+    public String toString() {
+        return "Date/Time: " + date + " " + timeSlot + " Patient ID: " + patientId + " Doctor ID: " + doctorId + " Type: " + type + " Status: " + status;
+    }
+
     public LocalDate getDate() {
         return date;
     }
@@ -48,6 +60,7 @@ public class Appointment {
     public String getPatientId() {
         return patientId;
     }
+
     public String getDoctorId() {
         return doctorId;
     }
@@ -69,6 +82,7 @@ public class Appointment {
         FOLLOWUP,
         EMERGENCY
     }
+
     public enum Status {
         PENDING,
         ACCEPTED,
