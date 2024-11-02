@@ -23,8 +23,15 @@ public class DoctorView extends UserView { // to do: implement all the methods
         actions.add(new Action("View Accepted Appointments", this::viewAcceptedAppointments));
         actions.add(new Action("Accept/Decline Appointment Requests", this::manageAppointmentRequests));
         /*
-        actions.add(new Action("View Upcoming Appointments", this::viewUpcomingAppointments));
         actions.add(new Action("Record Appointment Outcome", this::recordAppointmentOutcome));*/
+    }
+
+    @Override
+    public void display() {
+        System.out.println("Doctor Menu");
+        System.out.println("----------------");
+        printActions();
+        getInput();
     }
 
     private void viewAcceptedAppointments() {
@@ -56,14 +63,6 @@ public class DoctorView extends UserView { // to do: implement all the methods
         InputManager.getInstance().goBackPrompt();
     }
 
-    @Override
-    public void display() {
-        System.out.println("Doctor Menu");
-        System.out.println("----------------");
-        printActions();
-        getInput();
-    }
-
     private void manageSchedule() {
         Controller.getInstance().setPreviousView(this);
         Schedule schedule = AppointmentManager.getInstance().getScheduleOfDoctor(staff);
@@ -85,32 +84,6 @@ public class DoctorView extends UserView { // to do: implement all the methods
         InputManager.getInstance().goBackPrompt();
     }
 /*
-    private void manageAppointmentRequests() {
-        Controller.getInstance().setPreviousView(this);
-        List<AppointmentRequest> requests = AppointmentManager.getInstance().getAppointmentRequests(staff);
-        requests.forEach(request -> {
-            System.out.println(request.toString());
-            String decision = InputManager.getInstance().getString("Accept or Decline (A/D): ");
-            if (decision.equalsIgnoreCase("A")) {
-                AppointmentManager.getInstance().acceptRequest(request);
-                System.out.println("Request accepted.");
-            } else {
-                AppointmentManager.getInstance().declineRequest(request);
-                System.out.println("Request declined.");
-            }
-        });
-        InputManager.getInstance().getString("Press enter to go back");
-        Controller.getInstance().navigateBack();
-    }
-
-    private void viewUpcomingAppointments() {
-        Controller.getInstance().setPreviousView(this);
-        List<Appointment> upcomingAppointments = AppointmentManager.getInstance().getUpcomingAppointments(staff);
-        upcomingAppointments.forEach(appointment -> System.out.println(appointment.toString()));
-        InputManager.getInstance().getString("Press enter to go back");
-        Controller.getInstance().navigateBack();
-    }
-
     private void recordAppointmentOutcome() {
         Controller.getInstance().setPreviousView(this);
         Date appointmentDate = InputManager.getInstance().getDate("Enter the date of the appointment (yyyy-mm-dd): ");

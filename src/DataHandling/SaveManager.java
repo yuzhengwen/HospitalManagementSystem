@@ -65,6 +65,9 @@ public class SaveManager {
 
     public void loadPatients() {
         List<String> serializedPatients = saveService.readData(PATIENT_FILE);
+        if (serializedPatients == null || serializedPatients.isEmpty()) {
+            return;
+        }
         serializedPatients.remove(0); // remove the header
         for (String serializedPatient : serializedPatients) {
             Patient p = patientSerializer.deserialize(serializedPatient);
@@ -74,6 +77,9 @@ public class SaveManager {
 
     public void loadStaffs() {
         List<String> serializedStaffs = saveService.readData(STAFF_FILE);
+        if (serializedStaffs == null || serializedStaffs.isEmpty()) {
+            return;
+        }
         serializedStaffs.remove(0); // remove the header
         for (String serializedStaff : serializedStaffs) {
             Staff s = staffSerializer.deserialize(serializedStaff);
@@ -83,7 +89,7 @@ public class SaveManager {
 
     public void loadAppointments() {
         List<String> serializedAppointments = saveService.readData(APPOINTMENT_FILE);
-        if (serializedAppointments.isEmpty()) {
+        if (serializedAppointments == null || serializedAppointments.isEmpty()) {
             return;
         }
         serializedAppointments.remove(0); // remove the header
@@ -95,7 +101,7 @@ public class SaveManager {
 
     public void loadDoctorSchedules() {
         List<String> serializedDoctorSchedules = saveService.readData(SCHEDULE_FILE);
-        if (serializedDoctorSchedules.isEmpty()) {
+        if (serializedDoctorSchedules == null || serializedDoctorSchedules.isEmpty()) {
             return;
         }
         serializedDoctorSchedules.remove(0); // remove the header
