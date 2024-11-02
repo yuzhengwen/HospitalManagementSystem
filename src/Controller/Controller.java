@@ -25,32 +25,8 @@ public class Controller {
     }
 
     private Controller() {
-        saveManager.loadPatients();
-        saveManager.loadStaffs();
         saveManager.loadAppointments();
         saveManager.loadDoctorSchedules();
-
-/*
-        // Create a test schedule for a doctor
-        Staff testDoctor = (Staff) UserLoginManager.getInstance().getUserById("D001");
-        Staff testDoctor2 = (Staff) UserLoginManager.getInstance().getUserById("D002");
-
-        Schedule schedule = new Schedule(testDoctor);
-        schedule.setWorkingHours(DayOfWeek.MONDAY, 8, 20);
-        schedule.setWorkingHours(DayOfWeek.TUESDAY, 10, 12);
-        schedule.setWorkingHours(DayOfWeek.WEDNESDAY, 8, 17);
-        schedule.setWorkingHours(DayOfWeek.THURSDAY, 8, 17);
-        schedule.setWorkingHours(DayOfWeek.FRIDAY, 8, 17);
-
-        Schedule schedule2 = new Schedule(testDoctor2);
-        schedule2.setWorkingHours(DayOfWeek.MONDAY, 8, 20);
-
-        AppointmentManager.getInstance().setSchedule(testDoctor.getId(), schedule);
-        AppointmentManager.getInstance().setSchedule(testDoctor2.getId(), schedule2);
-
-        // Create test appointment requests
-        AppointmentManager.getInstance().add(new Appointment("P1001", LocalDate.of(2024, 11, 4), new TimeSlot(LocalTime.of(9, 0), LocalTime.of(10, 0)), Appointment.Type.CHECKUP));
-*/
     }
 
     public static synchronized Controller getInstance() {
@@ -76,34 +52,6 @@ public class Controller {
         previousView = view;
     }
 
-    public void showLoginMenu() {
-        LoginView loginView = new LoginView();
-        loginView.display(); // display the login menu and let user login
-        if (loginView.getUser() != null) { // if successful login
-            setCurrentUser(loginView.getUser());
-            startMainMenu(); // start main menu for the user
-        } else {
-            throw new RuntimeException("User not found");
-        }
-    }
-
-    public boolean changePassword(String newPassword) {
-        if (currentUser != null) {
-            currentUser.changePassword(newPassword);
-            saveManager.savePatients();
-            return true;
-        }
-        return false;
-    }
-
-    public void logout() {
-        saveManager.savePatients();
-        saveManager.saveStaffs();
-        saveManager.saveAppointments();
-        saveManager.saveDoctorSchedules();
-        setCurrentUser(null);
-        showLoginMenu();
-    }
 
     /**
      * Start the main menu for the current user

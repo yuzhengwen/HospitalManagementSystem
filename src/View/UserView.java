@@ -1,6 +1,6 @@
 package View;
 
-import Controller.Controller;
+import Controller.UserSessionController;
 import Model.User;
 import Singletons.InputManager;
 
@@ -15,7 +15,7 @@ public abstract class UserView extends ViewObject {
 
     private void changePassword() {
         String newPassword = InputManager.getInstance().getString("Enter new password: ");
-        if (Controller.getInstance().changePassword(newPassword)) {
+        if (UserSessionController.getInstance().changePassword(newPassword)) {
             System.out.println("Password changed successfully");
         } else {
             System.out.println("Password change failed");
@@ -27,6 +27,6 @@ public abstract class UserView extends ViewObject {
     private void logout() {
         System.out.println("Logging out...");
         System.out.println();
-        Controller.getInstance().logout();
+        UserSessionController.getInstance().logout();
     }
 }

@@ -1,8 +1,8 @@
-import Controller.Controller;
+import Controller.UserSessionController;
 
 public class Main {
     public static void main(String[] args) {
-        Controller.getInstance().showLoginMenu(); // create a new instance of Controller and call showLoginMenu
+        Controller.UserSessionController.getInstance().showLoginMenu();
     }
 
 }
