@@ -1,12 +1,8 @@
 package Model;
 
-import Model.ScheduleManagement.Schedule;
 import Model.ScheduleManagement.TimeSlot;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Date;
 
 public class Appointment {
     private String patientId;

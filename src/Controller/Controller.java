@@ -5,19 +5,15 @@ import CustomTypes.Role;
 import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.Patient;
-import Model.ScheduleManagement.Schedule;
 import Model.ScheduleManagement.TimeSlot;
 import Model.Staff;
 import Model.User;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
 import Model.ScheduleManagement.TimeSlotWithDoctor;
-import Singletons.UserLoginManager;
 import View.*;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class Controller {

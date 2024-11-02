@@ -4,8 +4,6 @@ import Controller.Controller;
 import Model.User;
 import Singletons.InputManager;
 
-import java.util.Scanner;
-
 public abstract class UserView extends ViewObject {
     public User user;
 

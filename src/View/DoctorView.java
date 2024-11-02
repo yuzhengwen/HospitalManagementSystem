@@ -1,6 +1,5 @@
 package View;
 
-import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.ScheduleManagement.Schedule;
 import Model.Staff;
@@ -58,7 +57,7 @@ public class DoctorView extends UserView { // to do: implement all the methods
 
             AppointmentManager.getInstance().acceptAppointment(selectedAppointment, staff.getId());
             System.out.println("Appointment accepted.");
-            System.out.println(selectedAppointment.toString());
+            System.out.println(selectedAppointment);
         }
         InputManager.getInstance().goBackPrompt();
     }

@@ -5,7 +5,6 @@ import CustomTypes.Gender;
 import Model.Patient;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.StringTokenizer;
 
 /**

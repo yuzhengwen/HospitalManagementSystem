@@ -7,9 +7,7 @@ import Model.Staff;
 import Singletons.AppointmentManager;
 import Singletons.UserLoginManager;
 
-import java.time.DayOfWeek;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 

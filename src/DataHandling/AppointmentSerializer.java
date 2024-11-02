@@ -1,6 +1,5 @@
 package DataHandling;
 
-import CustomTypes.Gender;
 import Model.Appointment;
 import Model.ScheduleManagement.TimeSlot;
 

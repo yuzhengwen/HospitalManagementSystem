@@ -2,11 +2,8 @@ package Model;
 
 import CustomTypes.ContactInfo;
 import CustomTypes.Gender;
-import Singletons.AppointmentManager;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.Scanner;
 
 public class Patient extends User {
     private String name;
