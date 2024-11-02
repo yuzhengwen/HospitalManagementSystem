@@ -2,6 +2,7 @@ package Model.ScheduleManagement;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class TimeSlot {
     private final LocalTime start;
@@ -29,6 +30,12 @@ public class TimeSlot {
         if (obj == null || getClass() != obj.getClass()) return false;
         TimeSlot timeSlot = (TimeSlot) obj;
         return start.equals(timeSlot.start) && end.equals(timeSlot.end);
+    }
+
+    // Time slots are equal if they have the same start and end time (For Map comparison/hashing)
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, end);
     }
 
     @Override

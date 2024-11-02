@@ -84,9 +84,10 @@ public class AppointmentManager {
         for (Map.Entry<String, Schedule> entry : doctorScheduleMap.entrySet()) {
             Schedule schedule = entry.getValue();
             for (TimeSlot timeSlot : schedule.getAvailableTimeSlotsOnDate(date)) {
-                if (!timeslotToDoctorMap.containsKey(timeSlot)) {
+                // create new entry if timeslot is not in the map
+                if (!timeslotToDoctorMap.containsKey(timeSlot))
                     timeslotToDoctorMap.put(timeSlot, new ArrayList<>());
-                }
+                // add doctor to the timeslot
                 timeslotToDoctorMap.get(timeSlot).add(schedule.getStaff());
             }
         }
