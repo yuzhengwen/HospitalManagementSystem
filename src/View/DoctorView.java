@@ -1,5 +1,6 @@
 package View;
 
+import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.ScheduleManagement.Schedule;
 import Model.Staff;
@@ -76,10 +77,11 @@ public class DoctorView extends UserView { // to do: implement all the methods
             int endHour = InputManager.getInstance().getInt("Enter end hour: ");
             InputManager.getInstance().getScanner().nextLine(); // consume newline
             schedule.setWorkingHours(day, startHour, endHour);
-            AppointmentManager.getInstance().setSchedule(staff, schedule);
+            AppointmentManager.getInstance().setSchedule(staff.getId(), schedule);
         }
         System.out.println("Schedule updated.");
         System.out.println(schedule.printScheduleCompact());
+        Controller.getInstance().getSaveManager().saveDoctorSchedules();
         InputManager.getInstance().goBackPrompt();
     }
 /*

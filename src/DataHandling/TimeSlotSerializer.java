@@ -7,12 +7,12 @@ public class TimeSlotSerializer implements ISerializer<TimeSlot> {
 
     @Override
     public String serialize(TimeSlot object) {
-        return timeSerializer.serialize(object.getStart()) + SEPARATOR + timeSerializer.serialize(object.getEnd());
+        return timeSerializer.serialize(object.getStart()) + "-" + timeSerializer.serialize(object.getEnd());
     }
 
     @Override
     public TimeSlot deserialize(String data) {
-        String[] parts = data.split(SEPARATOR);
+        String[] parts = data.split("-");
         return new TimeSlot(timeSerializer.deserialize(parts[0]), timeSerializer.deserialize(parts[1]));
     }
 }

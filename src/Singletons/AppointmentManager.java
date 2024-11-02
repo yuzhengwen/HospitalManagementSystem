@@ -23,8 +23,12 @@ public class AppointmentManager {
     private final Map<String, Schedule> doctorScheduleMap = new HashMap<>();
     private final ArrayList<Appointment> appointments = new ArrayList<>();
 
-    public void setSchedule(Staff doctor, Schedule schedule) {
-        doctorScheduleMap.put(doctor.getId(), schedule);
+    public Map<String, Schedule> getDoctorScheduleMap() {
+        return doctorScheduleMap;
+    }
+
+    public void setSchedule(String doctorId, Schedule schedule) {
+        doctorScheduleMap.put(doctorId, schedule);
     }
 
     public ArrayList<Appointment> getAppointmentsByPatientId(String patientId) {

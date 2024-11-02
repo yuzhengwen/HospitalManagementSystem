@@ -24,12 +24,20 @@ public class Controller {
     private static Controller instance;
     private final SaveManager saveManager = new SaveManager();
 
+    public SaveManager getSaveManager() {
+        return saveManager;
+    }
+
     private Controller() {
         saveManager.loadPatients();
         saveManager.loadStaffs();
+        saveManager.loadAppointments();
+        saveManager.loadDoctorSchedules();
 
+/*
         // Create a test schedule for a doctor
         Staff testDoctor = (Staff) UserLoginManager.getInstance().getUserById("D001");
+        Staff testDoctor2 = (Staff) UserLoginManager.getInstance().getUserById("D002");
 
         Schedule schedule = new Schedule(testDoctor);
         schedule.setWorkingHours(DayOfWeek.MONDAY, 8, 20);
@@ -38,10 +46,15 @@ public class Controller {
         schedule.setWorkingHours(DayOfWeek.THURSDAY, 8, 17);
         schedule.setWorkingHours(DayOfWeek.FRIDAY, 8, 17);
 
-        AppointmentManager.getInstance().setSchedule(testDoctor, schedule);
+        Schedule schedule2 = new Schedule(testDoctor2);
+        schedule2.setWorkingHours(DayOfWeek.MONDAY, 8, 20);
+
+        AppointmentManager.getInstance().setSchedule(testDoctor.getId(), schedule);
+        AppointmentManager.getInstance().setSchedule(testDoctor2.getId(), schedule2);
 
         // Create test appointment requests
         AppointmentManager.getInstance().add(new Appointment("P1001", LocalDate.of(2024, 11, 4), new TimeSlot(LocalTime.of(9, 0), LocalTime.of(10, 0)), Appointment.Type.CHECKUP));
+*/
     }
 
     public static synchronized Controller getInstance() {
@@ -91,6 +104,7 @@ public class Controller {
         saveManager.savePatients();
         saveManager.saveStaffs();
         saveManager.saveAppointments();
+        saveManager.saveDoctorSchedules();
         setCurrentUser(null);
         showLoginMenu();
     }

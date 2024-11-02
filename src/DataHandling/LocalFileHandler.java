@@ -10,16 +10,21 @@ import java.util.Scanner;
  */
 public class LocalFileHandler implements ISaveService {
     private final static String SEPARATOR = "|";
-    private final static String FILEPATH = "src/Data/";
+    private final static String FOLDERPATH = "./src/CSV/";
 
     /**
      * Write fixed content to the given file.
      */
     public void saveData(String fileName, List<String> data) {
-
-        try (PrintWriter out = new PrintWriter(new FileWriter(fileName))) {
-            for (String datum : data) {
-                out.println(datum);
+        // check if file exists, if not create it
+        File file = new File(FOLDERPATH + fileName);
+        try {
+            if (file.createNewFile())
+                System.out.println("File created: " + file.getName());
+            try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
+                for (String datum : data) {
+                    out.println(datum);
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -30,8 +35,14 @@ public class LocalFileHandler implements ISaveService {
      * Read the contents of the given file.
      */
     public List<String> readData(String fileName) {
+        // check if file exists
+        File file = new File(FOLDERPATH + fileName);
+        if (!file.exists()) {
+            return null;
+        }
+
         List<String> data = new ArrayList<String>();
-        try (Scanner scanner = new Scanner(new FileInputStream(fileName))) {
+        try (Scanner scanner = new Scanner(new FileInputStream(file))) {
             while (scanner.hasNextLine()) {
                 data.add(scanner.nextLine());
             }

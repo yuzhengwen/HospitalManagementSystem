@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 public class Schedule {
-    private final Staff doctor;
+    private Staff doctor;
     private final Map<DayOfWeek, TimeSlot> schedule = new HashMap<>();
     private final Map<DayOfWeek, List<TimeSlot>> timeSlots = new HashMap<>();
 
@@ -17,12 +17,18 @@ public class Schedule {
     public Schedule(Staff doctor) {
         this.doctor = doctor;
     }
+    public void setDoctor(Staff doctor) {
+        this.doctor = doctor;
+    }
 
     public void setWorkingHours(DayOfWeek day, int startHour, int endHour) {
         LocalTime start = LocalTime.of(startHour, 0);
         LocalTime end = LocalTime.of(endHour, 0);
         schedule.put(day, new TimeSlot(start, end));
         updateTimeSlots();
+    }
+    public void setWorkingHours(DayOfWeek day, TimeSlot timeSlot) {
+        setWorkingHours(day, timeSlot.getStart().getHour(), timeSlot.getEnd().getHour());
     }
 
     private void updateTimeSlots() {
@@ -70,11 +76,17 @@ public class Schedule {
 
     public List<TimeSlot> getAvailableTimeSlotsOnDate(LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
+        if (!timeSlots.containsKey(dayOfWeek)) {
+            return new ArrayList<>();
+        }
         return new ArrayList<>(timeSlots.get(dayOfWeek));
     }
 
     public Staff getStaff() {
         return doctor;
+    }
+    public Map<DayOfWeek, TimeSlot> getSchedule() {
+        return schedule;
     }
 }
 
