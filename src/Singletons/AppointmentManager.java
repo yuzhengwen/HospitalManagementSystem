@@ -1,6 +1,7 @@
 package Singletons;
 
 import Model.Appointment;
+import Model.AppointmentOutcomeRecord;
 import Model.ScheduleManagement.Schedule;
 import Model.ScheduleManagement.TimeSlot;
 import Model.ScheduleManagement.TimeSlotWithDoctor;
@@ -164,5 +165,10 @@ public class AppointmentManager {
     public void acceptAppointment(Appointment appointment, String doctorId) {
         appointment.setDoctorId(doctorId);
         appointment.setStatus(Appointment.Status.ACCEPTED);
+    }
+
+    public void recordAppointmentOutcome(String doctorId, Appointment appointment, AppointmentOutcomeRecord outcome) {
+        appointment.setOutcome(outcome);
+        appointment.setStatus(Appointment.Status.COMPLETED);
     }
 }

@@ -27,4 +27,7 @@ public class Prescription {
     public PrescriptionStatus getStatus() {
         return status;
     }
+    public String getId() {
+        return prescriptionId;
+    }
 }

@@ -108,14 +108,10 @@ public class Controller {
     }
 
     public Appointment.Type selectAppointmentType() {
-        EnumView<Appointment.Type> aptTypeView = new EnumView<>(Appointment.Type.class);
-        aptTypeView.display();
-        return aptTypeView.getSelected();
+        return InputManager.getInstance().getEnum("Select appointment type: ", Appointment.Type.class);
     }
 
     private Appointment getSelectedAppointment(ArrayList<Appointment> list) {
-        SelectionView<Appointment> view = new SelectionView<>(list);
-        view.display();
-        return view.getSelected();
+        return InputManager.getInstance().getSelection("Select an appointment to edit or delete: ", list);
     }
 }

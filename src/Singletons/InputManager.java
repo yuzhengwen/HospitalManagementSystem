@@ -1,11 +1,15 @@
 package Singletons;
 
 import Controller.Controller;
+import CustomTypes.ServiceProvided;
+import View.EnumView;
+import View.SelectionView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 public class InputManager {
@@ -84,7 +88,8 @@ public class InputManager {
         }
         return date;
     }
-    public LocalDateTime getDateTime(){
+
+    public LocalDateTime getDateTime() {
         LocalDate date = getDate();
         LocalTime time = getTime();
         return LocalDateTime.of(date, time);
@@ -92,5 +97,19 @@ public class InputManager {
 
     public Scanner getScanner() {
         return scanner;
+    }
+
+    public <E extends Enum<E>> E getEnum(String s, Class<E> enumClass) {
+        System.out.println(s);
+        EnumView<E> enumView = new EnumView<>(enumClass);
+        enumView.display();
+        return enumView.getSelected();
+    }
+
+    public <T> T getSelection(String s, List<T> list) {
+        System.out.println(s);
+        SelectionView<T> selectionView = new SelectionView<>(list);
+        selectionView.display();
+        return selectionView.getSelected();
     }
 }

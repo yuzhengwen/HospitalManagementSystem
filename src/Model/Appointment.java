@@ -1,6 +1,7 @@
 package Model;
 
 import Model.ScheduleManagement.TimeSlot;
+import Singletons.UserLoginManager;
 
 import java.time.LocalDate;
 
@@ -39,6 +40,19 @@ public class Appointment {
 
     public String toString() {
         return "Date/Time: " + date + " " + timeSlot + " Patient ID: " + patientId + " Doctor ID: " + doctorId + " Type: " + type + " Status: " + status;
+    }
+
+    public String getFullDetails() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Date: ").append(date).append("\n");
+        sb.append("Time: ").append(timeSlot).append("\n");
+        // TODO add patient name/ doctor name
+        //sb.append("Patient Name: ").append((Patient) (UserLoginManager.getInstance().getUserById(patientId)).getName()).append("\n");
+        sb.append("Patient ID: ").append(patientId).append("\n");
+        sb.append("Doctor ID: ").append(doctorId).append("\n");
+        sb.append("Type: ").append(type).append("\n");
+        sb.append("Status: ").append(status).append("\n");
+        return sb.toString();
     }
 
     public LocalDate getDate() {
