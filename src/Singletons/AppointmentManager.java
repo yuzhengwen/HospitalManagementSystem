@@ -124,8 +124,8 @@ public class AppointmentManager {
     public List<Appointment> getPendingAppointmentsWithinAvailableTime(String doctorId) {
         List<Appointment> pendingAppointments = new ArrayList<>();
         for (Appointment appointment : appointments) {
-            // check if appointment is pending and doctor is available
-            if (appointment.getStatus() == Appointment.Status.PENDING &&
+            // check if appointment is pending and doctor is available and the appointment is for the doctor
+            if (appointment.getStatus() == Appointment.Status.PENDING && Objects.equals(appointment.getDoctorId(), doctorId) &&
                     isDoctorAvailable(doctorId, appointment.getDate(), appointment.getTimeSlot().getStart())) {
                 pendingAppointments.add(appointment);
             }

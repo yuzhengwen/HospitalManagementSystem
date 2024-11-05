@@ -2,6 +2,7 @@ package Controller;
 
 import CustomTypes.OperationMode;
 import CustomTypes.Role;
+import DataHandling.Doctor;
 import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.Patient;
@@ -15,6 +16,7 @@ import View.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Controller {
     private static Controller instance;
@@ -77,18 +79,25 @@ public class Controller {
     public Appointment manageAppointments(OperationMode mode) {
         if (OperationMode.SCHEDULE == mode) {
             LocalDate date = InputManager.getInstance().getDate();
-            TimeSlot timeSlot = selectTimeSlot(date);
+            TimeSlotWithDoctor timeSlot = selectTimeSlot(date);
+            List<Staff> doctors = timeSlot.getDoctors();
+            Staff selectedDoctor = InputManager.getInstance().getSelection("Select a doctor: ", doctors);
             Appointment.Type type = selectAppointmentType();
-            Appointment newAppointment = new Appointment(currentUser.getId(), date, timeSlot, type);
+
+            Appointment newAppointment = new Appointment(currentUser.getId(), date, timeSlot.getTimeSlot(), type);
+            newAppointment.setDoctorId(selectedDoctor.getId());
             AppointmentManager.getInstance().add(newAppointment);
             return newAppointment;
         } else if (OperationMode.EDIT == mode) {
             Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsByPatientId(currentUser.getId()));
             if (selected != null) {
                 LocalDate date = InputManager.getInstance().getDate();
-                TimeSlot timeSlot = selectTimeSlot(date);
+                TimeSlotWithDoctor timeSlot = selectTimeSlot(date);
+                List<Staff> doctors = timeSlot.getDoctors();
+                Staff selectedDoctor = InputManager.getInstance().getSelection("Select a doctor: ", doctors);
                 selected.setDate(date);
-                selected.setTimeSlot(timeSlot);
+                selected.setTimeSlot(timeSlot.getTimeSlot());
+                selected.setDoctorId(selectedDoctor.getId());
                 return selected;
             }
         } else if (OperationMode.DELETE == mode) {
@@ -101,10 +110,10 @@ public class Controller {
         return null;
     }
 
-    public TimeSlot selectTimeSlot(LocalDate date) {
+    public TimeSlotWithDoctor selectTimeSlot(LocalDate date) {
         SelectionView<TimeSlotWithDoctor> timeSlotSelectionView = new SelectionView<>(AppointmentManager.getInstance().getTimeslotWithDoctorList(date));
         timeSlotSelectionView.display();
-        return timeSlotSelectionView.getSelected().getTimeSlot();
+        return timeSlotSelectionView.getSelected();
     }
 
     public Appointment.Type selectAppointmentType() {
