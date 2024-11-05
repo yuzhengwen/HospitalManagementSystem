@@ -78,6 +78,7 @@ public class Controller {
 
     public Appointment manageAppointments(OperationMode mode) {
         if (OperationMode.SCHEDULE == mode) {
+            // select date, timeslot, doctor, type
             LocalDate date = InputManager.getInstance().getDate();
             TimeSlotWithDoctor timeSlot = selectTimeSlot(date);
             List<Staff> doctors = timeSlot.getDoctors();

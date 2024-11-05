@@ -121,6 +121,7 @@ public class AppointmentManager {
     /**
      * gets a list of appointments that are pending and within the available time of the doctor
      */
+    /*
     public List<Appointment> getPendingAppointmentsWithinAvailableTime(String doctorId) {
         List<Appointment> pendingAppointments = new ArrayList<>();
         for (Appointment appointment : appointments) {
@@ -131,7 +132,7 @@ public class AppointmentManager {
             }
         }
         return pendingAppointments;
-    }
+    }*/
 
     /**
      * Check if a doctor is available at a given date and time <br/>

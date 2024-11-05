@@ -18,7 +18,8 @@ public class AppointmentSerializer implements ISerializer<Appointment> {
     @Override
     public String serialize(Appointment object) {
         return dateSerializer.serialize(object.getDate()) + SEPARATOR + timeSlotSerializer.serialize(object.getTimeSlot())
-                + SEPARATOR + object.getPatientId() + SEPARATOR + object.getDoctorId() + SEPARATOR + object.getType();
+                + SEPARATOR + object.getPatientId() + SEPARATOR + object.getDoctorId() + SEPARATOR + object.getType()
+                + SEPARATOR+ object.getStatus();
     }
 
     @Override
@@ -29,7 +30,9 @@ public class AppointmentSerializer implements ISerializer<Appointment> {
         String patientId = star.nextToken().trim();
         String doctorId = star.nextToken().trim();
         Appointment.Type type = Appointment.Type.valueOf(star.nextToken().trim().toUpperCase());
+        Appointment.Status status = Appointment.Status.valueOf(star.nextToken().trim().toUpperCase());
         Appointment apt = new Appointment(patientId, date, timeSlot, type);
+        apt.setStatus(status);
         if (!doctorId.isEmpty())
             apt.setDoctorId(doctorId);
         return apt;

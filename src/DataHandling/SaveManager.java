@@ -47,7 +47,7 @@ public class SaveManager {
     public void saveAppointments() {
         List<Appointment> appointments = AppointmentManager.getInstance().getAppointments();
         List<String> stringsToWrite = new ArrayList<>();
-        stringsToWrite.add("Appointment ID,Patient ID,Doctor ID,Date,Time,Type,Status,Notes");
+        stringsToWrite.add("Date,Time,Patient ID,Doctor ID,Type,Status");
         for (Appointment appointment : appointments) {
             stringsToWrite.add(appointmentSerializer.serialize(appointment));
         }

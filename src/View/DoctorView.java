@@ -88,7 +88,7 @@ public class DoctorView extends UserView { // to do: implement all the methods
         Controller.getInstance().setPreviousView(this);
 
         System.out.println("Choose an appointment request to accept: ");
-        List<Appointment> appointments = AppointmentManager.getInstance().getPendingAppointmentsWithinAvailableTime(staff.getId());
+        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByDoctorId(staff.getId(), Appointment.Status.PENDING);
         if (appointments.isEmpty()) {
             System.out.println("No appointment requests found.");
         } else {
