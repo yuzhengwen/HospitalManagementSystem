@@ -1,5 +1,5 @@
 package CustomTypes;
 
 public enum Role {
-    DOCTOR, PHARMACIST, ADMINISTRATOR
+    PATIENT, DOCTOR, PHARMACIST, ADMINISTRATOR
 }

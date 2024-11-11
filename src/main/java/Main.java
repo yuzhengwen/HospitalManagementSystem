@@ -6,22 +6,28 @@ import java.security.GeneralSecurityException;
 
 public class Main {
     public static void main(String[] args) {
-        String password = "password";
-        String salt = "salt";
-        String encrypted = AESEncryption.encrypt(password, "secret", salt);
-        System.out.println("Encrypted: " + encrypted);
-        String decrypted = AESEncryption.decrypt(encrypted, "secret", salt);
-        System.out.println("Decrypted: " + decrypted);
+        passwordEncryptionTest();
+        emailTest();
+        Controller.UserSessionController.getInstance().showLoginMenu();
+    }
+
+    private static void emailTest() {
         try {
-            //String toEmail = "marcuslimlj@gmail.com";
-            //String toEmail = "dexterteo4@gmail.com";
             String email = InputManager.getInstance().getString("Enter email:");
             TestEmail.SendTestMail(email);
             System.out.println("Email sent successfully");
         } catch (IOException | GeneralSecurityException e) {
             System.out.println("Error sending email: " + e.getMessage());
         }
-        Controller.UserSessionController.getInstance().showLoginMenu();
+    }
+
+    private static void passwordEncryptionTest() {
+        String password = "password";
+        String salt = "salt";
+        String encrypted = AESEncryption.encrypt(password, "secret", salt);
+        System.out.println("Encrypted: " + encrypted);
+        String decrypted = AESEncryption.decrypt(encrypted, "secret", salt);
+        System.out.println("Decrypted: " + decrypted);
     }
 
 }

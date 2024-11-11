@@ -2,22 +2,20 @@ package Model;
 
 import CustomTypes.ContactInfo;
 import CustomTypes.Gender;
+import CustomTypes.Role;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Patient extends User {
-    private String name;
     private LocalDate dob;
-    private Gender gender;
     private ContactInfo contactInfo = new ContactInfo();
     private String bloodType;
     // to add blood type, past diagnosis/treatment
 
     public Patient(String id, String password, String name, LocalDate dob, String bloodType, Gender gender) {
-        super(id, password);
-        this.name = name;
+        super(id, password, Role.PATIENT, name, gender);
         this.dob = dob;
-        this.gender = gender;
         this.bloodType = bloodType;
     }
 
@@ -37,15 +35,21 @@ public class Patient extends User {
         return dob;
     }
 
-    public Gender getGender() {
-        return gender;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Patient patient = (Patient) o;
+        return Objects.equals(name, patient.name) && role == patient.role;
     }
 
-    public String getName() {
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, role);
+    }
+
+    @Override
+    public String toString() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

@@ -1,10 +1,8 @@
 package DataHandling;
 
+import CustomTypes.Role;
 import Model.User;
 
-public class Doctor extends User {
+public class Doctor{
 
-    public Doctor(String id, String password) {
-        super(id, password);
-    }
 }

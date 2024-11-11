@@ -73,7 +73,11 @@ public class InputManager {
     }
 
     public LocalDate getDate() {
-        System.out.println("Enter date (dd-MM-yyyy): ");
+        return getDate("Enter date (dd-MM-yyyy): ");
+    }
+
+    public LocalDate getDate(String message) {
+        System.out.println(message);
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate date = null;
         boolean valid = false;
