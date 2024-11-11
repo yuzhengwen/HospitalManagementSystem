@@ -1,0 +1,85 @@
+package Model;
+
+import CustomTypes.ContactInfo;
+import CustomTypes.Gender;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Pharmacist extends User {
+    private String name;
+    private Gender gender;
+    private ContactInfo contactInfo;
+    private Map<String, String> appointmentOutcomeRecord; // Maps appointment ID to status
+    private Map<String, Integer> inventory; // Maps medication name to stock level
+    private Map<String, Integer> lowStockAlertLevel; // Maps medication name to low stock alert level
+
+    public Pharmacist(String id, String password, String name, Gender gender, ContactInfo contactInfo) {
+        super(id, password);
+        this.name = name;
+        this.gender = gender;
+        this.contactInfo = contactInfo;
+        this.appointmentOutcomeRecord = new HashMap<>();
+        this.inventory = new HashMap<>();
+        this.lowStockAlertLevel = new HashMap<>();
+        initializeInventory(); // Initialize inventory with sample data
+    }
+
+    // Method to view appointment outcome
+    public String viewAppointmentOutcome(String appointmentId) {
+        return appointmentOutcomeRecord.getOrDefault(appointmentId, "No record found");
+    }
+
+    // Method to update prescription status
+    public void updatePrescriptionStatus(String appointmentId, String status) {
+        if (appointmentOutcomeRecord.containsKey(appointmentId)) {
+            appointmentOutcomeRecord.put(appointmentId, status);
+            System.out.println("Prescription status updated to " + status);
+        } else {
+            System.out.println("Appointment ID not found.");
+        }
+    }
+
+    // Method to check stock level for a specific medication
+    public int checkStockLevel(String medication) {
+        return inventory.getOrDefault(medication, 0);
+    }
+
+    // Method to update stock level for a medication
+    public void updateInventory(String medication, int quantity) {
+        inventory.put(medication, quantity);
+        System.out.println("Inventory updated: " + medication + " stock is now " + quantity);
+    }
+
+    // Method to submit replenishment request if stock level is low
+    public void submitReplenishmentRequest(String medication) {
+        int currentStock = checkStockLevel(medication);
+        int alertLevel = lowStockAlertLevel.getOrDefault(medication, 0);
+        if (currentStock < alertLevel) {
+            System.out.println("Replenishment request submitted for medication: " + medication);
+        } else {
+            System.out.println("Stock level sufficient for " + medication + ". No replenishment needed.");
+        }
+    }
+
+    // Initialize the inventory with sample data
+    private void initializeInventory() {
+        inventory.put("Paracetamol", 100);
+        lowStockAlertLevel.put("Paracetamol", 20);
+
+        inventory.put("Ibuprofen", 50);
+        lowStockAlertLevel.put("Ibuprofen", 10);
+
+        inventory.put("Amoxicillin", 75);
+        lowStockAlertLevel.put("Amoxicillin", 15);
+    }
+
+   
+    public String getName() {
+        return name;
+    }
+
+    public ContactInfo getContactInfo() {
+        return contactInfo;
+    }
+}
