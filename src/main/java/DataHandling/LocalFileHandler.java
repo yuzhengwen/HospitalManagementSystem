@@ -10,8 +10,13 @@ import java.util.Scanner;
  */
 public class LocalFileHandler implements ISaveService {
     private final static String SEPARATOR = "|";
-    private final static String FOLDERPATH = "./src/CSV/";
+    private final static String FOLDERPATH = "CSV/";
 
+    public LocalFileHandler() {
+        File folder = new File(FOLDERPATH);
+        if (folder.mkdir())
+            System.out.println("Directory created: " + folder.getName());
+    }
     /**
      * Write fixed content to the given file.
      */
