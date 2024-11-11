@@ -6,6 +6,12 @@ import java.security.GeneralSecurityException;
 
 public class Main {
     public static void main(String[] args) {
+        String password = "password";
+        String salt = "salt";
+        String encrypted = AESEncryption.encrypt(password, "secret", salt);
+        System.out.println("Encrypted: " + encrypted);
+        String decrypted = AESEncryption.decrypt(encrypted, "secret", salt);
+        System.out.println("Decrypted: " + decrypted);
         try {
             //String toEmail = "marcuslimlj@gmail.com";
             //String toEmail = "dexterteo4@gmail.com";
