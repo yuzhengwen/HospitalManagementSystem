@@ -51,7 +51,6 @@ public class UserLoginManager {
         return staffs;
     }
 
-
     public void addUser(User user) {
         users.add(user);
     }

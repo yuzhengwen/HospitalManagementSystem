@@ -1,7 +1,6 @@
 package Singletons;
 
 import Controller.Controller;
-import CustomTypes.ServiceProvided;
 import View.EnumView;
 import View.SelectionView;
 
@@ -121,5 +120,63 @@ public class InputManager {
         SelectionView<T> selectionView = new SelectionView<>(list);
         selectionView.display();
         return selectionView.getSelected();
+    }
+
+    /***
+     * Gets a new password input from user
+     * Repeatedly asks for password until a valid password is entered
+     * Requires confirmation of password
+     * @param passwordValidation can toggle whether password validation is required (Mainly for testing)
+     * @return valid password entered by user
+     */
+    public String getNewPasswordInput(boolean passwordValidation) {
+        String password, confirmPassword;
+        do {
+            password = InputManager.getInstance().getString("Enter Password: ");
+        } while (!validatePassword(password) && passwordValidation);
+        do {
+            confirmPassword = InputManager.getInstance().getString("Confirm Password: ");
+            if (!password.equals(confirmPassword)) {
+                System.out.println("Passwords do not match. Please try again.");
+            }
+        } while (!password.equals(confirmPassword));
+        return password;
+    }
+
+    /***
+     * Validate password
+     * @param password password to validate
+     * @return true if password is valid, false otherwise
+     */
+    public boolean validatePassword(String password) {
+        if (password.length() < 8) {
+            System.out.println("Password must be at least 8 characters long.");
+            return false;
+        }
+        if (!password.matches(".*\\d.*")) {
+            System.out.println("Password must contain at least one digit.");
+            return false;
+        }
+        if (!password.matches(".*[a-z].*")) {
+            System.out.println("Password must contain at least one lowercase letter.");
+            return false;
+        }
+        if (!password.matches(".*[A-Z].*")) {
+            System.out.println("Password must contain at least one uppercase letter.");
+            return false;
+        }
+        if (!password.matches(".*[!@#$%^&*].*")) {
+            System.out.println("Password must contain at least one special character.");
+            return false;
+        }
+        if (password.contains(" ")) {
+            System.out.println("Password must not contain spaces.");
+            return false;
+        }
+        if (password.trim().equalsIgnoreCase("password")) {
+            System.out.println("Password cannot be 'password'.");
+            return false;
+        }
+        return true;
     }
 }

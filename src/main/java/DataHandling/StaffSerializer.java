@@ -2,6 +2,7 @@ package DataHandling;
 
 import CustomTypes.Gender;
 import CustomTypes.Role;
+import Encryption.AESEncryption;
 import Model.Staff;
 import java.util.StringTokenizer;
 
@@ -18,7 +19,7 @@ public class StaffSerializer implements ISerializer<Staff> {
                 object.getRole() + SEPARATOR +
                 object.getGender() + SEPARATOR +
                 object.getAge() + SEPARATOR +
-                object.getPassword();
+                AESEncryption.encrypt(object.getPassword(), "secret", "salt");
     }
 
     // format: Staff ID,Name,Role,Gender,Age,Password
@@ -34,7 +35,8 @@ public class StaffSerializer implements ISerializer<Staff> {
         int age = Integer.parseInt(star.nextToken().trim());
         String password = ""; // default password is empty
         if (star.hasMoreTokens()) {
-            password = star.nextToken().trim();
+            String encryptedPassword = star.nextToken().trim();
+            password = AESEncryption.decrypt(encryptedPassword, "secret", "salt");
         }
 
         return new Staff(id, password, name, role, gender, age);

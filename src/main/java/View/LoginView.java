@@ -12,10 +12,12 @@ import java.time.LocalDate;
 
 public class LoginView extends ViewObject {
     private User user;
+    public static boolean passwordValidation = true;
 
     public LoginView() {
         actions.add(new Action("Login", this::login));
         actions.add(new Action("Create Account", this::createAccount));
+        actions.add(new Action("Toggle Password Validation (For Testing)", this::toggleValidation));
     }
 
     public void display() { // display the login menu
@@ -54,22 +56,19 @@ public class LoginView extends ViewObject {
         return user;
     }
 
+    private void toggleValidation() {
+        passwordValidation = !passwordValidation;
+        System.out.println("Password validation is now " + (passwordValidation ? "enabled" : "disabled"));
+        display();
+    }
     public void createAccount() {
         System.out.println("Create Account");
         System.out.println("--------------");
-        String id, password, confirmPassword;
+        String id;
         do {
             id = InputManager.getInstance().getString("Enter ID: ");
         } while (UserLoginManager.getInstance().getUserById(id) != null); // id alr exists
-        do {
-            password = InputManager.getInstance().getString("Enter Password: ");
-        } while (!validatePassword(password));
-        do {
-            confirmPassword = InputManager.getInstance().getString("Confirm Password: ");
-            if (!password.equals(confirmPassword)) {
-                System.out.println("Passwords do not match. Please try again.");
-            }
-        } while (!password.equals(confirmPassword));
+        String password = InputManager.getInstance().getNewPasswordInput(passwordValidation);
         Role role = InputManager.getInstance().getEnum("Choose role: ", Role.class);
         String name = InputManager.getInstance().getString("Enter name: ");
         Gender gender = InputManager.getInstance().getEnum("Choose gender: ", Gender.class);
@@ -89,40 +88,4 @@ public class LoginView extends ViewObject {
         display();
     }
 
-    /***
-     * Validate password
-     * @param password password to validate
-     * @return true if password is valid, false otherwise
-     */
-    private boolean validatePassword(String password) {
-        if (password.length() < 8) {
-            System.out.println("Password must be at least 8 characters long.");
-            return false;
-        }
-        if (!password.matches(".*\\d.*")) {
-            System.out.println("Password must contain at least one digit.");
-            return false;
-        }
-        if (!password.matches(".*[a-z].*")) {
-            System.out.println("Password must contain at least one lowercase letter.");
-            return false;
-        }
-        if (!password.matches(".*[A-Z].*")) {
-            System.out.println("Password must contain at least one uppercase letter.");
-            return false;
-        }
-        if (!password.matches(".*[!@#$%^&*].*")) {
-            System.out.println("Password must contain at least one special character.");
-            return false;
-        }
-        if (password.contains(" ")) {
-            System.out.println("Password must not contain spaces.");
-            return false;
-        }
-        if (password.trim().equalsIgnoreCase("password")) {
-            System.out.println("Password cannot be 'password'.");
-            return false;
-        }
-        return true;
-    }
 }

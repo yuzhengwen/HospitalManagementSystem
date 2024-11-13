@@ -14,7 +14,7 @@ public abstract class UserView extends ViewObject {
     }
 
     private void changePassword() {
-        String newPassword = InputManager.getInstance().getString("Enter new password: ");
+        String newPassword = InputManager.getInstance().getNewPasswordInput(LoginView.passwordValidation);
         if (UserSessionController.getInstance().changePassword(newPassword)) {
             System.out.println("Password changed successfully");
         } else {

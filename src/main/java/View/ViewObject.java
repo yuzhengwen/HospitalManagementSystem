@@ -14,7 +14,6 @@ public abstract class ViewObject implements IView{
 
     protected void getInput() { // get user input and handle it
         System.out.println("Enter your choice:");
-        Scanner scanner = new Scanner(System.in);
         int choice = InputManager.getInstance().getInt();
         handleInput(choice);
     }
