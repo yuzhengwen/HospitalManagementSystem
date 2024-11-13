@@ -18,6 +18,7 @@ public class LoginView extends ViewObject {
         actions.add(new Action("Login", this::login));
         actions.add(new Action("Create Account", this::createAccount));
         actions.add(new Action("Toggle Password Validation (For Testing)", this::toggleValidation));
+        actions.add(new Action("Exit", () -> System.exit(0)));
     }
 
     public void display() { // display the login menu
@@ -74,7 +75,7 @@ public class LoginView extends ViewObject {
         Gender gender = InputManager.getInstance().getEnum("Choose gender: ", Gender.class);
         switch (role) {
             case Role.PATIENT:
-                LocalDate dob = InputManager.getInstance().getDate("Enter Date of Birth: ");
+                LocalDate dob = InputManager.getInstance().getDate("Enter Date of Birth: (dd-MM-yyyy)");
                 String bloodType = InputManager.getInstance().getString("Enter blood type: ");
                 String email = InputManager.getInstance().getString("Enter email: ");
                 user = new Patient(id, password, name, dob, bloodType, gender);

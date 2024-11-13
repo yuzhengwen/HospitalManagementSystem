@@ -111,7 +111,17 @@ public class Controller {
     }
 
     public TimeSlotWithDoctor selectTimeSlot(LocalDate date) {
-        SelectionView<TimeSlotWithDoctor> timeSlotSelectionView = new SelectionView<>(AppointmentManager.getInstance().getTimeslotWithDoctorList(date));
+        // get timeslots with doctors for the selected date
+        List<TimeSlotWithDoctor> timeSlotWithDoctors = AppointmentManager.getInstance().getTimeslotWithDoctorList(date);
+        // filter out timeslots that patient has appointments with
+        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByPatientId(currentUser.getId());
+        List<TimeSlot> patientBusyTimeSlots = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            patientBusyTimeSlots.add(appointment.getTimeSlot());
+        }
+        timeSlotWithDoctors.removeIf(timeSlotWithDoctor -> patientBusyTimeSlots.contains(timeSlotWithDoctor.getTimeSlot()));
+        // display the available timeslots
+        SelectionView<TimeSlotWithDoctor> timeSlotSelectionView = new SelectionView<>(timeSlotWithDoctors);
         timeSlotSelectionView.display();
         return timeSlotSelectionView.getSelected();
     }

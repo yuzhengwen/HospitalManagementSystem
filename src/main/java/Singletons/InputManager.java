@@ -133,7 +133,7 @@ public class InputManager {
         String password, confirmPassword;
         do {
             password = InputManager.getInstance().getString("Enter Password: ");
-        } while (!validatePassword(password) && passwordValidation);
+        } while (passwordValidation && !validatePassword(password));
         do {
             confirmPassword = InputManager.getInstance().getString("Confirm Password: ");
             if (!password.equals(confirmPassword)) {
