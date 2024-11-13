@@ -4,6 +4,7 @@ import CustomTypes.Gender;
 import CustomTypes.Role;
 import Encryption.AESEncryption;
 import Model.Staff;
+
 import java.util.StringTokenizer;
 
 /**
@@ -25,17 +26,16 @@ public class StaffSerializer implements ISerializer<Staff> {
     // format: Staff ID,Name,Role,Gender,Age,Password
     @Override
     public Staff deserialize(String data) {
-        // get individual 'fields' of the string separated by SEPARATOR
-        StringTokenizer star = new StringTokenizer(data, SEPARATOR);    // pass in the string to the string tokenizer using delimiter ","
+        String[] parts = data.split(SEPARATOR, -1);
 
-        String id = star.nextToken().trim();
-        String name = star.nextToken().trim();
-        Role role = Role.valueOf(star.nextToken().trim().toUpperCase());
-        Gender gender = Gender.valueOf(star.nextToken().trim().toUpperCase());
-        int age = Integer.parseInt(star.nextToken().trim());
+        String id = parts[0].trim();
+        String name = parts[1].trim();
+        Role role = Role.valueOf(parts[2].trim().toUpperCase());
+        Gender gender = Gender.valueOf(parts[3].trim().toUpperCase());
+        int age = Integer.parseInt(parts[4].trim());
         String password = ""; // default password is empty
-        if (star.hasMoreTokens()) {
-            String encryptedPassword = star.nextToken().trim();
+        if (parts.length > 5) {
+            String encryptedPassword = parts[5].trim();
             password = AESEncryption.decrypt(encryptedPassword, "secret", "salt");
         }
 

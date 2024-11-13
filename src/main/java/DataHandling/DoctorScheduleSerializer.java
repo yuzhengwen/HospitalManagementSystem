@@ -28,9 +28,11 @@ public class DoctorScheduleSerializer implements ISerializer<Map<String, Schedul
         while (star.hasMoreTokens()) {
             String line = star.nextToken();
             int firstSeparatorIndex = line.indexOf(SEPARATOR);
+
             String doctorId = line.substring(0, firstSeparatorIndex);
-            Staff doctor = (Staff) UserLoginManager.getInstance().getUserById(doctorId);
             String scheduleData = line.substring(firstSeparatorIndex + 1);
+
+            Staff doctor = (Staff) UserLoginManager.getInstance().getUserById(doctorId);
             Schedule schedule = scheduleSerializer.deserialize(scheduleData);
             schedule.setDoctor(doctor);
             doctorSchedules.put(doctorId, schedule);

@@ -30,17 +30,16 @@ public class PatientSerializer implements ISerializer<Patient> {
     @Override
     public Patient deserialize(String data) {
         // get individual 'fields' of the string separated by SEPARATOR
-        StringTokenizer star = new StringTokenizer(data, SEPARATOR);    // pass in the string to the string tokenizer using delimiter ","
-
-        String id = star.nextToken().trim();
-        String name = star.nextToken().trim();
-        LocalDate dob = dateSerializer.deserialize(star.nextToken().trim());
-        Gender gender = Gender.valueOf(star.nextToken().trim().toUpperCase());
-        String bloodType = star.nextToken().trim();
-        ContactInfo contactInfo = contactInfoSerializer.deserialize(star.nextToken().trim());
+        String[] splitData = data.split(SEPARATOR, -1);
+        String id = splitData[0].trim();
+        String name = splitData[1].trim();
+        LocalDate dob = dateSerializer.deserialize(splitData[2].trim());
+        Gender gender = Gender.valueOf(splitData[3].trim().toUpperCase());
+        String bloodType = splitData[4].trim();
+        ContactInfo contactInfo = contactInfoSerializer.deserialize(splitData[5].trim());
         String password = ""; // default password is empty
-        if (star.hasMoreTokens()) {
-            String encryptedPassword = star.nextToken().trim();
+        if (splitData.length > 6) {
+            String encryptedPassword = splitData[6].trim();
             password = AESEncryption.decrypt(encryptedPassword, "secret", "salt");
         }
 
