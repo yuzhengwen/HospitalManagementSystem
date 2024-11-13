@@ -4,6 +4,7 @@ import Model.Appointment;
 import Model.Patient;
 import Model.ScheduleManagement.Schedule;
 import Model.Staff;
+import Model.User;
 import Singletons.AppointmentManager;
 import Singletons.UserLoginManager;
 

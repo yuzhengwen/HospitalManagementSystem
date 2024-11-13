@@ -1,12 +1,10 @@
 package CustomTypes;
 
 public enum ServiceProvided {
-    CLEANING,
-    CROWN,
-    EXTRACTION,
-    FILLING,
-    IMPLANT,
-    INLAY,
-    ONLAY,
-    XRAY
+    DIAGNOSIS,
+    TREATMENT,
+    SURGERY,
+    COUNSELING,
+    PRESCRIPTION,
+    REFERRAL
 }

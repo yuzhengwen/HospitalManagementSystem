@@ -41,6 +41,18 @@ public class AppointmentManager {
         }
         return appointmentsByPatient;
     }
+    public List<Appointment> getAppointmentsWithFilter(AppointmentFilter filter) {
+        return filter.filter(appointments);
+    }
+    public List<Appointment> getAppointmentsByStatus(Appointment.Status status){
+        List<Appointment> appointmentsByStatus = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            if (appointment.getStatus() == status) {
+                appointmentsByStatus.add(appointment);
+            }
+        }
+        return appointmentsByStatus;
+    }
 
     public List<Appointment> getAppointmentsByDoctorId(String id, Appointment.Status status) {
         List<Appointment> appointmentsByDoctor = new ArrayList<>();
@@ -172,4 +184,6 @@ public class AppointmentManager {
         appointment.setOutcome(outcome);
         appointment.setStatus(Appointment.Status.COMPLETED);
     }
+
 }
+

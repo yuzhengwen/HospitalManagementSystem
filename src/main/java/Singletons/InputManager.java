@@ -27,7 +27,13 @@ public class InputManager {
     }
 
     public int getInt() {
-        return scanner.nextInt();
+        String input = scanner.nextLine(); // avoid scanner.nextInt() to prevent issues with nextLine()
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+            return getInt();
+        }
     }
 
     public String getString() {

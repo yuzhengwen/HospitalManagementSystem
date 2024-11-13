@@ -15,6 +15,9 @@ public class AESEncryption {
     private static final int ITERATION_COUNT = 65536;
 
     public static String encrypt(String strToEncrypt, String secretKey, String salt) {
+        if (strToEncrypt == null || strToEncrypt.isEmpty()) {
+            return strToEncrypt;
+        }
         try {
             SecureRandom secureRandom = new SecureRandom();
             byte[] iv = new byte[16];
@@ -39,7 +42,9 @@ public class AESEncryption {
     }
 
     public static String decrypt(String strToDecrypt, String secretKey, String salt) {
-
+        if (strToDecrypt == null || strToDecrypt.isEmpty()) {
+            return strToDecrypt;
+        }
         try {
 
             byte[] encryptedData = Base64.getDecoder().decode(strToDecrypt);

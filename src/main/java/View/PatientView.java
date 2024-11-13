@@ -1,6 +1,7 @@
 package View;
 
 import Controller.Controller;
+import CustomTypes.ContactInfo;
 import CustomTypes.OperationMode;
 import Model.Appointment;
 import Model.Patient;
@@ -16,19 +17,33 @@ public class PatientView extends UserView {
         super(patient);
         this.patient = patient;
         System.out.println("Welcome, " + patient.getName());
-        actions.add(new Action("View Patient Info", this::viewPatientInfo));
+        actions.add(new Action("View Medical Record", this::viewPatientInfo));
+        actions.add(new Action("Add/Update Contact Info", this::updateContactInfo));
         actions.add(new Action("View Appointments", this::viewAppointments));
         actions.add(new Action("Schedule Appointments", this::scheduleAppointments));
         actions.add(new Action("Reschedule Appointments", this::rescheduleAppointments));
         actions.add(new Action("Cancel Appointments", this::cancelAppointments));
     }
 
+    private void updateContactInfo() {
+        Controller.getInstance().setPreviousView(this);
+        // get reference to the patient's contact info
+        ContactInfo contactInfo = patient.getContactInfo();
+        System.out.println("Current Contact Info:");
+        System.out.println(contactInfo.toString());
+        System.out.println("Enter new contact info:");
+        String phone = InputManager.getInstance().getString("Phone:");
+        String email = InputManager.getInstance().getString("Email:");
+        contactInfo.phoneNumber = phone;
+        contactInfo.email = email;
+        System.out.println("Contact info updated successfully");
+        System.out.println(contactInfo.toString());
+        InputManager.getInstance().goBackPrompt();
+    }
+
     private void viewPatientInfo() {
         Controller.getInstance().setPreviousView(this);
-        System.out.println("Patient Info:");
-        System.out.println("Name: " + patient.getName());
-        System.out.println("Date of Birth: " + patient.getDob());
-        System.out.println("Gender: " + patient.getGender());
+        System.out.println(patient.getMedicalRecord());
         InputManager.getInstance().goBackPrompt();
     }
 

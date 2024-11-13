@@ -30,4 +30,11 @@ public class Prescription {
     public String getId() {
         return prescriptionId;
     }
+
+    @Override
+    public String toString() {
+        return "Prescription Id= '" + prescriptionId + '\'' +
+                ", Medication= '" + medicationName + '\'' +
+                ", Status= " + status;
+    }
 }

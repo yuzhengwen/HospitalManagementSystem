@@ -5,15 +5,13 @@ import Encryption.AESEncryption;
 import GoogleBucket.UploadBucket;
 import Singletons.InputManager;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.security.GeneralSecurityException;
 
 public class Main {
     public static void main(String[] args) {
-        uploadTest();
-        emailTest();
-        passwordEncryptionTest();
+        //uploadTest();
+        //emailTest();
         Controller.UserSessionController.getInstance().showLoginMenu();
     }
 
@@ -25,15 +23,6 @@ public class Main {
         } catch (IOException | GeneralSecurityException e) {
             System.out.println("Error sending email: " + e.getMessage());
         }
-    }
-
-    private static void passwordEncryptionTest() {
-        String password = "password";
-        String salt = "salt";
-        String encrypted = AESEncryption.encrypt(password, "secret", salt);
-        System.out.println("Encrypted: " + encrypted);
-        String decrypted = AESEncryption.decrypt(encrypted, "secret", salt);
-        System.out.println("Decrypted: " + decrypted);
     }
 
     private static void uploadTest() {

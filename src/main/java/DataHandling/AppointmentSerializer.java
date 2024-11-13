@@ -12,14 +12,21 @@ import java.util.StringTokenizer;
 public class AppointmentSerializer implements ISerializer<Appointment> {
     TimeSlotSerializer timeSlotSerializer = new TimeSlotSerializer();
     DateSerializer dateSerializer = new DateSerializer();
-    // TODO add outcome serializer (Should prescriptions be serialized separately?)
     AppointmentOutcomeRecordSerializer outcomeRecordSerializer = new AppointmentOutcomeRecordSerializer();
 
     @Override
     public String serialize(Appointment object) {
-        return dateSerializer.serialize(object.getDate()) + SEPARATOR + timeSlotSerializer.serialize(object.getTimeSlot())
-                + SEPARATOR + object.getPatientId() + SEPARATOR + object.getDoctorId() + SEPARATOR + object.getType()
-                + SEPARATOR+ object.getStatus();
+        StringBuilder sb = new StringBuilder();
+        sb.append(dateSerializer.serialize(object.getDate())).append(SEPARATOR)
+                .append(timeSlotSerializer.serialize(object.getTimeSlot())).append(SEPARATOR)
+                .append(object.getPatientId()).append(SEPARATOR)
+                .append(object.getDoctorId()).append(SEPARATOR)
+                .append(object.getType()).append(SEPARATOR)
+                .append(object.getStatus());
+        if (object.getOutcome() != null) {
+            sb.append(SEPARATOR).append(outcomeRecordSerializer.serialize(object.getOutcome()));
+        }
+        return sb.toString();
     }
 
     @Override
@@ -33,6 +40,18 @@ public class AppointmentSerializer implements ISerializer<Appointment> {
         Appointment.Status status = Appointment.Status.valueOf(star.nextToken().trim().toUpperCase());
         Appointment apt = new Appointment(patientId, date, timeSlot, type);
         apt.setStatus(status);
+        if (star.hasMoreTokens()) {
+            StringBuilder serializedOutcomeBuilder = new StringBuilder();
+            for (int i = 0; i < 4; i++) {
+                serializedOutcomeBuilder.append(star.nextToken().trim());
+                if (i < 3) {
+                    serializedOutcomeBuilder.append(SEPARATOR);
+                }
+            }
+            String serializedOutcome = serializedOutcomeBuilder.toString();
+            AppointmentOutcomeRecord outcome = outcomeRecordSerializer.deserialize(serializedOutcome);
+            apt.setOutcome(outcome);
+        }
         if (!doctorId.isEmpty())
             apt.setDoctorId(doctorId);
         return apt;
@@ -43,16 +62,18 @@ public class AppointmentSerializer implements ISerializer<Appointment> {
 
         @Override
         public String serialize(AppointmentOutcomeRecord object) {
-            return prescriptionSerializer.serialize(object.getPrescription()) + SEPARATOR +
-                    object.getServiceProvided() + SEPARATOR + object.getNotes();
+            return object.getServiceProvided() + SEPARATOR +
+                    object.getNotes() + SEPARATOR +
+                    prescriptionSerializer.serialize(object.getPrescription());
         }
 
         @Override
         public AppointmentOutcomeRecord deserialize(String data) {
             StringTokenizer star = new StringTokenizer(data, SEPARATOR);
-            Prescription prescription = prescriptionSerializer.deserialize(star.nextToken().trim());
             ServiceProvided service = ServiceProvided.valueOf(star.nextToken().trim().toUpperCase());
             String notes = star.nextToken().trim();
+            String serializedPrescription = star.nextToken().trim() + SEPARATOR + star.nextToken().trim();
+            Prescription prescription = prescriptionSerializer.deserialize(serializedPrescription);
             return new AppointmentOutcomeRecord(prescription, service, notes);
         }
     }

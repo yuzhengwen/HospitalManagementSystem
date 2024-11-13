@@ -2,7 +2,6 @@ package Controller;
 
 import CustomTypes.OperationMode;
 import CustomTypes.Role;
-import DataHandling.Doctor;
 import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.Patient;

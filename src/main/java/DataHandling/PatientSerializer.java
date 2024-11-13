@@ -2,6 +2,7 @@ package DataHandling;
 
 import CustomTypes.ContactInfo;
 import CustomTypes.Gender;
+import Encryption.AESEncryption;
 import Model.Patient;
 
 import java.time.LocalDate;
@@ -22,7 +23,7 @@ public class PatientSerializer implements ISerializer<Patient> {
                 object.getGender() + SEPARATOR +
                 object.getBloodType() + SEPARATOR +
                 contactInfoSerializer.serialize(object.getContactInfo()) + SEPARATOR +
-                object.getPassword();
+                AESEncryption.encrypt(object.getPassword(), "secret", "salt");
     }
 
     // format: Patient ID,Name,Date of Birth,Gender,Blood Type,Contact Information
@@ -39,7 +40,8 @@ public class PatientSerializer implements ISerializer<Patient> {
         ContactInfo contactInfo = contactInfoSerializer.deserialize(star.nextToken().trim());
         String password = ""; // default password is empty
         if (star.hasMoreTokens()) {
-            password = star.nextToken().trim();
+            String encryptedPassword = star.nextToken().trim();
+            password = AESEncryption.decrypt(encryptedPassword, "secret", "salt");
         }
 
         Patient p = new Patient(id, password, name, dob, bloodType, gender);

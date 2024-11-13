@@ -26,4 +26,12 @@ public class AppointmentOutcomeRecord {
     public String getNotes() {
         return notes;
     }
+
+    @Override
+    public String toString() {
+        return "AppointmentOutcomeRecord: " + '\n' +
+                "Prescription: " + prescription + '\n' +
+                "ServiceProvided: " + serviceProvided + '\n' +
+                "Notes: " + notes;
+    }
 }
