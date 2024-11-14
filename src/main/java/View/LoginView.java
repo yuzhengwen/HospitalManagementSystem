@@ -18,20 +18,25 @@ public class LoginView extends ViewObject {
         actions.add(new Action("Login", this::login));
         actions.add(new Action("Create Account", this::createAccount));
         actions.add(new Action("Toggle Password Validation (For Testing)", this::toggleValidation));
-        actions.add(new Action("Exit", () -> System.exit(0)));
+        actions.add(new Action("Exit", () -> {
+            System.exit(0);
+            return 0;
+        }));
     }
 
     public void display() { // display the login menu
-        System.out.println("Welcome to the Hospital Management System");
-        System.out.println("------------------------------------------");
-        printActions(); // print list of available actions
-        getInput(); // get user input and handle it
+        do {
+            System.out.println("Welcome to the Hospital Management System");
+            System.out.println("------------------------------------------");
+            printActions(); // print list of available actions
+        } while (getInput() != 0);
     }
 
-    private void login() {
+    private int login() {
         System.out.println("Login Menu");
         System.out.println("----------");
         user = getLoginRecursive();
+        return 0;
     }
 
     private User getLoginRecursive() {
@@ -57,12 +62,13 @@ public class LoginView extends ViewObject {
         return user;
     }
 
-    private void toggleValidation() {
+    private int toggleValidation() {
         passwordValidation = !passwordValidation;
         System.out.println("Password validation is now " + (passwordValidation ? "enabled" : "disabled"));
-        display();
+        return 1;
     }
-    public void createAccount() {
+
+    public int createAccount() {
         System.out.println("Create Account");
         System.out.println("--------------");
         String id;
@@ -86,7 +92,8 @@ public class LoginView extends ViewObject {
                 break;
         }
         UserLoginManager.getInstance().addUser(user);
-        display();
+        System.out.println("Account created successfully");
+        return 1;
     }
 
 }

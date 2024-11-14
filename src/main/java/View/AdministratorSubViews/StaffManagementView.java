@@ -14,7 +14,7 @@ import java.util.List;
 
 public class StaffManagementView extends ViewObject {
     public StaffManagementView() {
-        actions.add(new Action("Back to Main", Controller.getInstance()::navigateBack));
+        actions.add(new Action("Back to Main", () -> 0));
         actions.add(new Action("View Staff", this::viewStaff));
         actions.add(new Action("Add Staff", this::addStaff));
         actions.add(new Action("Remove Staff", this::removeStaff));
@@ -23,13 +23,14 @@ public class StaffManagementView extends ViewObject {
 
     @Override
     public void display() {
-        System.out.println("Staff Management Menu");
-        System.out.println("----------------");
-        printActions();
-        getInput();
+        do {
+            System.out.println("Staff Management Menu");
+            System.out.println("----------------");
+            printActions();
+        } while (getInput() != 0);
     }
 
-    private void viewStaff() {
+    private int viewStaff() {
         List<Staff> staffList = UserLoginManager.getInstance().getAllStaffs();
         if (InputManager.getInstance().getBoolean("Do you want to filter the staff list?")) {
             StaffFilter filter = getFilter();
@@ -42,7 +43,7 @@ public class StaffManagementView extends ViewObject {
                 System.out.println(staff.getDetailedInfo());
             }
         }
-        display();
+        return 1;
     }
 
     private StaffFilter getFilter() {
@@ -64,7 +65,7 @@ public class StaffManagementView extends ViewObject {
         return filter;
     }
 
-    private void addStaff() {
+    private int addStaff() {
         System.out.println("Enter account details:");
         String id = InputManager.getInstance().getString("ID: ");
         String password = InputManager.getInstance().getNewPasswordInput(true);
@@ -77,10 +78,10 @@ public class StaffManagementView extends ViewObject {
         Staff newStaff = new Staff(id, password, name, role, gender, age);
         UserLoginManager.getInstance().addUser(newStaff);
         System.out.println("Staff added successfully");
-        display();
+        return 1;
     }
 
-    private void removeStaff() {
+    private int removeStaff() {
         String idOrName = InputManager.getInstance().getString("Enter staff ID or name: ");
         List<Staff> staffList = UserLoginManager.getInstance().getAllStaffs();
         staffList.stream()
@@ -89,10 +90,10 @@ public class StaffManagementView extends ViewObject {
                     UserLoginManager.getInstance().removeUser(staff);
                     System.out.println("Staff removed successfully");
                 }, () -> System.out.println("Staff not found"));
-        display();
+        return 1;
     }
 
-    private void editStaff() {
+    private int editStaff() {
         String idOrName = InputManager.getInstance().getString("Enter staff ID or name: ");
         List<Staff> staffList = UserLoginManager.getInstance().getAllStaffs();
         staffList.stream()
@@ -108,7 +109,7 @@ public class StaffManagementView extends ViewObject {
                     staff.setAge(age);
                     System.out.println("Staff updated successfully");
                 }, () -> System.out.println("Staff not found"));
-        display();
+        return 1;
     }
 
     public static class StaffFilter {

@@ -13,7 +13,7 @@ public abstract class UserView<T extends User> extends ViewObject {
         actions.add(new Action("Logout", this::logout));
     }
 
-    private void changePassword() {
+    private int changePassword() {
         String newPassword = InputManager.getInstance().getNewPasswordInput(LoginView.passwordValidation);
         if (UserSessionController.getInstance().changePassword(newPassword)) {
             System.out.println("Password changed successfully");
@@ -21,12 +21,13 @@ public abstract class UserView<T extends User> extends ViewObject {
             System.out.println("Password change failed");
         }
         System.out.println();
-        display();
+        return 1;
     }
 
-    private void logout() {
+    private int logout() {
         System.out.println("Logging out...");
         System.out.println();
         UserSessionController.getInstance().logout();
+        return 0;
     }
 }

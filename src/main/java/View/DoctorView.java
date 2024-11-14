@@ -25,7 +25,16 @@ public class DoctorView extends UserView<Staff> {
         actions.add(new Action("View Completed Appointments", this::viewCompletedAppointments));
     }
 
-    private void viewCompletedAppointments() {
+    @Override
+    public void display() {
+        do {
+            System.out.println("Doctor Menu");
+            System.out.println("----------------");
+            printActions();
+        } while (getInput() != 0);
+    }
+
+    private int viewCompletedAppointments() {
         Controller.getInstance().setPreviousView(this);
         List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByDoctorId(user.getId(), Appointment.Status.COMPLETED);
         if (appointments.isEmpty()) {
@@ -34,10 +43,10 @@ public class DoctorView extends UserView<Staff> {
             Appointment selected = InputManager.getInstance().getSelection("Select an appointment to view: ", appointments);
             System.out.println(selected.getFullDetails());
         }
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 
-    private void recordAppointmentOutcome() {
+    private int recordAppointmentOutcome() {
         Controller.getInstance().setPreviousView(this);
 
         List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByDoctorId(user.getId(), Appointment.Status.ACCEPTED);
@@ -58,18 +67,10 @@ public class DoctorView extends UserView<Staff> {
 
             System.out.println("Appointment outcome recorded.");
         }
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 
-    @Override
-    public void display() {
-        System.out.println("Doctor Menu");
-        System.out.println("----------------");
-        printActions();
-        getInput();
-    }
-
-    private void viewAcceptedAppointments() {
+    private int viewAcceptedAppointments() {
         Controller.getInstance().setPreviousView(this);
         List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByDoctorId(user.getId(), Appointment.Status.ACCEPTED);
         if (appointments.isEmpty()) {
@@ -78,10 +79,10 @@ public class DoctorView extends UserView<Staff> {
             Appointment selected = InputManager.getInstance().getSelection("Select an appointment to view: ", appointments);
             System.out.println(selected.getFullDetails());
         }
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 
-    private void manageAppointmentRequests() {
+    private int manageAppointmentRequests() {
         Controller.getInstance().setPreviousView(this);
 
         System.out.println("Choose an appointment request to accept: ");
@@ -94,10 +95,10 @@ public class DoctorView extends UserView<Staff> {
             System.out.println("Appointment accepted.");
             System.out.println(selectedAppointment);
         }
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 
-    private void manageSchedule() {
+    private int manageSchedule() {
         Controller.getInstance().setPreviousView(this);
         Schedule schedule = AppointmentManager.getInstance().getScheduleOfDoctor(user);
         System.out.println(schedule.printScheduleCompact());
@@ -112,6 +113,6 @@ public class DoctorView extends UserView<Staff> {
         System.out.println("Schedule updated.");
         System.out.println(schedule.printScheduleCompact());
         Controller.getInstance().getSaveManager().saveDoctorSchedules();
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 }

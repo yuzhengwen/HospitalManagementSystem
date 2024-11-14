@@ -1,5 +1,7 @@
 package View;
 
+import java.util.function.Supplier;
+
 /**
  * This class is used to create an object that represents an action that can be taken by the user.
  * It is used in the Menu class to create a list of actions that the user can choose from.
@@ -7,9 +9,9 @@ package View;
 public class Action{
     public String description;
     public int choice;
-    public Runnable function;
+    public Supplier<Integer> function;
 
-    public Action(String description, Runnable function){
+    public Action(String description, Supplier<Integer> function){
         this.description = description;
         this.function = function;
     }

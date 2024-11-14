@@ -12,23 +12,27 @@ public abstract class ViewObject implements IView{
 
     public abstract void display();
 
-    protected void getInput() { // get user input and handle it
+    protected int getInput() { // get user input and handle it
         System.out.println("Enter your choice:");
         int choice = InputManager.getInstance().getInt();
-        handleInput(choice);
+        return handleInput(choice);
     }
 
-    public void handleInput(int choice) {
+    /**
+     * Handle user input
+     * @param choice user input
+     * @return 0 to end the display loop, 1 to show the menu again
+     */
+    public int handleInput(int choice) {
         for (Action action : actions) {
             if (action.choice == choice) { // if choice matches, run the function
-                action.function.run();
-                return; // exit method and get user input again
+                return action.function.get();
             }
         }
         // if no choice is matched, show the menu again
         System.out.println("Invalid choice");
         System.out.println();
-        display();
+        return 1;
     }
 
     protected void printActions() {

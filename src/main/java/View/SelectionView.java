@@ -14,13 +14,12 @@ public class SelectionView<T> extends ViewObject {
     private T selected;
 
     public SelectionView(List<T> list) {
-        actions.add(new Action("Back", () -> {
-            Controller.getInstance().navigateBack();
-        }));
+        actions.add(new Action("Back", () -> 0));
         for (int i = 0; i < list.size(); i++) {
             int currentIndex = i;
             actions.add(new Action(list.get(i).toString(), () -> {
                 selected = list.get(currentIndex);
+                return 0;
             }));
         }
     }

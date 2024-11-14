@@ -2,6 +2,7 @@ package View;
 
 /**
  * A view object that displays a menu of enum values and allows the user to select one.
+ *
  * @param <E> The enum type to display
  */
 public class EnumView<E extends Enum<E>> extends ViewObject {
@@ -14,8 +15,9 @@ public class EnumView<E extends Enum<E>> extends ViewObject {
             int finalI = i;
             actions.add(new Action(
                     values[i].toString(), () -> {  // Lambda to handle user selection
-                        selected = values[finalI];  // Set the selected enum value
-                    }
+                selected = values[finalI];  // Set the selected enum value
+                return 0;  // Return 0 to exit the menu
+            }
             ));
         }
     }

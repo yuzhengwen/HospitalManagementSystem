@@ -55,9 +55,10 @@ public class InputManager {
         return input.equalsIgnoreCase("Y");
     }
 
-    public void goBackPrompt() {
+    public int goBackPrompt() {
         getString("Press enter to go back");
-        Controller.getInstance().navigateBack();
+        return 1;
+        //Controller.getInstance().navigateBack();
     }
 
     public LocalTime getTime() {

@@ -22,7 +22,16 @@ public class PatientView extends UserView<Patient> {
         actions.add(new Action("Cancel Appointments", this::cancelAppointments));
     }
 
-    private void updateContactInfo() {
+    @Override
+    public void display() { // display patient menu
+        do {
+            System.out.println("Patient Menu");
+            System.out.println("----------------");
+            printActions(); // print list of available actions
+        } while (getInput() != 0);
+    }
+
+    private int updateContactInfo() {
         Controller.getInstance().setPreviousView(this);
         // get reference to the patient's contact info
         ContactInfo contactInfo = user.getContactInfo();
@@ -35,16 +44,16 @@ public class PatientView extends UserView<Patient> {
         contactInfo.email = email;
         System.out.println("Contact info updated successfully");
         System.out.println(contactInfo.toString());
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 
-    private void viewPatientInfo() {
+    private int viewPatientInfo() {
         Controller.getInstance().setPreviousView(this);
         System.out.println(user.getMedicalRecord());
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 
-    private void viewAppointments() {
+    private int viewAppointments() {
         Controller.getInstance().setPreviousView(this);
         List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByPatientId(user.getId());
         if (appointments.isEmpty()) {
@@ -54,18 +63,10 @@ public class PatientView extends UserView<Patient> {
             for (Appointment appointment : appointments)
                 System.out.println(appointment.toString());
         }
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 
-    @Override
-    public void display() { // display patient menu
-        System.out.println("Patient Menu");
-        System.out.println("----------------");
-        printActions(); // print list of available actions
-        getInput(); // get user input and handle it
-    }
-
-    private void scheduleAppointments() {
+    private int scheduleAppointments() {
         Controller.getInstance().setPreviousView(this);
 
         Appointment newAppointment = Controller.getInstance().manageAppointments(OperationMode.SCHEDULE);
@@ -75,10 +76,10 @@ public class PatientView extends UserView<Patient> {
         } else
             System.out.println("Appointment scheduling failed");
 
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 
-    private void rescheduleAppointments() {
+    private int rescheduleAppointments() {
         Controller.getInstance().setPreviousView(this);
 
         System.out.println("Choose an appointment to reschedule: ");
@@ -89,16 +90,16 @@ public class PatientView extends UserView<Patient> {
         } else
             System.out.println("Appointment rescheduling failed");
 
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 
-    private void cancelAppointments() {
+    private int cancelAppointments() {
         Controller.getInstance().setPreviousView(this);
         System.out.println("Choose an appointment to cancel: ");
         if (Controller.getInstance().manageAppointments(OperationMode.DELETE) != null)
             System.out.println("Appointment cancelled successfully");
         else
             System.out.println("Appointment cancellation failed");
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 }

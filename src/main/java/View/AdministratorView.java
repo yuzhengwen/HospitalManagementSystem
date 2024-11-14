@@ -12,19 +12,27 @@ public class AdministratorView extends UserView<Staff> {
         actions.add(new Action("Appointment Management", this::appointmentManagement));
         actions.add(new Action("Inventory Management", this::inventoryManagement));
     }
+
     @Override
     public void display() {
-        System.out.println("Administrator Menu");
-        System.out.println("----------------");
-        printActions();
-        getInput();
+        do {
+            System.out.println("Administrator Menu");
+            System.out.println("----------------");
+            printActions();
+        } while (getInput() != 0);
     }
-    private void staffManagement() {
+
+    private int staffManagement() {
         Controller.getInstance().setPreviousView(this);
         new StaffManagementView().display();
+        return 1;
     }
-    private void appointmentManagement() {
+
+    private int appointmentManagement() {
+        return 1;
     }
-    private void inventoryManagement() {
+
+    private int inventoryManagement() {
+        return 1;
     }
 }

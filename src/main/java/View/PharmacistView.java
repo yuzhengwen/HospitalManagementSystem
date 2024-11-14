@@ -25,22 +25,23 @@ public class PharmacistView extends UserView<Staff> {
 
     @Override
     public void display() {
-        System.out.println("Pharmacist Menu");
-        System.out.println("----------------");
-        printActions();
-        getInput();
+        do {
+            System.out.println("Pharmacist Menu");
+            System.out.println("----------------");
+            printActions();
+        } while (getInput() != 0);
     }
 
-    private void createReplenishmentRequest() {
+    private int createReplenishmentRequest() {
         Controller.getInstance().setPreviousView(this);
         String medicine = InputManager.getInstance().getString("Enter medicine name:");
         int quantity = InputManager.getInstance().getInt("Enter quantity:");
         InventoryManager.getInstance().createReplenishmentRequest(medicine, quantity);
         System.out.println("Replenishment request created successfully");
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 
-    private void viewMedicationInventory() {
+    private int viewMedicationInventory() {
         Controller.getInstance().setPreviousView(this);
         Inventory inventory = InventoryManager.getInstance().getInventory();
         System.out.println("Medication Inventory:");
@@ -48,10 +49,10 @@ public class PharmacistView extends UserView<Staff> {
         for (Map.Entry<String, Integer[]> entry : inventory.entrySet()) {
             System.out.println(entry.getKey() + ": " + "Quantity: " + entry.getValue()[0] + ", Low Stock Threshold: " + entry.getValue()[1]);
         }
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 
-    private void dispenseMedicine() {
+    private int dispenseMedicine() {
         Controller.getInstance().setPreviousView(this);
         Inventory inventory = InventoryManager.getInstance().getInventory();
         List<AppointmentOutcomeRecord> outcomes = AppointmentManager.getInstance().getAllOutcomes();
@@ -75,10 +76,10 @@ public class PharmacistView extends UserView<Staff> {
                 System.out.println("Failed to dispense medicine");
             }
         }
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 
-    private void viewOutcomes() {
+    private int viewOutcomes() {
         Controller.getInstance().setPreviousView(this);
         List<AppointmentOutcomeRecord> outcomes = AppointmentManager.getInstance().getAllOutcomes();
         if (outcomes.isEmpty()) {
@@ -91,6 +92,6 @@ public class PharmacistView extends UserView<Staff> {
                 System.out.println();
             }
         }
-        InputManager.getInstance().goBackPrompt();
+        return InputManager.getInstance().goBackPrompt();
     }
 }
