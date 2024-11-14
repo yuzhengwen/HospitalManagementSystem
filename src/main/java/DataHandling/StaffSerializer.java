@@ -5,8 +5,6 @@ import CustomTypes.Role;
 import Encryption.AESEncryption;
 import Model.Staff;
 
-import java.util.StringTokenizer;
-
 /**
  * This class is responsible for serializing and deserializing Staff objects to and from String.
  */

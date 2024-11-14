@@ -1,6 +1,5 @@
 package Singletons;
 
-import Controller.Controller;
 import View.EnumView;
 import View.SelectionView;
 

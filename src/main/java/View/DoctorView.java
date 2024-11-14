@@ -1,5 +1,6 @@
 package View;
 
+import Controller.Controller;
 import CustomTypes.ServiceProvided;
 import DataHandling.SaveManager;
 import Model.Appointment;
@@ -12,8 +13,6 @@ import Singletons.InputManager;
 
 import java.time.DayOfWeek;
 import java.util.List;
-
-import Controller.Controller;
 
 public class DoctorView extends UserView<Staff> {
     public DoctorView(Staff staff) {

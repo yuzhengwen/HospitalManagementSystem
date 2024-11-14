@@ -8,7 +8,6 @@ import Model.Prescription;
 import Model.ScheduleManagement.TimeSlot;
 
 import java.time.LocalDate;
-import java.util.StringTokenizer;
 
 public class AppointmentSerializer implements ISerializer<Appointment> {
     TimeSlotSerializer timeSlotSerializer = new TimeSlotSerializer();

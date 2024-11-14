@@ -2,7 +2,6 @@ package Singletons;
 
 import Model.Appointment;
 import Model.AppointmentOutcomeRecord;
-import Model.Prescription;
 import Model.ScheduleManagement.Schedule;
 import Model.ScheduleManagement.TimeSlot;
 import Model.ScheduleManagement.TimeSlotWithDoctor;

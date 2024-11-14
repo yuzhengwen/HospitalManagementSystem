@@ -5,7 +5,8 @@ import Email.TestEmail;
 import GoogleBucket.UploadBucket;
 import Singletons.InputManager;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 public class Main {

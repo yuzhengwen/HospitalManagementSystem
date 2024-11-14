@@ -6,7 +6,6 @@ import Encryption.AESEncryption;
 import Model.Patient;
 
 import java.time.LocalDate;
-import java.util.StringTokenizer;
 
 /**
  * This class is responsible for serializing and deserializing Patient objects to and from String.

@@ -1,6 +1,5 @@
 package View.AdministratorSubViews;
 
-import Controller.Controller;
 import Model.Appointment;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;

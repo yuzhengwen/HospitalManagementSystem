@@ -2,8 +2,6 @@ package View;
 
 import Singletons.InputManager;
 
-import java.util.Scanner;
-
 /**
  * Abstract class for all views
  */

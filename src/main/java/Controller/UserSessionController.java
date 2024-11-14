@@ -2,8 +2,6 @@ package Controller;
 
 import DataHandling.SaveManager;
 import Model.User;
-import Singletons.InputManager;
-import Singletons.UserLoginManager;
 import View.LoginView;
 
 public class UserSessionController {

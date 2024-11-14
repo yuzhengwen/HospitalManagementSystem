@@ -2,15 +2,14 @@ package Controller;
 
 import CustomTypes.OperationMode;
 import CustomTypes.Role;
-import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.Patient;
 import Model.ScheduleManagement.TimeSlot;
+import Model.ScheduleManagement.TimeSlotWithDoctor;
 import Model.Staff;
 import Model.User;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
-import Model.ScheduleManagement.TimeSlotWithDoctor;
 import View.*;
 
 import java.time.LocalDate;

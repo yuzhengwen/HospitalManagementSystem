@@ -2,8 +2,6 @@ package Model;
 
 import CustomTypes.ServiceProvided;
 
-import java.util.Date;
-
 public class AppointmentOutcomeRecord {
     private Prescription prescription;
     private ServiceProvided serviceProvided;

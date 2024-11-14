@@ -1,7 +1,10 @@
 package DataHandling;
 
-import Model.*;
+import Model.Appointment;
+import Model.Patient;
+import Model.ReplenishmentRequest;
 import Model.ScheduleManagement.Schedule;
+import Model.Staff;
 import Singletons.AppointmentManager;
 import Singletons.InventoryManager;
 import Singletons.UserLoginManager;

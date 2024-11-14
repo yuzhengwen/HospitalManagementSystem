@@ -22,7 +22,10 @@ import jakarta.mail.internet.MimeMessage;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.Properties;
 
 /* class to demonstrate use of Gmail list labels API */
 public class TestEmail {
