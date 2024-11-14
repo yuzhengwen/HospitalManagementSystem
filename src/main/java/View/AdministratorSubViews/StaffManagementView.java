@@ -2,6 +2,7 @@ package View.AdministratorSubViews;
 
 import CustomTypes.Gender;
 import CustomTypes.Role;
+import DataHandling.SaveManager;
 import Model.Staff;
 import Singletons.InputManager;
 import Singletons.UserLoginManager;
@@ -27,6 +28,7 @@ public class StaffManagementView extends ViewObject {
             System.out.println("----------------");
             printActions();
         } while (getInput() != 0);
+        SaveManager.getInstance().saveStaffs();
     }
 
     private int viewStaff() {

@@ -1,11 +1,15 @@
 package Singletons;
 
+import DataHandling.SaveManager;
 import Model.Inventory;
 import Model.ReplenishmentRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Singleton class to manage the inventory and replenishment requests
+ */
 public class InventoryManager {
     // Singleton Implementation ------------------------------------------
     private static InventoryManager instance;
@@ -16,7 +20,6 @@ public class InventoryManager {
         }
         return instance;
     }
-
     private InventoryManager() {
     }
 
@@ -31,6 +34,7 @@ public class InventoryManager {
      */
     public void createReplenishmentRequest(String medicine, int quantity) {
         requests.add(new ReplenishmentRequest(medicine, quantity));
+        SaveManager.getInstance().saveReplenishmentRequests();
     }
 
     /**

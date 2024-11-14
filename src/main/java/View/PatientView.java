@@ -3,6 +3,7 @@ package View;
 import Controller.Controller;
 import CustomTypes.ContactInfo;
 import CustomTypes.OperationMode;
+import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.Patient;
 import Singletons.AppointmentManager;
@@ -44,6 +45,7 @@ public class PatientView extends UserView<Patient> {
         contactInfo.email = email;
         System.out.println("Contact info updated successfully");
         System.out.println(contactInfo.toString());
+        SaveManager.getInstance().savePatients();
         return InputManager.getInstance().goBackPrompt();
     }
 
@@ -76,6 +78,7 @@ public class PatientView extends UserView<Patient> {
         } else
             System.out.println("Appointment scheduling failed");
 
+        SaveManager.getInstance().saveAppointments();
         return InputManager.getInstance().goBackPrompt();
     }
 
@@ -90,6 +93,7 @@ public class PatientView extends UserView<Patient> {
         } else
             System.out.println("Appointment rescheduling failed");
 
+        SaveManager.getInstance().saveAppointments();
         return InputManager.getInstance().goBackPrompt();
     }
 
@@ -100,6 +104,7 @@ public class PatientView extends UserView<Patient> {
             System.out.println("Appointment cancelled successfully");
         else
             System.out.println("Appointment cancellation failed");
+        SaveManager.getInstance().saveAppointments();
         return InputManager.getInstance().goBackPrompt();
     }
 }

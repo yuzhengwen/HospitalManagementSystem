@@ -10,6 +10,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Singleton class to manage user input
+ */
 public class InputManager {
     private static InputManager instance;
     private final Scanner scanner = new Scanner(System.in);

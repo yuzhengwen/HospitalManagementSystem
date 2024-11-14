@@ -1,5 +1,6 @@
 package View.AdministratorSubViews;
 
+import DataHandling.SaveManager;
 import Model.Inventory;
 import Model.ReplenishmentRequest;
 import Singletons.InputManager;
@@ -32,6 +33,7 @@ public class InventoryManagementView extends ViewObject {
             System.out.println("----------------");
             printActions();
         } while (getInput() != 0);
+        SaveManager.getInstance().saveInventory();
     }
 
     private int viewInventory() {

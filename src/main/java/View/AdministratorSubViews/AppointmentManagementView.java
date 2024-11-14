@@ -1,5 +1,6 @@
 package View.AdministratorSubViews;
 
+import DataHandling.SaveManager;
 import Model.Appointment;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
@@ -20,6 +21,7 @@ public class AppointmentManagementView extends ViewObject {
             System.out.println("----------------");
             printActions();
         } while (getInput() != 0);
+        SaveManager.getInstance().saveAppointments();
     }
     private int viewAppointments() {
         List<Appointment> appointments = AppointmentManager.getInstance().getAppointments();

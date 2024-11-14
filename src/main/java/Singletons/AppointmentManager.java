@@ -1,5 +1,6 @@
 package Singletons;
 
+import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.AppointmentOutcomeRecord;
 import Model.ScheduleManagement.Schedule;
@@ -11,6 +12,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
+/**
+ * Singleton class to manage appointments and schedules
+ */
 public class AppointmentManager {
     private static AppointmentManager instance;
 
@@ -238,6 +242,26 @@ public class AppointmentManager {
             }
         }
         return records;
+    }
+
+    // ONLY FOR Loading Data ------------------------------------------
+    /**
+     * Set the list of appointments
+     * Only meant for loading data from file
+     * @param appointments the list of appointments to set
+     */
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments.clear();
+        this.appointments.addAll(appointments);
+    }
+    /**
+     * Set the map of doctor schedules
+     * Only meant for loading data from file
+     * @param doctorScheduleMap the map of doctor schedules to set
+     */
+    public void setDoctorScheduleMap(Map<String, Schedule> doctorScheduleMap) {
+        this.doctorScheduleMap.clear();
+        this.doctorScheduleMap.putAll(doctorScheduleMap);
     }
 }
 

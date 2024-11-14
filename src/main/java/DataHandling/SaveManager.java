@@ -14,6 +14,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Singleton managing the saving and loading of data
+ */
 public class SaveManager {
     private static SaveManager instance;
 
@@ -170,14 +173,16 @@ public class SaveManager {
 
     public void loadAppointments() {
         List<String> serializedAppointments = saveService.readData(APPOINTMENT_FILE);
+        List<Appointment> appointments = new ArrayList<>();
         if (serializedAppointments == null || serializedAppointments.isEmpty()) {
             return;
         }
         serializedAppointments.remove(0); // remove the header
         for (String serializedAppointment : serializedAppointments) {
             Appointment a = appointmentSerializer.deserialize(serializedAppointment);
-            AppointmentManager.getInstance().add(a);
+            appointments.add(a);
         }
+        AppointmentManager.getInstance().setAppointments(appointments);
     }
 
     public void loadDoctorSchedules() {
@@ -187,8 +192,6 @@ public class SaveManager {
         }
         serializedDoctorSchedules.remove(0); // remove the header
         Map<String, Schedule> doctorScheduleMap = doctorScheduleSerializer.deserialize(String.join("\n", serializedDoctorSchedules));
-        for (String doctorId : doctorScheduleMap.keySet()) {
-            AppointmentManager.getInstance().setSchedule(doctorId, doctorScheduleMap.get(doctorId));
-        }
+        AppointmentManager.getInstance().setDoctorScheduleMap(doctorScheduleMap);
     }
 }

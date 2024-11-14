@@ -2,6 +2,7 @@ package View;
 
 import Controller.Controller;
 import CustomTypes.PrescriptionStatus;
+import DataHandling.SaveManager;
 import Model.AppointmentOutcomeRecord;
 import Model.Inventory;
 import Model.Prescription;
@@ -38,6 +39,7 @@ public class PharmacistView extends UserView<Staff> {
         int quantity = InputManager.getInstance().getInt("Enter quantity:");
         InventoryManager.getInstance().createReplenishmentRequest(medicine, quantity);
         System.out.println("Replenishment request created successfully");
+        SaveManager.getInstance().saveReplenishmentRequests();
         return InputManager.getInstance().goBackPrompt();
     }
 
@@ -72,6 +74,7 @@ public class PharmacistView extends UserView<Staff> {
                         inventory.removeMedicine(prescription.getMedicationName(), 1);
                         prescription.setStatus(PrescriptionStatus.DISPENSED);
                         System.out.println("Medicine dispensed successfully");
+                        SaveManager.getInstance().saveInventory();
                     }
                 }
                 System.out.println("Failed to dispense medicine");

@@ -69,6 +69,7 @@ public class DoctorView extends UserView<Staff> {
 
             System.out.println("Appointment outcome recorded.");
         }
+        SaveManager.getInstance().saveAppointments();
         return InputManager.getInstance().goBackPrompt();
     }
 
@@ -99,6 +100,7 @@ public class DoctorView extends UserView<Staff> {
             System.out.println("Appointment accepted.");
             System.out.println(selectedAppointment);
         }
+        SaveManager.getInstance().saveAppointments();
         return InputManager.getInstance().goBackPrompt();
     }
 
@@ -116,6 +118,7 @@ public class DoctorView extends UserView<Staff> {
         }
         System.out.println("Schedule updated.");
         System.out.println(schedule.printScheduleCompact());
+
         SaveManager.getInstance().saveDoctorSchedules();
         return InputManager.getInstance().goBackPrompt();
     }

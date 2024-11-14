@@ -7,6 +7,9 @@ import Model.User;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A singleton class that manages the list of registered users
+ */
 public class UserLoginManager {
     private ArrayList<User> users = new ArrayList<>();
 

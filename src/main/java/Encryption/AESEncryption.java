@@ -10,6 +10,9 @@ import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import java.util.Base64;
 
+/**
+ * This class is used to encrypt and decrypt strings using AES encryption.
+ */
 public class AESEncryption {
     private static final int KEY_LENGTH = 256;
     private static final int ITERATION_COUNT = 65536;
