@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"Controller"},{"l":"CustomTypes"},{"l":"DataHandling"},{"l":"Email"},{"l":"Encryption"},{"l":"GoogleBucket"},{"l":"Main"},{"l":"Model"},{"l":"Model.ScheduleManagement"},{"l":"Singletons"},{"l":"View"},{"l":"View.AdministratorSubViews"}];updateSearchResults();
