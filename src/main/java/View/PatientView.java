@@ -13,7 +13,6 @@ import java.util.List;
 public class PatientView extends UserView<Patient> {
     public PatientView(Patient patient) { // constructor
         super(patient);
-        this.user = patient;
         System.out.println("Welcome, " + patient.getName());
         actions.add(new Action("View Medical Record", this::viewPatientInfo));
         actions.add(new Action("Add/Update Contact Info", this::updateContactInfo));

@@ -45,4 +45,12 @@ public abstract class User {
     public void changePassword(String password) {
         this.password = password;
     }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
 }

@@ -68,7 +68,7 @@ public class Controller {
                 new DoctorView((Staff) currentUser).display(); // display the doctor menu
             }
             if (role == Role.ADMINISTRATOR) {
-                //new AdminView(currentUser).display();
+                new AdministratorView((Staff) currentUser).display();
             }
             if (role == Role.PHARMACIST) {
                 new PharmacistView((Staff) currentUser).display();

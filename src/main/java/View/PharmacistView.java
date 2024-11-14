@@ -23,6 +23,14 @@ public class PharmacistView extends UserView<Staff> {
         actions.add(new Action("Create Replenishment Request", this::createReplenishmentRequest));
     }
 
+    @Override
+    public void display() {
+        System.out.println("Pharmacist Menu");
+        System.out.println("----------------");
+        printActions();
+        getInput();
+    }
+
     private void createReplenishmentRequest() {
         Controller.getInstance().setPreviousView(this);
         String medicine = InputManager.getInstance().getString("Enter medicine name:");
@@ -84,13 +92,5 @@ public class PharmacistView extends UserView<Staff> {
             }
         }
         InputManager.getInstance().goBackPrompt();
-    }
-
-    @Override
-    public void display() {
-        System.out.println("Pharmacist Menu");
-        System.out.println("----------------");
-        printActions();
-        getInput();
     }
 }

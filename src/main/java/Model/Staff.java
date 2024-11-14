@@ -11,7 +11,7 @@ public class Staff extends User {
     private int age;
 
     public Staff(String id, String password, String name, Role role, Gender gender, int age) {
-        super(id, password, role, name ,gender);
+        super(id, password, role, name, gender);
         this.role = role;
         this.age = age;
     }
@@ -19,6 +19,9 @@ public class Staff extends User {
 
     public int getAge() {
         return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
     }
 
     @Override
@@ -37,6 +40,14 @@ public class Staff extends User {
     @Override
     public String toString() {
         return name;
+    }
+
+    public String getDetailedInfo() {
+        return "Staff ID: " + id + ", " +
+                "Name: " + name + ", " +
+                "Role: " + role + ", " +
+                "Gender: " + gender + ", " +
+                "Age: " + age;
     }
 }
 
