@@ -35,19 +35,41 @@ public class AppointmentManager {
     /**
      * Get a list of appointments with a given filter
      * Other filter methods use this as a base
+     *
      * @param filter to apply to the list of appointments
      * @return a list of appointments that match the filter
      */
     public List<Appointment> getAppointmentsWithFilter(AppointmentFilter filter) {
         return filter.filter(appointments);
     }
+
+    /**
+     * Get a list of appointments for a given patient
+     *
+     * @param patientId the id of the patient
+     * @return a list of appointments for the patient
+     */
     public List<Appointment> getAppointmentsByPatientId(String patientId) {
         return getAppointmentsWithFilter(new AppointmentFilter().filterByPatient(patientId));
     }
-    public List<Appointment> getAppointmentsByStatus(Appointment.Status status){
+
+    /**
+     * Get a list of appointments with a given status
+     *
+     * @param status the status of the appointments to get
+     * @return a list of appointments with the given status
+     */
+    public List<Appointment> getAppointmentsByStatus(Appointment.Status status) {
         return getAppointmentsWithFilter(new AppointmentFilter().filterByStatus(status));
     }
 
+    /**
+     * Get a list of appointments for a given doctor
+     *
+     * @param id     the id of the doctor
+     * @param status the status of the appointments to get
+     * @return a list of appointments for the doctor with the given status
+     */
     public List<Appointment> getAppointmentsByDoctorId(String id, Appointment.Status status) {
         List<Appointment> appointmentsByDoctor = new ArrayList<>();
         if (appointments.isEmpty()) {
@@ -62,18 +84,39 @@ public class AppointmentManager {
         return appointmentsByDoctor;
     }
 
+    /**
+     * Get a list of appointments for a given doctor
+     *
+     * @return a list of appointments for the doctor
+     */
     public List<Appointment> getAppointments() {
         return appointments;
     }
 
+    /**
+     * Add an appointment to the list of appointments
+     *
+     * @param appointment the appointment to add
+     */
     public void add(Appointment appointment) {
         appointments.add(appointment);
     }
 
+    /**
+     * Remove an appointment from the list of appointments
+     *
+     * @param appointment the appointment to remove
+     */
     public void remove(Appointment appointment) {
         appointments.remove(appointment);
     }
 
+    /**
+     * Gets the schedule of a doctor
+     *
+     * @param doctor the doctor to get the schedule for
+     * @return the schedule of the doctor
+     */
     public Schedule getScheduleOfDoctor(Staff doctor) {
         if (doctorScheduleMap.containsKey(doctor.getId())) {
             return doctorScheduleMap.get(doctor.getId());
@@ -82,8 +125,11 @@ public class AppointmentManager {
     }
 
     /**
-     * Create a map of TimeSlot to List of Staff objects for a given date<br/>
+     * Create a map of TimeSlot to List of doctors available for a given date<br/>
      * Used internally for getTimeslotWithDoctorList()
+     *
+     * @param date the date to get the map for
+     * @return a map of TimeSlot to List of Staff objects
      */
     private Map<TimeSlot, List<Staff>> getTimeslotToDoctorMap(LocalDate date) {
         Map<TimeSlot, List<Staff>> timeslotToDoctorMap = new HashMap<>();
@@ -111,7 +157,10 @@ public class AppointmentManager {
 
     /**
      * Get a list of TimeSlotWithDoctor objects for a given date<br/>
-     * Each entry in the list contains a TimeSlot object and a list of available Staff
+     * Each entry in the list contains a TimeSlot object and a list of doctors available at that time
+     *
+     * @param date the date to get the list for
+     * @return a list of TimeSlotWithDoctor objects
      */
     public List<TimeSlotWithDoctor> getTimeslotWithDoctorList(LocalDate date) {
         Map<TimeSlot, List<Staff>> timeslotToDoctorMap = getTimeslotToDoctorMap(date);
@@ -125,24 +174,13 @@ public class AppointmentManager {
     }
 
     /**
-     * gets a list of appointments that are pending and within the available time of the doctor
-     */
-    /*
-    public List<Appointment> getPendingAppointmentsWithinAvailableTime(String doctorId) {
-        List<Appointment> pendingAppointments = new ArrayList<>();
-        for (Appointment appointment : appointments) {
-            // check if appointment is pending and doctor is available and the appointment is for the doctor
-            if (appointment.getStatus() == Appointment.Status.PENDING && Objects.equals(appointment.getDoctorId(), doctorId) &&
-                    isDoctorAvailable(doctorId, appointment.getDate(), appointment.getTimeSlot().getStart())) {
-                pendingAppointments.add(appointment);
-            }
-        }
-        return pendingAppointments;
-    }*/
-
-    /**
      * Check if a doctor is available at a given date and time <br/>
      * Will check based on the doctor's schedule and appointments accepted by the doctor
+     *
+     * @param doctorId the id of the doctor
+     * @param date     the date to check
+     * @param time     the time to check
+     * @return true if the doctor is available, false otherwise
      */
     public boolean isDoctorAvailable(String doctorId, LocalDate date, LocalTime time) {
         Schedule schedule = doctorScheduleMap.get(doctorId);
@@ -177,15 +215,20 @@ public class AppointmentManager {
 
     /**
      * record the outcome of an appointment
-     * @param doctorId the id of the doctor recording the outcome
+     *
+     * @param doctorId    the id of the doctor recording the outcome
      * @param appointment the appointment to record the outcome for
-     * @param outcome the outcome of the appointment
+     * @param outcome     the outcome of the appointment
      */
     public void recordAppointmentOutcome(String doctorId, Appointment appointment, AppointmentOutcomeRecord outcome) {
         appointment.setOutcome(outcome);
         appointment.setStatus(Appointment.Status.COMPLETED);
     }
 
+    /**
+     * Get a list of all outcomes of completed appointments
+     * @return a list of all outcomes of completed appointments
+     */
     public List<AppointmentOutcomeRecord> getAllOutcomes() {
         List<Appointment> completedAppointments = getAppointmentsByStatus(Appointment.Status.COMPLETED);
         List<AppointmentOutcomeRecord> records = new ArrayList<>();

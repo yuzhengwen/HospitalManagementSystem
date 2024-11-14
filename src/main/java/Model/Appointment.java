@@ -38,6 +38,7 @@ public class Appointment {
         this.timeSlot = timeSlot;
     }
 
+    @Override
     public String toString() {
         return "Date/Time: " + date + " " + timeSlot + " Patient ID: " + patientId + " Doctor ID: " + doctorId + " Type: " + type + " Status: " + status;
     }

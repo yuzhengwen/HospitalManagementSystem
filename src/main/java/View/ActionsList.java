@@ -17,6 +17,10 @@ public class ActionsList extends ArrayList<Action> {
         return super.remove(index);
     }
 
+    /**
+     * Print all actions in the actions list
+     * @see Action#getString()
+     */
     public void printActions() {
         this.sort((a1, a2) -> a1.choice - a2.choice);
         for (Action action : this) {

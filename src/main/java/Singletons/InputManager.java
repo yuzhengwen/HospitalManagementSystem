@@ -24,6 +24,12 @@ public class InputManager {
         return instance;
     }
 
+    /**
+     * Works just like {@link InputManager#getInt(String)}
+     * but with no message
+     *
+     * @see InputManager#getInt(String)
+     */
     public int getInt() {
         String input = scanner.nextLine(); // avoid scanner.nextInt() to prevent issues with nextLine()
         try {
@@ -34,32 +40,65 @@ public class InputManager {
         }
     }
 
+    /***
+     * Gets an integer input from user
+     * Repeatedly asks for integer until a valid integer is entered
+     * @param message message to display to user
+     * @return valid integer entered by user
+     */
+    public int getInt(String message) {
+        System.out.println(message);
+        return getInt();
+    }
+
+    /**
+     * Works just like {@link InputManager#getString(String)}
+     * but with no message
+     *
+     * @see InputManager#getString(String)
+     */
     public String getString() {
         return scanner.nextLine();
     }
 
-    public int getInt(String message) {
-        System.out.println(message);
-        return scanner.nextInt();
-    }
-
+    /**
+     * Gets a string input from user
+     *
+     * @param message message to display to user
+     * @return string entered by user
+     */
     public String getString(String message) {
         System.out.println(message);
         return scanner.nextLine();
     }
 
+    /**
+     * Gets a boolean input from user
+     *
+     * @param message message to display to user
+     * @return true if user enters 'Y', false otherwise
+     */
     public boolean getBoolean(String message) {
         System.out.println(message);
         String input = scanner.nextLine();
         return input.equalsIgnoreCase("Y");
     }
 
+    /**
+     * Prompts user to press enter to go back
+     *
+     * @return 1 to indicate to continue showing the previous menu
+     */
     public int goBackPrompt() {
         getString("Press enter to go back");
         return 1;
-        //Controller.getInstance().navigateBack();
     }
 
+    /**
+     * Gets a time input from user
+     *
+     * @return time entered by user
+     */
     public LocalTime getTime() {
         System.out.println("Enter time (HH:mm): ");
         DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
@@ -77,6 +116,11 @@ public class InputManager {
         return time;
     }
 
+    /**
+     * Gets a date input from user
+     *
+     * @return date entered by user
+     */
     public LocalDate getDate() {
         return getDate("Enter date (dd-MM-yyyy): ");
     }
@@ -98,6 +142,11 @@ public class InputManager {
         return date;
     }
 
+    /**
+     * Gets a date and time input from user
+     *
+     * @return date and time entered by user
+     */
     public LocalDateTime getDateTime() {
         LocalDate date = getDate();
         LocalTime time = getTime();
@@ -108,6 +157,14 @@ public class InputManager {
         return scanner;
     }
 
+    /**
+     * Gets an enum input from user
+     *
+     * @param s         message to display to user
+     * @param enumClass enum class with values to choose from
+     * @param <E>       enum type
+     * @return enum value selected by user
+     */
     public <E extends Enum<E>> E getEnum(String s, Class<E> enumClass) {
         System.out.println(s);
         EnumView<E> enumView = new EnumView<>(enumClass);
@@ -115,12 +172,29 @@ public class InputManager {
         return enumView.getSelected();
     }
 
+
+    /**
+     * Works just like {@link InputManager#getSelection(String, List, boolean)}
+     * but with no message
+     *
+     * @see InputManager#getSelection(String, List, boolean)
+     */
     public <T> T getSelection(String s, List<T> list) {
         System.out.println(s);
         SelectionView<T> selectionView = new SelectionView<>(list);
         selectionView.display();
         return selectionView.getSelected();
     }
+
+    /**
+     * Gets a selection from a list of items
+     *
+     * @param s         message to display to user
+     * @param list      list of items to choose from
+     * @param allowBack whether to allow user to go back
+     * @param <T>       type of items in list
+     * @return item selected by user
+     */
     public <T> T getSelection(String s, List<T> list, boolean allowBack) {
         System.out.println(s);
         SelectionView<T> selectionView = new SelectionView<>(list);
@@ -153,7 +227,11 @@ public class InputManager {
     }
 
     /***
-     * Validate password
+     * Validate password <br>
+     * Password must be at least 8 characters long<br>
+     * Password must contain at least one digit, one lowercase letter, one uppercase letter, and one special character<br>
+     * Password must not contain spaces<br>
+     * Password cannot be 'password'
      * @param password password to validate
      * @return true if password is valid, false otherwise
      */

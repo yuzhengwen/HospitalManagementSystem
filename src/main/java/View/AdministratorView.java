@@ -24,18 +24,27 @@ public class AdministratorView extends UserView<Staff> {
         } while (getInput() != 0);
     }
 
+    /**
+     * This method is used to navigate to the StaffManagementView
+     */
     private int staffManagement() {
         Controller.getInstance().setPreviousView(this);
         new StaffManagementView().display();
         return 1;
     }
 
+    /**
+     * This method is used to navigate to the AppointmentManagementView
+     */
     private int appointmentManagement() {
         Controller.getInstance().setPreviousView(this);
         new AppointmentManagementView().display();
         return 1;
     }
 
+    /**
+     * This method is used to navigate to the InventoryManagementView
+     */
     private int inventoryManagement() {
         Controller.getInstance().setPreviousView(this);
         new InventoryManagementView().display();

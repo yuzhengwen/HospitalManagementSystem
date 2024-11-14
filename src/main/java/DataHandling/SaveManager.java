@@ -39,6 +39,9 @@ public class SaveManager {
     private final String MEDICINE_FILE = "Medicine_List.csv";
     private final String REPLENISHMENT_REQUEST_FILE = "ReplenishmentRequests.csv";
 
+    /**
+     * Saves all data to files
+     */
     public void saveAllData() {
         savePatients();
         saveStaffs();
@@ -48,6 +51,9 @@ public class SaveManager {
         saveReplenishmentRequests();
     }
 
+    /**
+     * Loads all data from files
+     */
     public void loadAllData() {
         loadPatients();
         loadStaffs();
