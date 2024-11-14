@@ -48,4 +48,9 @@ public class ReplenishmentRequest {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    @Override
+    public String toString() {
+        return "Medicine: " + medicineName + ", Quantity Requested: " + quantity + ", Fulfilled: " + fulfilled;
+    }
 }

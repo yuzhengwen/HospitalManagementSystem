@@ -15,16 +15,10 @@ public class UserSessionController {
         }
         return instance;
     }
-    private final SaveManager saveManager = new SaveManager();
     private User currentUser;
 
     public void setCurrentUser(User user) {
         currentUser = user;
-    }
-
-    private UserSessionController() {
-        saveManager.loadPatients();
-        saveManager.loadStaffs();
     }
 
     public void showLoginMenu() {
@@ -42,18 +36,15 @@ public class UserSessionController {
     public boolean changePassword(String newPassword) {
         if (currentUser != null) {
             currentUser.changePassword(newPassword);
-            saveManager.savePatients();
+            SaveManager.getInstance().savePatients();
+            SaveManager.getInstance().saveStaffs();
             return true;
         }
         return false;
     }
 
     public void logout() {
-        saveManager.savePatients();
-        saveManager.saveStaffs();
-        saveManager.saveAppointments();
-        saveManager.saveDoctorSchedules();
-        saveManager.saveInventory();
+        SaveManager.getInstance().saveAllData();
         setCurrentUser(null);
         showLoginMenu();
     }

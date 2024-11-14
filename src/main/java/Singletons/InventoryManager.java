@@ -33,6 +33,15 @@ public class InventoryManager {
     public List<ReplenishmentRequest> getRequests() {
         return requests;
     }
+    public List<ReplenishmentRequest> getRequestsByStatus(boolean fulfilled) {
+        List<ReplenishmentRequest> filteredRequests = new ArrayList<>();
+        for (ReplenishmentRequest request : requests) {
+            if (request.isFulfilled() == fulfilled) {
+                filteredRequests.add(request);
+            }
+        }
+        return filteredRequests;
+    }
 
     public Inventory getInventory() {
         return inventory;

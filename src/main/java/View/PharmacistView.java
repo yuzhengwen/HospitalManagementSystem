@@ -59,8 +59,9 @@ public class PharmacistView extends UserView<Staff> {
         if (outcomes.isEmpty()) {
             System.out.println("No outcomes found");
         } else {
-            AppointmentOutcomeRecord outcome = InputManager.getInstance().getSelection("Select an outcome to dispense medicine:", outcomes);
-            if (outcome != null) {
+            AppointmentOutcomeRecord outcome = InputManager.getInstance().getSelection("Select an outcome to dispense medicine:", outcomes, true);
+            if (outcome == null) return 1;
+            else {
                 Prescription prescription = outcome.getPrescription();
                 int quantity = inventory.getMedicineCount(prescription.getMedicationName());
                 if (quantity <= 0) {

@@ -75,6 +75,11 @@ public class InventoryTests {
         assert (!inventory.removeMedicine("Aspirin", 5));
         assert (inventory.getMedicineCount("Aspirin") == 0);
     }
+    @Test
+    public void testSetMedicineCount() {
+        inventory.setMedicineCount("Paracetamol", 50);
+        assert (inventory.getMedicineCount("Paracetamol") == 50);
+    }
 
     /*
 Medicine Name,Initial Stock,Low Stock Level Alert

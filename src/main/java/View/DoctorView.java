@@ -1,6 +1,7 @@
 package View;
 
 import CustomTypes.ServiceProvided;
+import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.AppointmentOutcomeRecord;
 import Model.Prescription;
@@ -40,7 +41,8 @@ public class DoctorView extends UserView<Staff> {
         if (appointments.isEmpty()) {
             System.out.println("No completed appointments found.");
         } else {
-            Appointment selected = InputManager.getInstance().getSelection("Select an appointment to view: ", appointments);
+            Appointment selected = InputManager.getInstance().getSelection("Select an appointment to view: ", appointments, true);
+            if (selected == null) return 1;
             System.out.println(selected.getFullDetails());
         }
         return InputManager.getInstance().goBackPrompt();
@@ -53,7 +55,8 @@ public class DoctorView extends UserView<Staff> {
         if (appointments.isEmpty()) {
             System.out.println("No appointments accepted yet");
         } else {
-            Appointment selected = InputManager.getInstance().getSelection("Select an appointment to record outcome for: ", appointments);
+            Appointment selected = InputManager.getInstance().getSelection("Select an appointment to record outcome for: ", appointments, true);
+            if (selected == null) return 1;
 
             System.out.println("Enter the following details for the appointment outcome");
             System.out.println("--------------------------------------------------------");
@@ -76,7 +79,8 @@ public class DoctorView extends UserView<Staff> {
         if (appointments.isEmpty()) {
             System.out.println("No appointments accepted yet");
         } else {
-            Appointment selected = InputManager.getInstance().getSelection("Select an appointment to view: ", appointments);
+            Appointment selected = InputManager.getInstance().getSelection("Select an appointment to view: ", appointments, true);
+            if (selected == null) return 1;
             System.out.println(selected.getFullDetails());
         }
         return InputManager.getInstance().goBackPrompt();
@@ -90,7 +94,8 @@ public class DoctorView extends UserView<Staff> {
         if (appointments.isEmpty()) {
             System.out.println("No appointment requests found.");
         } else {
-            Appointment selectedAppointment = InputManager.getInstance().getSelection("Select an appointment to accept: ", appointments);
+            Appointment selectedAppointment = InputManager.getInstance().getSelection("Select an appointment to accept: ", appointments, true);
+            if (selectedAppointment == null) return 1;
             AppointmentManager.getInstance().acceptAppointment(selectedAppointment, user.getId());
             System.out.println("Appointment accepted.");
             System.out.println(selectedAppointment);
@@ -102,7 +107,7 @@ public class DoctorView extends UserView<Staff> {
         Controller.getInstance().setPreviousView(this);
         Schedule schedule = AppointmentManager.getInstance().getScheduleOfDoctor(user);
         System.out.println(schedule.printScheduleCompact());
-        while (InputManager.getInstance().getBoolean("Change schedule? (Y/N): ")) {
+        while (InputManager.getInstance().getBoolean("Change schedule? (Y/Any other key to confirm changes): ")) {
             DayOfWeek day = InputManager.getInstance().getEnum("Select day of week: ", DayOfWeek.class);
             int startHour = InputManager.getInstance().getInt("Enter start hour: ");
             int endHour = InputManager.getInstance().getInt("Enter end hour: ");
@@ -112,7 +117,7 @@ public class DoctorView extends UserView<Staff> {
         }
         System.out.println("Schedule updated.");
         System.out.println(schedule.printScheduleCompact());
-        Controller.getInstance().getSaveManager().saveDoctorSchedules();
+        SaveManager.getInstance().saveDoctorSchedules();
         return InputManager.getInstance().goBackPrompt();
     }
 }

@@ -19,17 +19,6 @@ import java.util.List;
 
 public class Controller {
     private static Controller instance;
-    private final SaveManager saveManager = new SaveManager();
-
-    public SaveManager getSaveManager() {
-        return saveManager;
-    }
-
-    private Controller() {
-        saveManager.loadAppointments();
-        saveManager.loadDoctorSchedules();
-        saveManager.loadInventory();
-    }
 
     public static synchronized Controller getInstance() {
         if (instance == null) { // if instance is null, create a new instance

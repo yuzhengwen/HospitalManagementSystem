@@ -1,6 +1,7 @@
 package Model;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A custom HashMap to store the inventory of the clinic
@@ -40,9 +41,25 @@ public class Inventory extends HashMap<String, Integer[]> {
         values[1] = lowStockThreshold;
         put(medicine, values);
     }
+    public int getLowStockThreshold(String medicine) {
+        return getOrDefault(medicine, new Integer[]{0, 0})[1];
+    }
 
+    /**
+     * Checks if a medicine is low in stock
+     * If the medicine does not exist in inventory, it is considered low stock
+     * @param medicine the name of the medicine
+     * @return true if the quantity of the medicine is less than or equal to the low stock threshold
+     */
     public boolean isLowStock(String medicine) {
-        return getOrDefault(medicine, new Integer[]{0, 0})[0] <= getOrDefault(medicine, new Integer[]{0, 0})[1];
+        Integer[] values = getOrDefault(medicine, new Integer[]{0, 0});
+        return values[0] <= values[1];
+    }
+    public String[] getLowStockItems() {
+        return entrySet().stream()
+                .filter(entry -> entry.getValue()[0] <= entry.getValue()[1])
+                .map(Map.Entry::getKey)
+                .toArray(String[]::new);
     }
 
     /**
@@ -65,5 +82,10 @@ public class Inventory extends HashMap<String, Integer[]> {
 
     public int getMedicineCount(String medicine) {
         return getOrDefault(medicine, new Integer[]{0, 0})[0];
+    }
+    public void setMedicineCount(String medicine, int quantity) {
+        Integer[] values = getOrDefault(medicine, new Integer[]{0, 0});
+        values[0] = quantity;
+        put(medicine, values);
     }
 }

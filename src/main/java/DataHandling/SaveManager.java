@@ -1,10 +1,7 @@
 package DataHandling;
 
-import Model.Appointment;
-import Model.Patient;
+import Model.*;
 import Model.ScheduleManagement.Schedule;
-import Model.Staff;
-import Model.User;
 import Singletons.AppointmentManager;
 import Singletons.InventoryManager;
 import Singletons.UserLoginManager;
@@ -15,18 +12,72 @@ import java.util.List;
 import java.util.Map;
 
 public class SaveManager {
+    private static SaveManager instance;
+
+    public static synchronized SaveManager getInstance() {
+        if (instance == null) {
+            instance = new SaveManager();
+        }
+        return instance;
+    }
+
     private final ISaveService saveService = new LocalFileHandler();
     private final PatientSerializer patientSerializer = new PatientSerializer();
     private final StaffSerializer staffSerializer = new StaffSerializer();
     private final AppointmentSerializer appointmentSerializer = new AppointmentSerializer();
     private final DoctorScheduleSerializer doctorScheduleSerializer = new DoctorScheduleSerializer();
     private final InventorySerializer inventorySerializer = new InventorySerializer();
+    private final ReplenishmentRequestSerializer replenishmentRequestSerializer = new ReplenishmentRequestSerializer();
 
     private final String APPOINTMENT_FILE = "Appointments.csv";
     private final String SCHEDULE_FILE = "DoctorSchedules.csv";
     private final String PATIENT_FILE = "Patient_List.csv";
     private final String STAFF_FILE = "Staff_List.csv";
     private final String MEDICINE_FILE = "Medicine_List.csv";
+    private final String REPLENISHMENT_REQUEST_FILE = "ReplenishmentRequests.csv";
+
+    public void saveAllData() {
+        savePatients();
+        saveStaffs();
+        saveAppointments();
+        saveDoctorSchedules();
+        saveInventory();
+        saveReplenishmentRequests();
+    }
+
+    public void loadAllData() {
+        loadPatients();
+        loadStaffs();
+        loadAppointments();
+        loadDoctorSchedules();
+        loadInventory();
+        loadReplenishmentRequests();
+    }
+
+    public void saveReplenishmentRequests() {
+        String header = "Medicine,Quantity,Fulfilled";
+        List<ReplenishmentRequest> requests = InventoryManager.getInstance().getRequests();
+        List<String> stringsToWrite = new ArrayList<>();
+        stringsToWrite.add(header);
+        for (ReplenishmentRequest request : requests) {
+            stringsToWrite.add(replenishmentRequestSerializer.serialize(request));
+        }
+        saveService.saveData(REPLENISHMENT_REQUEST_FILE, stringsToWrite);
+    }
+
+    public void loadReplenishmentRequests() {
+        List<String> data = saveService.readData(REPLENISHMENT_REQUEST_FILE);
+        if (data == null || data.isEmpty()) {
+            return;
+        }
+        data.remove(0); // remove the header
+        List<ReplenishmentRequest> requests = new ArrayList<>();
+        for (String serializedRequest : data) {
+            ReplenishmentRequest request = replenishmentRequestSerializer.deserialize(serializedRequest);
+            requests.add(request);
+        }
+        InventoryManager.getInstance().setRequests(requests);
+    }
 
     public void saveInventory() {
         String header = "Medicine,Quantity,Low Stock Threshold";

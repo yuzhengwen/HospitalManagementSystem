@@ -122,6 +122,15 @@ public class InputManager {
         selectionView.display();
         return selectionView.getSelected();
     }
+    public <T> T getSelection(String s, List<T> list, boolean allowBack) {
+        System.out.println(s);
+        SelectionView<T> selectionView = new SelectionView<>(list);
+        if (allowBack) {
+            selectionView.allowBack();
+        }
+        selectionView.display();
+        return selectionView.getSelected();
+    }
 
     /***
      * Gets a new password input from user

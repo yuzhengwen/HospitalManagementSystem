@@ -1,5 +1,6 @@
 package Main;
 
+import DataHandling.SaveManager;
 import Email.TestEmail;
 import GoogleBucket.UploadBucket;
 import Singletons.InputManager;
@@ -11,6 +12,8 @@ public class Main {
     public static void main(String[] args) {
         //uploadTest();
         //emailTest();
+
+        SaveManager.getInstance().loadAllData();
         Controller.UserSessionController.getInstance().showLoginMenu();
     }
 

@@ -1,4 +1,5 @@
-Medicine Name,Initial Stock,Low Stock Level Alert
+Medicine,Quantity,Low Stock Threshold
 Paracetamol,100,20
+Aspirin,12,0
 Ibuprofen,50,10
 Amoxicillin,75,15

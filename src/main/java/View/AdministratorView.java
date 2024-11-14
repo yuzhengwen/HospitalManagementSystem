@@ -2,6 +2,8 @@ package View;
 
 import Controller.Controller;
 import Model.Staff;
+import View.AdministratorSubViews.AppointmentManagementView;
+import View.AdministratorSubViews.InventoryManagementView;
 import View.AdministratorSubViews.StaffManagementView;
 
 public class AdministratorView extends UserView<Staff> {
@@ -29,10 +31,14 @@ public class AdministratorView extends UserView<Staff> {
     }
 
     private int appointmentManagement() {
+        Controller.getInstance().setPreviousView(this);
+        new AppointmentManagementView().display();
         return 1;
     }
 
     private int inventoryManagement() {
+        Controller.getInstance().setPreviousView(this);
+        new InventoryManagementView().display();
         return 1;
     }
 }
