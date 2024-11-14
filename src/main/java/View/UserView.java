@@ -4,10 +4,10 @@ import Controller.UserSessionController;
 import Model.User;
 import Singletons.InputManager;
 
-public abstract class UserView extends ViewObject {
-    public User user;
+public abstract class UserView<T extends User> extends ViewObject {
+    public T user;
 
-    public UserView(User user) {
+    protected UserView(T user) {
         this.user = user;
         actions.add(new Action("Change Password", this::changePassword));
         actions.add(new Action("Logout", this::logout));

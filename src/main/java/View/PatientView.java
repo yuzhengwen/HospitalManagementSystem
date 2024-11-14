@@ -10,12 +10,10 @@ import Singletons.InputManager;
 
 import java.util.List;
 
-public class PatientView extends UserView {
-    Patient patient;
-
+public class PatientView extends UserView<Patient> {
     public PatientView(Patient patient) { // constructor
         super(patient);
-        this.patient = patient;
+        this.user = patient;
         System.out.println("Welcome, " + patient.getName());
         actions.add(new Action("View Medical Record", this::viewPatientInfo));
         actions.add(new Action("Add/Update Contact Info", this::updateContactInfo));
@@ -28,7 +26,7 @@ public class PatientView extends UserView {
     private void updateContactInfo() {
         Controller.getInstance().setPreviousView(this);
         // get reference to the patient's contact info
-        ContactInfo contactInfo = patient.getContactInfo();
+        ContactInfo contactInfo = user.getContactInfo();
         System.out.println("Current Contact Info:");
         System.out.println(contactInfo.toString());
         System.out.println("Enter new contact info:");
@@ -43,13 +41,13 @@ public class PatientView extends UserView {
 
     private void viewPatientInfo() {
         Controller.getInstance().setPreviousView(this);
-        System.out.println(patient.getMedicalRecord());
+        System.out.println(user.getMedicalRecord());
         InputManager.getInstance().goBackPrompt();
     }
 
     private void viewAppointments() {
         Controller.getInstance().setPreviousView(this);
-        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByPatientId(patient.getId());
+        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByPatientId(user.getId());
         if (appointments.isEmpty()) {
             System.out.println("No appointments found");
         } else {

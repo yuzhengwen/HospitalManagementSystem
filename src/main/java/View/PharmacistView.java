@@ -13,12 +13,9 @@ import Singletons.InventoryManager;
 import java.util.List;
 import java.util.Map;
 
-public class PharmacistView extends UserView {
-    private final Staff staff;
-
+public class PharmacistView extends UserView<Staff> {
     public PharmacistView(Staff staff) {
         super(staff);
-        this.staff = staff;
         System.out.println("Welcome, " + staff.getName());
         actions.add(new Action("View Appointment Outcomes", this::viewOutcomes));
         actions.add(new Action("Dispense Medicine", this::dispenseMedicine));
