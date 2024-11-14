@@ -13,9 +13,16 @@ public class Prescription {
         this.status = PrescriptionStatus.PENDING;
     }
 
-    public void UpdateStatus(PrescriptionStatus status) {
+    public Prescription(String prescriptionId, String medicationName, PrescriptionStatus status) {
+        this.prescriptionId = prescriptionId;
+        this.medicationName = medicationName;
         this.status = status;
     }
+
+    public void setStatus(PrescriptionStatus status) {
+        this.status = status;
+    }
+
     public String getPrescriptionId() {
         return prescriptionId;
     }
@@ -27,6 +34,7 @@ public class Prescription {
     public PrescriptionStatus getStatus() {
         return status;
     }
+
     public String getId() {
         return prescriptionId;
     }

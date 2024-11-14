@@ -6,9 +6,11 @@ import Model.ScheduleManagement.Schedule;
 import Model.Staff;
 import Model.User;
 import Singletons.AppointmentManager;
+import Singletons.InventoryManager;
 import Singletons.UserLoginManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -18,12 +20,31 @@ public class SaveManager {
     private final StaffSerializer staffSerializer = new StaffSerializer();
     private final AppointmentSerializer appointmentSerializer = new AppointmentSerializer();
     private final DoctorScheduleSerializer doctorScheduleSerializer = new DoctorScheduleSerializer();
+    private final InventorySerializer inventorySerializer = new InventorySerializer();
 
     private final String APPOINTMENT_FILE = "Appointments.csv";
     private final String SCHEDULE_FILE = "DoctorSchedules.csv";
     private final String PATIENT_FILE = "Patient_List.csv";
     private final String STAFF_FILE = "Staff_List.csv";
-    private final String INITIAL_MEDICINE = "Medicine_List.csv";
+    private final String MEDICINE_FILE = "Medicine_List.csv";
+
+    public void saveInventory() {
+        String header = "Medicine,Quantity,Low Stock Threshold";
+        String serializedInventory = inventorySerializer.serialize(InventoryManager.getInstance().getInventory());
+        List<String> stringsToWrite = new ArrayList<>(Collections.singletonList(header));
+        stringsToWrite.add(serializedInventory);
+        saveService.saveData(MEDICINE_FILE, stringsToWrite);
+    }
+
+    public void loadInventory() {
+        List<String> data = saveService.readData(MEDICINE_FILE);
+        if (data == null || data.isEmpty()) {
+            return;
+        }
+        data.remove(0); // remove the header
+        String serializedInventory = String.join("\n", data);
+        InventoryManager.getInstance().setInventory(inventorySerializer.deserialize(serializedInventory));
+    }
 
     public void savePatients() {
         List<Patient> patients = UserLoginManager.getInstance().getAllPatients();

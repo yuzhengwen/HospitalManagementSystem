@@ -36,7 +36,19 @@ public class AppointmentFilter {
         return this;
     }
 
+    /**
+     * Filters the given list of appointments based on the filter criteria.
+     * Original list is not modified.
+     * If no filter criteria are set, the original list is returned.
+     * If original list is empty, an empty list is returned
+     *
+     * @param appointments list of appointments before filtering
+     * @return new list of appointments after filtering
+     */
     public List<Appointment> filter(List<Appointment> appointments) {
+        if (appointments.isEmpty()) {
+            return new ArrayList<>();
+        }
         List<Appointment> filteredAppointments = new ArrayList<>(appointments);
         if (doctorId != null) {
             filteredAppointments.removeIf(appointment -> !appointment.getDoctorId().equals(doctorId));

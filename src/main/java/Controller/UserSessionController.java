@@ -53,6 +53,7 @@ public class UserSessionController {
         saveManager.saveStaffs();
         saveManager.saveAppointments();
         saveManager.saveDoctorSchedules();
+        saveManager.saveInventory();
         setCurrentUser(null);
         showLoginMenu();
     }

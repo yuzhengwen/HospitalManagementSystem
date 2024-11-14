@@ -29,8 +29,7 @@ public class AppointmentOutcomeRecord {
 
     @Override
     public String toString() {
-        return "AppointmentOutcomeRecord: " + '\n' +
-                "Prescription: " + prescription + '\n' +
+        return "Prescription: " + prescription + '\n' +
                 "ServiceProvided: " + serviceProvided + '\n' +
                 "Notes: " + notes;
     }

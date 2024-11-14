@@ -52,10 +52,11 @@ public class Appointment {
         sb.append("Doctor ID: ").append(doctorId).append("\n");
         sb.append("Type: ").append(type).append("\n");
         sb.append("Status: ").append(status).append("\n");
+        sb.append("Appointment Outcome Record: ");
         if (status == Status.COMPLETED && outcome != null) {
-            sb.append("Outcome: ").append(outcome).append("\n");
+            sb.append(outcome).append("\n");
         } else {
-            sb.append("Outcome: ").append("N/A").append("\n");
+            sb.append("N/A").append("\n");
         }
         return sb.toString();
     }

@@ -8,6 +8,5 @@ import java.util.List;
  */
 public interface ISaveService {
     void saveData(String fileName, List<String> data);
-
     List<String> readData(String fileName);
 }

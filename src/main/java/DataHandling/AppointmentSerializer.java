@@ -1,5 +1,6 @@
 package DataHandling;
 
+import CustomTypes.PrescriptionStatus;
 import CustomTypes.ServiceProvided;
 import Model.Appointment;
 import Model.AppointmentOutcomeRecord;
@@ -40,6 +41,7 @@ public class AppointmentSerializer implements ISerializer<Appointment> {
         Appointment.Status status = Appointment.Status.valueOf(parts[5].trim().toUpperCase());
         Appointment apt = new Appointment(patientId, date, timeSlot, type);
         apt.setStatus(status);
+        // check if there is an outcome record
         if (parts.length > 6) {
             // Build back the format: "ServiceProvided,Notes,PrescriptionId,MedicationName"
             StringBuilder serializedOutcomeBuilder = new StringBuilder();
@@ -73,7 +75,8 @@ public class AppointmentSerializer implements ISerializer<Appointment> {
             String[] parts = data.split(SEPARATOR, -1);
             ServiceProvided service = ServiceProvided.valueOf(parts[0].trim().toUpperCase());
             String notes = parts[1].trim();
-            String serializedPrescription = parts[2].trim() + SEPARATOR + parts[3].trim();
+            // Build back the format: "PrescriptionId,MedicationName,Status"
+            String serializedPrescription = parts[2].trim() + SEPARATOR + parts[3].trim() + SEPARATOR + parts[4].trim();
             Prescription prescription = prescriptionSerializer.deserialize(serializedPrescription);
             return new AppointmentOutcomeRecord(prescription, service, notes);
         }
@@ -82,7 +85,7 @@ public class AppointmentSerializer implements ISerializer<Appointment> {
     static class PrescriptionSerializer implements ISerializer<Prescription> {
         @Override
         public String serialize(Prescription object) {
-            return object.getId() + SEPARATOR + object.getMedicationName();
+            return object.getId() + SEPARATOR + object.getMedicationName() + SEPARATOR + object.getStatus();
         }
 
         @Override
@@ -90,7 +93,8 @@ public class AppointmentSerializer implements ISerializer<Appointment> {
             String[] parts = data.split(SEPARATOR, -1);
             String id = parts[0].trim();
             String medicationName = parts[1].trim();
-            return new Prescription(id, medicationName);
+            PrescriptionStatus status = PrescriptionStatus.valueOf(parts[2].trim().toUpperCase());
+            return new Prescription(id, medicationName, status);
         }
     }
 }

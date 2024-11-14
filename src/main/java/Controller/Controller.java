@@ -28,6 +28,7 @@ public class Controller {
     private Controller() {
         saveManager.loadAppointments();
         saveManager.loadDoctorSchedules();
+        saveManager.loadInventory();
     }
 
     public static synchronized Controller getInstance() {
@@ -70,7 +71,7 @@ public class Controller {
                 //new AdminView(currentUser).display();
             }
             if (role == Role.PHARMACIST) {
-                //new PharmacistView(currentUser).display();
+                new PharmacistView((Staff) currentUser).display();
             }
         }
     }
@@ -84,6 +85,7 @@ public class Controller {
             Staff selectedDoctor = InputManager.getInstance().getSelection("Select a doctor: ", doctors);
             Appointment.Type type = selectAppointmentType();
 
+            // create the appointment object and add it to the list
             Appointment newAppointment = new Appointment(currentUser.getId(), date, timeSlot.getTimeSlot(), type);
             newAppointment.setDoctorId(selectedDoctor.getId());
             AppointmentManager.getInstance().add(newAppointment);
@@ -130,7 +132,7 @@ public class Controller {
         return InputManager.getInstance().getEnum("Select appointment type: ", Appointment.Type.class);
     }
 
-    private Appointment getSelectedAppointment(ArrayList<Appointment> list) {
+    private Appointment getSelectedAppointment(List<Appointment> list) {
         return InputManager.getInstance().getSelection("Select an appointment to edit or delete: ", list);
     }
 }

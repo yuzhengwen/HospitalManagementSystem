@@ -2,6 +2,7 @@ package Singletons;
 
 import Model.Appointment;
 import Model.AppointmentOutcomeRecord;
+import Model.Prescription;
 import Model.ScheduleManagement.Schedule;
 import Model.ScheduleManagement.TimeSlot;
 import Model.ScheduleManagement.TimeSlotWithDoctor;
@@ -32,26 +33,20 @@ public class AppointmentManager {
         doctorScheduleMap.put(doctorId, schedule);
     }
 
-    public ArrayList<Appointment> getAppointmentsByPatientId(String patientId) {
-        ArrayList<Appointment> appointmentsByPatient = new ArrayList<>();
-        for (Appointment appointment : appointments) {
-            if (appointment.getPatientId().equals(patientId)) {
-                appointmentsByPatient.add(appointment);
-            }
-        }
-        return appointmentsByPatient;
-    }
+    /**
+     * Get a list of appointments with a given filter
+     * Other filter methods use this as a base
+     * @param filter to apply to the list of appointments
+     * @return a list of appointments that match the filter
+     */
     public List<Appointment> getAppointmentsWithFilter(AppointmentFilter filter) {
         return filter.filter(appointments);
     }
+    public List<Appointment> getAppointmentsByPatientId(String patientId) {
+        return getAppointmentsWithFilter(new AppointmentFilter().filterByPatient(patientId));
+    }
     public List<Appointment> getAppointmentsByStatus(Appointment.Status status){
-        List<Appointment> appointmentsByStatus = new ArrayList<>();
-        for (Appointment appointment : appointments) {
-            if (appointment.getStatus() == status) {
-                appointmentsByStatus.add(appointment);
-            }
-        }
-        return appointmentsByStatus;
+        return getAppointmentsWithFilter(new AppointmentFilter().filterByStatus(status));
     }
 
     public List<Appointment> getAppointmentsByDoctorId(String id, Appointment.Status status) {
@@ -171,6 +166,7 @@ public class AppointmentManager {
 
     /**
      * Accept an appointment request
+     * Sets the status of the appointment to ACCEPTED and assigns the doctor to the appointment
      *
      * @param appointment the appointment to accept
      * @param doctorId    the id of the doctor accepting the appointment
@@ -180,10 +176,26 @@ public class AppointmentManager {
         appointment.setStatus(Appointment.Status.ACCEPTED);
     }
 
+    /**
+     * record the outcome of an appointment
+     * @param doctorId the id of the doctor recording the outcome
+     * @param appointment the appointment to record the outcome for
+     * @param outcome the outcome of the appointment
+     */
     public void recordAppointmentOutcome(String doctorId, Appointment appointment, AppointmentOutcomeRecord outcome) {
         appointment.setOutcome(outcome);
         appointment.setStatus(Appointment.Status.COMPLETED);
     }
 
+    public List<AppointmentOutcomeRecord> getAllOutcomes() {
+        List<Appointment> completedAppointments = getAppointmentsByStatus(Appointment.Status.COMPLETED);
+        List<AppointmentOutcomeRecord> records = new ArrayList<>();
+        for (Appointment appointment : completedAppointments) {
+            if (appointment.getOutcome() != null) {
+                records.add(appointment.getOutcome());
+            }
+        }
+        return records;
+    }
 }
 
