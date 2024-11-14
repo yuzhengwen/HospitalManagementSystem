@@ -5,7 +5,7 @@ import Model.User;
 import Singletons.InputManager;
 
 public abstract class UserView<T extends User> extends ViewObject {
-    public T user;
+    protected final T user;
 
     protected UserView(T user) {
         this.user = user;
