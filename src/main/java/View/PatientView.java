@@ -6,9 +6,14 @@ import CustomTypes.OperationMode;
 import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.Patient;
+import Model.ScheduleManagement.TimeSlot;
+import Model.ScheduleManagement.TimeSlotWithDoctor;
+import Model.Staff;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PatientView extends UserView<Patient> {
@@ -71,7 +76,7 @@ public class PatientView extends UserView<Patient> {
     private int scheduleAppointments() {
         Controller.getInstance().setPreviousView(this);
 
-        Appointment newAppointment = Controller.getInstance().manageAppointments(OperationMode.SCHEDULE);
+        Appointment newAppointment = manageAppointments(OperationMode.SCHEDULE);
         if (newAppointment != null) {
             System.out.println("Appointment scheduled successfully");
             System.out.println(newAppointment.toString());
@@ -86,7 +91,7 @@ public class PatientView extends UserView<Patient> {
         Controller.getInstance().setPreviousView(this);
 
         System.out.println("Choose an appointment to reschedule: ");
-        Appointment appointment = Controller.getInstance().manageAppointments(OperationMode.EDIT);
+        Appointment appointment = manageAppointments(OperationMode.EDIT);
         if (appointment != null) {
             System.out.println("Appointment rescheduled successfully");
             System.out.println(appointment.toString());
@@ -100,11 +105,75 @@ public class PatientView extends UserView<Patient> {
     private int cancelAppointments() {
         Controller.getInstance().setPreviousView(this);
         System.out.println("Choose an appointment to cancel: ");
-        if (Controller.getInstance().manageAppointments(OperationMode.DELETE) != null)
+        if (manageAppointments(OperationMode.DELETE) != null)
             System.out.println("Appointment cancelled successfully");
         else
             System.out.println("Appointment cancellation failed");
         SaveManager.getInstance().saveAppointments();
         return InputManager.getInstance().goBackPrompt();
+    }
+
+    private Appointment manageAppointments(OperationMode mode) {
+        if (OperationMode.SCHEDULE == mode) {
+            // select date, timeslot, doctor, type
+            LocalDate date = InputManager.getInstance().getDate();
+            TimeSlotWithDoctor timeSlot = selectTimeSlot(date);
+            List<Staff> doctors = timeSlot.getDoctors();
+            Staff selectedDoctor = InputManager.getInstance().getSelection("Select a doctor: ", doctors);
+            Appointment.Type type = selectAppointmentType();
+
+            // create the appointment object and add it to the list
+            Appointment newAppointment = new Appointment(user.getId(), date, timeSlot.getTimeSlot(), type);
+            newAppointment.setDoctorId(selectedDoctor.getId());
+            AppointmentManager.getInstance().add(newAppointment);
+            return newAppointment;
+        } else if (OperationMode.EDIT == mode) {
+            Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsByPatientId(user.getId()));
+            if (selected != null) {
+                LocalDate date = InputManager.getInstance().getDate();
+                TimeSlotWithDoctor timeSlot = selectTimeSlot(date);
+                List<Staff> doctors = timeSlot.getDoctors();
+                Staff selectedDoctor = InputManager.getInstance().getSelection("Select a doctor: ", doctors);
+                selected.setDate(date);
+                selected.setTimeSlot(timeSlot.getTimeSlot());
+                selected.setDoctorId(selectedDoctor.getId());
+                return selected;
+            }
+        } else if (OperationMode.DELETE == mode) {
+            Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsByPatientId(user.getId()));
+            if (selected != null) {
+                AppointmentManager.getInstance().remove(selected);
+                return selected;
+            }
+        }
+        return null;
+    }
+
+    private TimeSlotWithDoctor selectTimeSlot(LocalDate date) {
+        // get timeslots with doctors for the selected date
+        List<TimeSlotWithDoctor> timeSlotWithDoctors = AppointmentManager.getInstance().getTimeslotWithDoctorList(date);
+        // add patientBusy flag to the timeslots that the patient already has an appointment
+        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByPatientId(user.getId());
+        List<TimeSlot> patientBusyTimeSlots = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            patientBusyTimeSlots.add(appointment.getTimeSlot());
+        }
+        for (TimeSlotWithDoctor timeSlotWithDoctor : timeSlotWithDoctors) {
+            if (patientBusyTimeSlots.contains(timeSlotWithDoctor.getTimeSlot())) {
+                timeSlotWithDoctor.setPatientBusy(true);
+            }
+        }
+        // display the available timeslots
+        SelectionView<TimeSlotWithDoctor> timeSlotSelectionView = new SelectionView<>(timeSlotWithDoctors);
+        timeSlotSelectionView.display();
+        return timeSlotSelectionView.getSelected();
+    }
+
+    private Appointment.Type selectAppointmentType() {
+        return InputManager.getInstance().getEnum("Select appointment type: ", Appointment.Type.class);
+    }
+
+    private Appointment getSelectedAppointment(List<Appointment> list) {
+        return InputManager.getInstance().getSelection("Select an appointment to edit or delete: ", list);
     }
 }

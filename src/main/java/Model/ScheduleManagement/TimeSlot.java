@@ -49,6 +49,11 @@ public class TimeSlot {
         return startTime + " - " + endTime;
     }
 
+    /**
+     * Time is within the time slot if it is equal to the start time or between the start and end time
+     * @param time LocalTime to check
+     * @return true if time is within the time slot
+     */
     public boolean isTimeWithin(LocalTime time) {
         return time.equals(start) || (time.isAfter(start) && time.isBefore(end));
     }

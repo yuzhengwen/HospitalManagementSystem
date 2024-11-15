@@ -148,6 +148,7 @@ public class AppointmentManager {
                 timeslotToDoctorMap.get(timeSlot).add(schedule.getStaff());
             }
         }
+        /*
         // remove timeslots that are already booked
         for (Appointment appointment : appointments) {
             if (appointment.getDate().equals(date) && appointment.getStatus() == Appointment.Status.ACCEPTED) {
@@ -156,6 +157,8 @@ public class AppointmentManager {
         }
         // remove empty timeslots
         timeslotToDoctorMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+        return timeslotToDoctorMap;
+        */
         return timeslotToDoctorMap;
     }
 
@@ -170,11 +173,20 @@ public class AppointmentManager {
         Map<TimeSlot, List<Staff>> timeslotToDoctorMap = getTimeslotToDoctorMap(date);
         List<TimeSlotWithDoctor> timeSlotWithDoctorList = new ArrayList<>();
         for (Map.Entry<TimeSlot, List<Staff>> entry : timeslotToDoctorMap.entrySet()) {
-            timeSlotWithDoctorList.add(new TimeSlotWithDoctor(entry.getKey(), entry.getValue()));
+            boolean[] availability = buildAvailabilityList(date, entry.getKey(), entry.getValue());
+            timeSlotWithDoctorList.add(new TimeSlotWithDoctor(entry.getKey(), entry.getValue(), availability));
         }
         // sort time slots by start time
         timeSlotWithDoctorList.sort(Comparator.comparing(ts -> ts.getTimeSlot().getStart()));
         return timeSlotWithDoctorList;
+    }
+
+    private boolean[] buildAvailabilityList(LocalDate date, TimeSlot timeSlot, List<Staff> doctors) {
+        boolean[] availability = new boolean[doctors.size()];
+        for (int i = 0; i < doctors.size(); i++) {
+            availability[i] = isDoctorAvailable(doctors.get(i).getId(), date, timeSlot.getStart());
+        }
+        return availability;
     }
 
     /**
@@ -231,6 +243,7 @@ public class AppointmentManager {
 
     /**
      * Get a list of all outcomes of completed appointments
+     *
      * @return a list of all outcomes of completed appointments
      */
     public List<AppointmentOutcomeRecord> getAllOutcomes() {
@@ -245,18 +258,22 @@ public class AppointmentManager {
     }
 
     // ONLY FOR Loading Data ------------------------------------------
+
     /**
      * Set the list of appointments
      * Only meant for loading data from file
+     *
      * @param appointments the list of appointments to set
      */
     public void setAppointments(List<Appointment> appointments) {
         this.appointments.clear();
         this.appointments.addAll(appointments);
     }
+
     /**
      * Set the map of doctor schedules
      * Only meant for loading data from file
+     *
      * @param doctorScheduleMap the map of doctor schedules to set
      */
     public void setDoctorScheduleMap(Map<String, Schedule> doctorScheduleMap) {

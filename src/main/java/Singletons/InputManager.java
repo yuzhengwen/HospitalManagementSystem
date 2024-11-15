@@ -84,7 +84,7 @@ public class InputManager {
     public boolean getBoolean(String message) {
         System.out.println(message);
         String input = scanner.nextLine();
-        return input.equalsIgnoreCase("Y");
+        return input.trim().equalsIgnoreCase("Y");
     }
 
     /**
@@ -99,7 +99,7 @@ public class InputManager {
 
     /**
      * Gets a time input from user
-     *
+     * Default message is "Enter time (HH:mm): "
      * @return time entered by user
      */
     public LocalTime getTime() {
@@ -121,7 +121,7 @@ public class InputManager {
 
     /**
      * Gets a date input from user
-     *
+     * Default message is "Enter date (dd-MM-yyyy): "
      * @return date entered by user
      */
     public LocalDate getDate() {
@@ -172,21 +172,22 @@ public class InputManager {
         System.out.println(s);
         EnumView<E> enumView = new EnumView<>(enumClass);
         enumView.display();
+        // verify that a valid enum value was selected
+        if (enumView.getSelected() == null) {
+            return getEnum(s, enumClass);
+        }
         return enumView.getSelected();
     }
 
 
     /**
      * Works just like {@link InputManager#getSelection(String, List, boolean)}
-     * but with no message
+     * but with no option to go back
      *
      * @see InputManager#getSelection(String, List, boolean)
      */
     public <T> T getSelection(String s, List<T> list) {
-        System.out.println(s);
-        SelectionView<T> selectionView = new SelectionView<>(list);
-        selectionView.display();
-        return selectionView.getSelected();
+        return getSelection(s, list, false);
     }
 
     /**
@@ -205,6 +206,10 @@ public class InputManager {
             selectionView.allowBack();
         }
         selectionView.display();
+        // verify that a valid selection was made
+        if (selectionView.getSelected() == null) {
+            return getSelection(s, list);
+        }
         return selectionView.getSelected();
     }
 
