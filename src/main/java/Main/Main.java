@@ -1,7 +1,7 @@
 package Main;
 
 import DataHandling.SaveManager;
-import Email.TestEmail;
+import Email.GmailSender;
 import GoogleBucket.UploadBucket;
 import Singletons.InputManager;
 
@@ -21,7 +21,7 @@ public class Main {
     private static void emailTest() {
         try {
             String email = InputManager.getInstance().getString("Enter email:");
-            TestEmail.SendTestMail(email);
+            GmailSender.SendTestMail(email);
             System.out.println("Email sent successfully");
         } catch (IOException | GeneralSecurityException e) {
             System.out.println("Error sending email: " + e.getMessage());

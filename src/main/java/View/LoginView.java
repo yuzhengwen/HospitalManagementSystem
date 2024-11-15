@@ -87,6 +87,8 @@ public class LoginView extends ViewObject {
                 user = new Patient(id, password, name, dob, bloodType, gender);
                 break;
             case Role.DOCTOR:
+            case Role.PHARMACIST:
+            case Role.ADMINISTRATOR:
                 int age = InputManager.getInstance().getInt("Enter age: ");
                 user = new Staff(id, password, name, role, gender, age);
                 break;

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Properties;
 
 /* class to demonstrate use of Gmail list labels API */
-public class TestEmail {
+public class GmailSender {
     /**
      * Application name.
      */
@@ -60,7 +60,7 @@ public class TestEmail {
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
             throws IOException {
         // Load client secrets.
-        InputStream in = TestEmail.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        InputStream in = GmailSender.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {
             throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
         }
@@ -77,6 +77,24 @@ public class TestEmail {
         Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
         //returns an authorized Credential object.
         return credential;
+    }
+
+    public static void sendEmail(String toEmail, String subject, String content) throws GeneralSecurityException, IOException {
+        // Build a new authorized API client service.
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        Gmail service = new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+
+        // Send Email
+        String fromEmail = "me";
+        try {
+            Message message = createEmail(toEmail, fromEmail, subject, content);
+            sendMessage(service, "me", message);
+        } catch (MessagingException e) {
+            System.out.println("Error Creating/Sending email: " + e.getMessage());
+        }
+        printLabels(service);
     }
 
     public static void SendTestMail(String toEmail) throws IOException, GeneralSecurityException {

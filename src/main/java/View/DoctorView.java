@@ -3,14 +3,15 @@ package View;
 import Controller.Controller;
 import CustomTypes.ServiceProvided;
 import DataHandling.SaveManager;
-import Model.Appointment;
-import Model.AppointmentOutcomeRecord;
-import Model.Prescription;
+import Email.GmailSender;
+import Model.*;
 import Model.ScheduleManagement.Schedule;
-import Model.Staff;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
+import Singletons.UserLoginManager;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.time.DayOfWeek;
 import java.util.List;
 
@@ -67,10 +68,40 @@ public class DoctorView extends UserView<Staff> {
             AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord(new Prescription(prescriptionId, medicationName), service, notes);
             AppointmentManager.getInstance().recordAppointmentOutcome(user.getId(), selected, outcome);
 
+            boolean followUp = InputManager.getInstance().getBoolean("Is a follow-up appointment required? (Y/N): ");
+            if (followUp) {
+                // TODO: Implement follow-up appointment creation
+            }
+            boolean emailResults = InputManager.getInstance().getBoolean("Email results to patient? (Y/N): ");
+            if (emailResults) {
+                Patient p = (Patient) UserLoginManager.getInstance().getUserById(selected.getPatientId());
+                try {
+                    GmailSender.sendEmail(p.getContactInfo().email, "Appointment Outcome", convertEmail(selected, outcome));
+                } catch (GeneralSecurityException | IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
             System.out.println("Appointment outcome recorded.");
         }
         SaveManager.getInstance().saveAppointments();
         return InputManager.getInstance().goBackPrompt();
+    }
+
+    private String convertEmail(Appointment a, AppointmentOutcomeRecord r) {
+        Patient p = (Patient) UserLoginManager.getInstance().getUserById(a.getPatientId());
+        Staff d = (Staff) UserLoginManager.getInstance().getUserById(a.getDoctorId());
+        return "Dear " + p.getName() + ",\n\n" +
+                "Your appointment with Dr. " + d.getName() + " has been completed.\n\n" +
+                "Appointment Details:\n" +
+                "Date: " + a.getDate() + "\n" +
+                "Time: " + a.getTimeSlot() + "\n" +
+                "Service Provided: " + r.getServiceProvided() + "\n" +
+                "Prescription: " + r.getPrescription() + "\n" +
+                "Notes: " + r.getNotes() + "\n\n" +
+                "Thank you for choosing our services.\n\n" +
+                "Sincerely,\n" +
+                "Hospital Management System";
     }
 
     private int viewAcceptedAppointments() {
@@ -110,9 +141,13 @@ public class DoctorView extends UserView<Staff> {
         System.out.println(schedule.printScheduleCompact());
         while (InputManager.getInstance().getBoolean("Change schedule? (Y/Any other key to confirm changes): ")) {
             DayOfWeek day = InputManager.getInstance().getEnum("Select day of week: ", DayOfWeek.class);
-            int startHour = InputManager.getInstance().getInt("Enter start hour: ");
-            int endHour = InputManager.getInstance().getInt("Enter end hour: ");
-            InputManager.getInstance().getScanner().nextLine(); // consume newline
+            int startHour, endHour;
+            do {
+                startHour = InputManager.getInstance().getInt("Enter start hour: (0-23)");
+            } while (startHour < 0 || startHour > 23);
+            do {
+                endHour = InputManager.getInstance().getInt("Enter end hour: (0-23)");
+            } while (endHour < 0 || endHour > 23);
             schedule.setWorkingHours(day, startHour, endHour);
             AppointmentManager.getInstance().setSchedule(user.getId(), schedule);
         }

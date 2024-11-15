@@ -13,6 +13,10 @@ public class TimeSlot {
         this.start = start;
         this.end = end;
     }
+    public TimeSlot(int startHour, int endHour) {
+        this.start = LocalTime.of(startHour, 0);
+        this.end = LocalTime.of(endHour, 0);
+    }
 
     // Getters for start and end time
     public LocalTime getStart() {

@@ -1,19 +1,26 @@
 package Model.ScheduleManagement;
 
 import Model.Staff;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Schedule {
     private Staff doctor;
-    private final Map<DayOfWeek, TimeSlot> schedule = new HashMap<>();
-    private final Map<DayOfWeek, List<TimeSlot>> timeSlots = new HashMap<>();
+    /**
+     * Map of DayOfWeek to TimeSlot representing the working hours for each day
+     * E.g. One entry could be Monday: 09:00 - 17:00
+     * Uses TreeMap to sort the days in order
+     */
+    private final Map<DayOfWeek, TimeSlot> schedule = new TreeMap<>();
+    /**
+     * Map of DayOfWeek to List of TimeSlot representing the available time slots for each day
+     * Each TimeSlot is 60 minutes long (APPOINTMENT_DURATION)
+     * E.g. One entry could be Monday: [09:00 - 10:00, 10:00 - 11:00, ...]
+     * Uses TreeMap to sort the days in order
+     */
+    private final Map<DayOfWeek, List<TimeSlot>> timeSlots = new TreeMap<>();
 
     public static final int APPOINTMENT_DURATION = 60;
 
@@ -41,6 +48,12 @@ public class Schedule {
         }
     }
 
+    /**
+     * Split the working hours into 60 minute time slots
+     * E.g. 09:00 - 17:00 -> [09:00 - 10:00, 10:00 - 11:00, ...]
+     * @param timeSlot Working hours for the day
+     * @return List of TimeSlot representing the available time slots
+     */
     private List<TimeSlot> splitTimeSlot(TimeSlot timeSlot) {
         List<TimeSlot> timeSlots = new ArrayList<>();
         LocalTime start = timeSlot.getStart();
@@ -55,6 +68,14 @@ public class Schedule {
         return timeSlots;
     }
 
+    /**
+     * Print the schedule in a readable format
+     * E.g.
+     * Schedule:
+     * Monday: 09:00 - 17:00
+     * Tuesday: 09:00 - 17:00
+     * @return String representing the schedule
+     */
     public String printScheduleCompact() {
         StringBuilder sb = new StringBuilder();
         sb.append("Schedule:\n");
