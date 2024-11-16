@@ -3,6 +3,7 @@ package Singletons;
 import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.AppointmentOutcomeRecord;
+import Model.Prescription;
 import Model.ScheduleManagement.Schedule;
 import Model.ScheduleManagement.TimeSlot;
 import Model.ScheduleManagement.TimeSlotWithDoctor;
@@ -27,6 +28,7 @@ public class AppointmentManager {
 
     private final Map<String, Schedule> doctorScheduleMap = new HashMap<>();
     private final ArrayList<Appointment> appointments = new ArrayList<>();
+    private final Map<String, Prescription> prescriptions = new HashMap<>();
 
     public Map<String, Schedule> getDoctorScheduleMap() {
         return doctorScheduleMap;
@@ -236,9 +238,10 @@ public class AppointmentManager {
      * @param appointment the appointment to record the outcome for
      * @param outcome     the outcome of the appointment
      */
-    public void recordAppointmentOutcome(String doctorId, Appointment appointment, AppointmentOutcomeRecord outcome) {
+    public void recordAppointmentOutcome(String doctorId, Appointment appointment, AppointmentOutcomeRecord outcome, Prescription prescription) {
         appointment.setOutcome(outcome);
         appointment.setStatus(Appointment.Status.COMPLETED);
+        addPrescription(prescription);
     }
 
     /**
@@ -255,6 +258,42 @@ public class AppointmentManager {
             }
         }
         return records;
+    }
+
+    public Prescription getPrescriptionById(String id) {
+        return prescriptions.get(id);
+    }
+
+    public Map<String, Prescription> getPrescriptions() {
+        return prescriptions;
+    }
+
+    /**
+     * Edit an existing prescription
+     *
+     * @param prescription the prescription to edit
+     * @return true if the prescription was edited, false if the prescription does not exist
+     */
+    public boolean editPrescription(Prescription prescription) {
+        if (!prescriptions.containsKey(prescription.getPrescriptionId())) {
+            return false;
+        }
+        prescriptions.put(prescription.getPrescriptionId(), prescription);
+        return true;
+    }
+
+    /**
+     * Add a new prescription
+     *
+     * @param prescription the prescription to add
+     * @return true if the prescription was added, false if the prescription already exists
+     */
+    public boolean addPrescription(Prescription prescription) {
+        if (prescriptions.containsKey(prescription.getPrescriptionId())) {
+            return false;
+        }
+        prescriptions.put(prescription.getPrescriptionId(), prescription);
+        return true;
     }
 
     // ONLY FOR Loading Data ------------------------------------------

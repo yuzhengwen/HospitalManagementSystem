@@ -65,20 +65,39 @@ public class PharmacistView extends UserView<Staff> {
             if (outcome == null) return 1;
             else {
                 Prescription prescription = outcome.getPrescription();
-                int quantity = inventory.getMedicineCount(prescription.getMedicationName());
-                if (quantity <= 0) {
-                    System.out.println(" - Out of stock");
+                StringBuilder checkListBuilder = new StringBuilder();
+                boolean canDispense = true;
+                for (Map.Entry<String, Integer> entry : prescription.getMedicineQuantities().entrySet()) {
+                    String medicineName = entry.getKey();
+                    int requiredQuantity = entry.getValue();
+                    int availableQuantity = inventory.getMedicineCount(medicineName);
+                    checkListBuilder.append(medicineName).append(" required: ")
+                            .append(requiredQuantity)
+                            .append(", available: ")
+                            .append(availableQuantity).append("\n");
+                    if (availableQuantity < requiredQuantity) {
+                        canDispense = false;
+                    }
+                }
+                System.out.println(checkListBuilder.toString());
+                if (!canDispense) {
+                    System.out.println("Cannot dispense medicine due to insufficient stock");
+                    return InputManager.getInstance().goBackPrompt();
                 } else {
-                    System.out.print(prescription.getMedicationName() + " available: " + quantity);
                     if (InputManager.getInstance().getBoolean("Dispense medicine? (Y/N)")) {
-                        inventory.removeMedicine(prescription.getMedicationName(), 1);
+                        for (Map.Entry<String, Integer> entry : prescription.getMedicineQuantities().entrySet()) {
+                            String medicineName = entry.getKey();
+                            int requiredQuantity = entry.getValue();
+                            inventory.removeMedicine(medicineName, requiredQuantity);
+                        }
                         prescription.setStatus(PrescriptionStatus.DISPENSED);
                         System.out.println("Medicine dispensed successfully");
                         SaveManager.getInstance().saveInventory();
+                        return InputManager.getInstance().goBackPrompt();
                     }
                 }
-                System.out.println("Failed to dispense medicine");
             }
+            System.out.println("Failed to dispense medicine");
         }
         return InputManager.getInstance().goBackPrompt();
     }

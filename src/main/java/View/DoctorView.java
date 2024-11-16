@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.DayOfWeek;
 import java.util.List;
+import java.util.Set;
 
 public class DoctorView extends UserView<Staff> {
     public DoctorView(Staff staff) {
@@ -61,12 +62,24 @@ public class DoctorView extends UserView<Staff> {
             System.out.println("Enter the following details for the appointment outcome");
             System.out.println("--------------------------------------------------------");
             ServiceProvided service = InputManager.getInstance().getEnum("Enter the type of service provided: ", ServiceProvided.class);
-            String medicationName = InputManager.getInstance().getString("Enter the name of any prescribed medication: ");
-            String notes = InputManager.getInstance().getString("Enter consultation notes: ");
-            String prescriptionId = InputManager.getInstance().getString("Enter the prescription ID: ");
+            String apptNotes = InputManager.getInstance().getString("Enter consultation notes: ");
 
-            AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord(new Prescription(prescriptionId, medicationName), service, notes);
-            AppointmentManager.getInstance().recordAppointmentOutcome(user.getId(), selected, outcome);
+            // Prescription start ---------------
+            Set<String> existingIds = AppointmentManager.getInstance().getPrescriptions().keySet();
+            String prescriptionId = InputManager.getInstance().getUniqueString("Enter prescription ID: ", existingIds);
+            Prescription prescription = new Prescription(prescriptionId);
+            int noOfMedicines = InputManager.getInstance().getInt("Enter the number of prescribed medications: ");
+            for (int i = 0; i < noOfMedicines; i++) {
+                String medicationName = InputManager.getInstance().getString("Enter the name of prescribed medication " + (i + 1) + ": ");
+                int quantity = InputManager.getInstance().getInt("Enter the quantity of medication " + (i + 1) + ": ");
+                prescription.addMedicine(medicationName, quantity);
+            }
+            String prescriptionNotes = InputManager.getInstance().getString("Enter prescription notes: ");
+            prescription.setNotes(prescriptionNotes);
+            // Prescription end ---------------
+
+            AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord(prescriptionId, service, apptNotes);
+            AppointmentManager.getInstance().recordAppointmentOutcome(user.getId(), selected, outcome, prescription);
 
             boolean followUp = InputManager.getInstance().getBoolean("Is a follow-up appointment required? (Y/N): ");
             if (followUp) {

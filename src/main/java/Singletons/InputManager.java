@@ -9,6 +9,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Singleton class to manage user input
@@ -76,6 +77,24 @@ public class InputManager {
     }
 
     /**
+     * Gets a unique string input from user (Useful for unique usernames, ids, etc.)
+     *
+     * @param message        message to display to user
+     * @param existingValues set of existing values to check against
+     * @return unique string entered by user
+     */
+    public String getUniqueString(String message, Set<String> existingValues) {
+        String input;
+        do {
+            input = getString(message);
+            if (existingValues.contains(input)) {
+                System.out.println("Value already exists. Please enter a unique value.");
+            }
+        } while (existingValues.contains(input));
+        return input;
+    }
+
+    /**
      * Gets a boolean input from user
      *
      * @param message message to display to user
@@ -100,6 +119,7 @@ public class InputManager {
     /**
      * Gets a time input from user
      * Default message is "Enter time (HH:mm): "
+     *
      * @return time entered by user
      */
     public LocalTime getTime() {
@@ -122,6 +142,7 @@ public class InputManager {
     /**
      * Gets a date input from user
      * Default message is "Enter date (dd-MM-yyyy): "
+     *
      * @return date entered by user
      */
     public LocalDate getDate() {

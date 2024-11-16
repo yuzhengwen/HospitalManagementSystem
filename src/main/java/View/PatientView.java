@@ -9,6 +9,7 @@ import Model.Patient;
 import Model.ScheduleManagement.TimeSlot;
 import Model.ScheduleManagement.TimeSlotWithDoctor;
 import Model.Staff;
+import Singletons.AppointmentFilter;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
 
@@ -22,7 +23,8 @@ public class PatientView extends UserView<Patient> {
         System.out.println("Welcome, " + patient.getName());
         actions.add(new Action("View Medical Record", this::viewPatientInfo));
         actions.add(new Action("Add/Update Contact Info", this::updateContactInfo));
-        actions.add(new Action("View Appointments", this::viewAppointments));
+        actions.add(new Action("View Completed Appointments", this::viewCompletedAppointments));
+        actions.add(new Action("View Scheduled Appointments", this::viewScheduledAppointments));
         actions.add(new Action("Schedule Appointments", this::scheduleAppointments));
         actions.add(new Action("Reschedule Appointments", this::rescheduleAppointments));
         actions.add(new Action("Cancel Appointments", this::cancelAppointments));
@@ -60,15 +62,29 @@ public class PatientView extends UserView<Patient> {
         return InputManager.getInstance().goBackPrompt();
     }
 
-    private int viewAppointments() {
+    private int viewCompletedAppointments() {
         Controller.getInstance().setPreviousView(this);
-        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByPatientId(user.getId());
+        AppointmentFilter filter = new AppointmentFilter().filterByPatient(user.getId())
+                .filterByStatus(Appointment.Status.COMPLETED);
+        return viewAppointments(filter);
+    }
+
+    private int viewScheduledAppointments() {
+        Controller.getInstance().setPreviousView(this);
+        AppointmentFilter filter = new AppointmentFilter().filterByPatient(user.getId())
+                .filterByStatus(Appointment.Status.ACCEPTED)
+                .filterByStatus(Appointment.Status.PENDING);
+        return viewAppointments(filter);
+    }
+
+    private int viewAppointments(AppointmentFilter filter) {
+        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsWithFilter(filter);
         if (appointments.isEmpty()) {
-            System.out.println("No appointments found");
+            System.out.println("No appointments found.");
         } else {
-            System.out.println("Appointments:");
-            for (Appointment appointment : appointments)
-                System.out.println(appointment.toString());
+            Appointment selected = InputManager.getInstance().getSelection("Select an appointment to view: ", appointments);
+            if (selected != null)
+                System.out.println(selected.getFullDetails());
         }
         return InputManager.getInstance().goBackPrompt();
     }

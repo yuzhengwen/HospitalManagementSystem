@@ -15,6 +15,7 @@ public class Patient extends User {
     private ContactInfo contactInfo = new ContactInfo();
     private String bloodType;
     private final AppointmentFilter pastAppointmentsFilter;
+    private List<String> diagnosisHistory;
 
     public Patient(String id, String password, String name, LocalDate dob, String bloodType, Gender gender) {
         super(id, password, Role.PATIENT, name, gender);
