@@ -3,6 +3,7 @@ package Model.ScheduleManagement;
 import Model.Staff;
 import Singletons.AppointmentManager;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TimeSlotWithDoctor {
@@ -20,12 +21,22 @@ public class TimeSlotWithDoctor {
     public void setPatientBusy(boolean patientBusy) {
         this.patientBusy = patientBusy;
     }
+
     public TimeSlot getTimeSlot() {
         return timeSlot;
     }
 
     public List<Staff> getDoctors() {
         return doctors;
+    }
+    public List<Staff> getAvailableDoctors() {
+        List<Staff> availableDoctors = new java.util.ArrayList<>();
+        for (int i = 0; i < doctors.size(); i++) {
+            if (availability[i]) {
+                availableDoctors.add(doctors.get(i));
+            }
+        }
+        return availableDoctors;
     }
 
     @Override
@@ -41,5 +52,13 @@ public class TimeSlotWithDoctor {
             }
         }
         return sb.toString();
+    }
+
+    public boolean isAvailable() {
+        if (patientBusy) return false;
+        for (boolean b : availability) {
+            if (!b) return false;
+        }
+        return true;
     }
 }

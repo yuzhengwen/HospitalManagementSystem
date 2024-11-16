@@ -134,7 +134,7 @@ public class PatientView extends UserView<Patient> {
             // select date, timeslot, doctor, type
             LocalDate date = InputManager.getInstance().getDate();
             TimeSlotWithDoctor timeSlot = selectTimeSlot(date);
-            List<Staff> doctors = timeSlot.getDoctors();
+            List<Staff> doctors = timeSlot.getAvailableDoctors();
             Staff selectedDoctor = InputManager.getInstance().getSelection("Select a doctor: ", doctors);
             Appointment.Type type = selectAppointmentType();
 
@@ -148,7 +148,7 @@ public class PatientView extends UserView<Patient> {
             if (selected != null) {
                 LocalDate date = InputManager.getInstance().getDate();
                 TimeSlotWithDoctor timeSlot = selectTimeSlot(date);
-                List<Staff> doctors = timeSlot.getDoctors();
+                List<Staff> doctors = timeSlot.getAvailableDoctors();
                 Staff selectedDoctor = InputManager.getInstance().getSelection("Select a doctor: ", doctors);
                 selected.setDate(date);
                 selected.setTimeSlot(timeSlot.getTimeSlot());
@@ -168,8 +168,10 @@ public class PatientView extends UserView<Patient> {
     private TimeSlotWithDoctor selectTimeSlot(LocalDate date) {
         // get timeslots with doctors for the selected date
         List<TimeSlotWithDoctor> timeSlotWithDoctors = AppointmentManager.getInstance().getTimeslotWithDoctorList(date);
-        // add patientBusy flag to the timeslots that the patient already has an appointment
-        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByPatientId(user.getId());
+        // add patientBusy flag to the timeslots where the patient already has an appointment scheduled
+        AppointmentFilter filter = new AppointmentFilter().filterByPatient(user.getId()).filterByDate(date)
+                .filterByStatus(Appointment.Status.ACCEPTED).filterByStatus(Appointment.Status.PENDING);
+        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsWithFilter(filter);
         List<TimeSlot> patientBusyTimeSlots = new ArrayList<>();
         for (Appointment appointment : appointments) {
             patientBusyTimeSlots.add(appointment.getTimeSlot());
@@ -182,6 +184,10 @@ public class PatientView extends UserView<Patient> {
         // display the available timeslots
         SelectionView<TimeSlotWithDoctor> timeSlotSelectionView = new SelectionView<>(timeSlotWithDoctors);
         timeSlotSelectionView.display();
+        while (!timeSlotSelectionView.getSelected().isAvailable()) {
+            System.out.println("Timeslot is unavailable. Please select another timeslot.");
+            timeSlotSelectionView.display();
+        }
         return timeSlotSelectionView.getSelected();
     }
 

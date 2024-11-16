@@ -185,6 +185,13 @@ public class AppointmentManager {
         return timeSlotWithDoctorList;
     }
 
+    /**
+     * Build a list of availability for a given date and time slot<br/>
+     * @param date the date to check availability for
+     * @param timeSlot the time slot to check availability for
+     * @param doctors the list of doctors to check availability for
+     * @return array of availability for each doctor, each boolean is true if doctor at that index is available
+     */
     private boolean[] buildAvailabilityList(LocalDate date, TimeSlot timeSlot, List<Staff> doctors) {
         boolean[] availability = new boolean[doctors.size()];
         for (int i = 0; i < doctors.size(); i++) {
