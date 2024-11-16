@@ -6,11 +6,13 @@ import DataHandling.SaveManager;
 import Email.GmailSender;
 import Model.*;
 import Model.ScheduleManagement.Schedule;
+import Model.ScheduleManagement.TimeSlotWithDoctor;
 import Singletons.*;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,9 +24,9 @@ public class DoctorView extends UserView<Staff> {
         actions.add(new Action("View/Edit Patient Records", this::managePatientRecords));
         actions.add(new Action("View/Edit Personal Schedule", this::manageSchedule));
         actions.add(new Action("View Accepted Appointments", this::viewAcceptedAppointments));
+        actions.add(new Action("View Completed Appointments", this::viewCompletedAppointments));
         actions.add(new Action("Accept/Decline Appointment Requests", this::manageAppointmentRequests));
         actions.add(new Action("Record Appointment Outcome", this::recordAppointmentOutcome));
-        actions.add(new Action("View Completed Appointments", this::viewCompletedAppointments));
     }
 
     @Override
@@ -83,7 +85,7 @@ public class DoctorView extends UserView<Staff> {
         return viewAppointments(filter);
     }
 
-    private int viewScheduledAppointments() {
+    private int viewAcceptedAppointments() {
         Controller.getInstance().setPreviousView(this);
         AppointmentFilter filter = new AppointmentFilter().filterByDoctor(user.getId())
                 .filterByStatus(Appointment.Status.ACCEPTED);
@@ -122,12 +124,23 @@ public class DoctorView extends UserView<Staff> {
             AppointmentManager.getInstance().recordAppointmentOutcome(user.getId(), selected, outcome, p);
             patient.addPrescription(p.getId());
 
-            boolean followUp = InputManager.getInstance().getBoolean("Is a follow-up appointment required? (Y/N): ");
-            if (followUp) {
-                // TODO: Implement follow-up appointment creation
+            if (InputManager.getInstance().getBoolean("Is a follow-up appointment required? (Y/N): ")) {
+                LocalDate date;
+                TimeSlotWithDoctor timeSlot;
+                do {
+                    date = InputManager.getInstance().getDate();
+                    timeSlot = InputManager.getInstance().selectTimeSlot(date, patient.getId());
+                } while (timeSlot == null);
+                List<Staff> doctors = timeSlot.getAvailableDoctors();
+                Staff selectedDoctor = InputManager.getInstance().getSelection("Select a doctor: ", doctors);
+                Appointment.Type type = InputManager.getInstance().getEnum("Select appointment type: ", Appointment.Type.class);
+
+                // create the appointment object and add it to the list
+                Appointment newAppointment = new Appointment(patient.getId(), date, timeSlot.getTimeSlot(), type);
+                newAppointment.setDoctorId(selectedDoctor.getId());
+                AppointmentManager.getInstance().add(newAppointment);
             }
-            boolean emailResults = InputManager.getInstance().getBoolean("Email results to patient? (Y/N): ");
-            if (emailResults) {
+            if (InputManager.getInstance().getBoolean("Email results to patient? (Y/N): ")) {
                 try {
                     GmailSender.sendEmail(patient.getContactInfo().email, "Appointment Outcome", convertEmail(selected, outcome));
                 } catch (GeneralSecurityException | IOException e) {
@@ -155,18 +168,6 @@ public class DoctorView extends UserView<Staff> {
                 "Thank you for choosing our services.\n\n" +
                 "Sincerely,\n" +
                 "Hospital Management System";
-    }
-
-    private int viewAcceptedAppointments() {
-        Controller.getInstance().setPreviousView(this);
-        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByDoctorId(user.getId(), Appointment.Status.ACCEPTED);
-        if (appointments.isEmpty()) {
-            System.out.println("No appointments accepted yet");
-        } else {
-            Appointment selected = InputManager.getInstance().getSelection("Select an appointment to view: ", appointments);
-            System.out.println(selected.getFullDetails());
-        }
-        return InputManager.getInstance().goBackPrompt();
     }
 
     private int manageAppointmentRequests() {
