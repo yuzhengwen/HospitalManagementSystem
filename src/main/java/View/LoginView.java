@@ -9,6 +9,8 @@ import Singletons.InputManager;
 import Singletons.UserLoginManager;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 public class LoginView extends ViewObject {
     private User user;
@@ -71,10 +73,7 @@ public class LoginView extends ViewObject {
     public int createAccount() {
         System.out.println("Create Account");
         System.out.println("--------------");
-        String id;
-        do {
-            id = InputManager.getInstance().getString("Enter ID: ");
-        } while (UserLoginManager.getInstance().getUserById(id) != null); // id alr exists
+        String id = InputManager.getInstance().getUniqueString("Enter Unique ID: ", UserLoginManager.getInstance().getUserIds());
         String password = InputManager.getInstance().getNewPasswordInput(passwordValidation);
         Role role = InputManager.getInstance().getEnum("Choose role: ", Role.class);
         String name = InputManager.getInstance().getString("Enter name: ");

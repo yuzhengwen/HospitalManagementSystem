@@ -1,6 +1,5 @@
 package Singletons;
 
-import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.AppointmentOutcomeRecord;
 import Model.Prescription;
@@ -57,6 +56,9 @@ public class AppointmentManager {
      */
     public List<Appointment> getAppointmentsByPatientId(String patientId) {
         return getAppointmentsWithFilter(new AppointmentFilter().filterByPatient(patientId));
+    }
+    public List<Appointment> getAppointmentsByDoctorId(String doctorId) {
+        return getAppointmentsWithFilter(new AppointmentFilter().filterByDoctor(doctorId));
     }
 
     /**
@@ -275,10 +277,10 @@ public class AppointmentManager {
      * @return true if the prescription was edited, false if the prescription does not exist
      */
     public boolean editPrescription(Prescription prescription) {
-        if (!prescriptions.containsKey(prescription.getPrescriptionId())) {
+        if (!prescriptions.containsKey(prescription.getId())) {
             return false;
         }
-        prescriptions.put(prescription.getPrescriptionId(), prescription);
+        prescriptions.put(prescription.getId(), prescription);
         return true;
     }
 
@@ -289,10 +291,10 @@ public class AppointmentManager {
      * @return true if the prescription was added, false if the prescription already exists
      */
     public boolean addPrescription(Prescription prescription) {
-        if (prescriptions.containsKey(prescription.getPrescriptionId())) {
+        if (prescriptions.containsKey(prescription.getId())) {
             return false;
         }
-        prescriptions.put(prescription.getPrescriptionId(), prescription);
+        prescriptions.put(prescription.getId(), prescription);
         return true;
     }
 

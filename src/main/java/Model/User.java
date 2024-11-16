@@ -3,6 +3,8 @@ package Model;
 import CustomTypes.Gender;
 import CustomTypes.Role;
 
+import java.util.Objects;
+
 public abstract class User {
     protected String id;
     protected String password;

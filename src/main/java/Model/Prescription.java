@@ -3,7 +3,6 @@ package Model;
 import CustomTypes.PrescriptionStatus;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Prescription {
@@ -26,16 +25,12 @@ public class Prescription {
         this.status = status;
     }
 
-    public String getPrescriptionId() {
+    public String getId() {
         return prescriptionId;
     }
 
     public PrescriptionStatus getStatus() {
         return status;
-    }
-
-    public String getId() {
-        return prescriptionId;
     }
 
     @Override
@@ -50,6 +45,14 @@ public class Prescription {
         if (notes != null) {
             sb.append("Notes: ").append(notes).append("\n");
         }
+        return sb.toString();
+    }
+    public String getMedicineQuantitiesString() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : medicineQuantities.entrySet()) {
+            sb.append(entry.getKey()).append(": ").append(entry.getValue()).append(", ");
+        }
+        sb.delete(sb.length() - 2, sb.length()); // Remove trailing comma and space
         return sb.toString();
     }
 

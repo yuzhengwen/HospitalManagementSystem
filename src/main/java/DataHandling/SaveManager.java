@@ -111,7 +111,7 @@ public class SaveManager {
     public void savePatients() {
         List<Patient> patients = UserLoginManager.getInstance().getAllPatients();
         List<String> stringsToWrite = new ArrayList<>();
-        stringsToWrite.add("Patient ID,Name,Date of Birth,Gender,Blood Type,Contact Information,Password");
+        stringsToWrite.add("Patient ID,Name,Date of Birth,Gender,Blood Type,Contact Information,Diagnoses,Treatments,Prescription Ids,Password");
         for (Patient patient : patients) {
             stringsToWrite.add(patientSerializer.serialize(patient));
         }

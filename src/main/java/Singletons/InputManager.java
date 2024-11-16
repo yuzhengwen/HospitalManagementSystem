@@ -1,5 +1,6 @@
 package Singletons;
 
+import Model.Prescription;
 import View.EnumView;
 import View.SelectionView;
 
@@ -294,5 +295,20 @@ public class InputManager {
             return false;
         }
         return true;
+    }
+
+    public Prescription getPrescription() {
+        Set<String> existingIds = AppointmentManager.getInstance().getPrescriptions().keySet();
+        String prescriptionId = InputManager.getInstance().getUniqueString("Enter prescription ID: ", existingIds);
+        Prescription prescription = new Prescription(prescriptionId);
+        int noOfMedicines = InputManager.getInstance().getInt("Enter the number of prescribed medications: ");
+        for (int i = 0; i < noOfMedicines; i++) {
+            String medicationName = InputManager.getInstance().getString("Enter the name of prescribed medication " + (i + 1) + ": ");
+            int quantity = InputManager.getInstance().getInt("Enter the quantity of medication " + (i + 1) + ": ");
+            prescription.addMedicine(medicationName, quantity);
+        }
+        String prescriptionNotes = InputManager.getInstance().getString("Enter prescription notes: ");
+        prescription.setNotes(prescriptionNotes);
+        return prescription;
     }
 }

@@ -1,4 +1,4 @@
-Patient ID,Name,Date of Birth,Gender,Blood Type,Contact Information,Password
-P1001,Alice Brown,1980-05-14,FEMALE,A+,alice.brown@example.com|123,r/zrygp4HXR1UQo958mNjh4ssMilVgvN90CekczEbD4=
-P1002,Bob Stone,1975-11-22,MALE,B+,bob.stone@example.com|234,
-P1003,Charlie White,1990-07-08,MALE,O-,charlie.white@example.com|456,
+Patient ID,Name,Date of Birth,Gender,Blood Type,Contact Information,Diagnoses,Treatments,Prescription Ids,Password
+P1001,Alice Brown,1980-05-14,FEMALE,A+,alice.brown@example.com|123,"Covid19,Covid19 again","hospital stay 3 days,5 day hospital stay","p1001,p1002",
+P1002,Bob Stone,1975-11-22,MALE,B+,bob.stone@example.com|234,"","","",
+P1003,Charlie White,1990-07-08,MALE,O-,charlie.white@example.com|456,"","","",

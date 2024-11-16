@@ -1,12 +1,9 @@
 package DataHandling;
 
-import CustomTypes.PrescriptionStatus;
 import CustomTypes.ServiceProvided;
 import Model.Appointment;
 import Model.AppointmentOutcomeRecord;
-import Model.Prescription;
 import Model.ScheduleManagement.TimeSlot;
-import Singletons.AppointmentManager;
 
 import java.time.LocalDate;
 
@@ -68,7 +65,7 @@ public class AppointmentSerializer implements ISerializer<Appointment> {
         public String serialize(AppointmentOutcomeRecord object) {
             return object.getServiceProvided() + SEPARATOR +
                     StringUtils.addQuotes(object.getNotes()) + SEPARATOR +
-                    object.getPrescription().getPrescriptionId();
+                    object.getPrescription().getId();
         }
 
         @Override
