@@ -3,10 +3,10 @@ package Model;
 import CustomTypes.ContactInfo;
 import CustomTypes.Gender;
 import CustomTypes.Role;
-import Singletons.AppointmentFilter;
 import Singletons.AppointmentManager;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,13 +14,14 @@ public class Patient extends User {
     private LocalDate dob;
     private ContactInfo contactInfo = new ContactInfo();
     private String bloodType;
-    private final AppointmentFilter pastAppointmentsFilter;
+    private final List<String> diagnosisHistory = new ArrayList<>();
+    private final List<String> treatmentHistory = new ArrayList<>();
+    private final List<String> prescriptionHistory = new ArrayList<>();
 
     public Patient(String id, String password, String name, LocalDate dob, String bloodType, Gender gender) {
         super(id, password, Role.PATIENT, name, gender);
         this.dob = dob;
         this.bloodType = bloodType;
-        pastAppointmentsFilter = new AppointmentFilter().filterByPatient(id).filterByStatus(Appointment.Status.COMPLETED);
     }
 
     public void setDob(LocalDate dob) {
@@ -66,25 +67,81 @@ public class Patient extends User {
     }
 
     public String getMedicalRecord() {
-        return "Medical Record: \n" +
-                "Patient ID: " + id + '\n' +
-                "Name: " + name + '\n' +
-                "Date of Birth: " + dob + '\n' +
-                "Gender: " + gender + '\n' +
-                "Blood Type: " + bloodType + '\n' +
-                "Contact Information: " + contactInfo + '\n' +
-                "Past Appointments: " + '\n' + getDetailedAppointmentsString(getPastAppointments());
-    }
-
-    private String getDetailedAppointmentsString(List<Appointment> appointments) {
         StringBuilder sb = new StringBuilder();
-        for (Appointment appointment : appointments) {
-            sb.append(appointment.getFullDetails()).append('\n');
+        sb.append("Medical Record: \n");
+        sb.append("Patient ID: ").append(id).append('\n');
+        sb.append("Name: ").append(name).append('\n');
+        sb.append("Date of Birth: ").append(dob).append('\n');
+        sb.append("Gender: ").append(gender).append('\n');
+        sb.append("Blood Type: ").append(bloodType).append('\n');
+        sb.append("Contact Information: ").append(contactInfo).append('\n');
+        sb.append("----------------").append('\n');
+        sb.append("Diagnosis History: (Oldest first)").append('\n');
+        sb.append("----------------").append('\n');
+        if (diagnosisHistory.isEmpty()) {
+            sb.append("No diagnosis history").append('\n');
+        } else {
+            for (String diagnosis : diagnosisHistory) {
+                sb.append(diagnosis).append('\n');
+            }
+        }
+        sb.append("----------------").append('\n');
+        sb.append("Treatment History: (Oldest first)").append('\n');
+        sb.append("----------------").append('\n');
+        if (treatmentHistory.isEmpty()) {
+            sb.append("No treatment history").append('\n');
+        } else {
+            for (String treatment : treatmentHistory) {
+                sb.append(treatment).append('\n');
+            }
+        }
+        sb.append("----------------").append('\n');
+        sb.append("Prescription History: (Oldest first)").append('\n');
+        sb.append("----------------").append('\n');
+        if (prescriptionHistory.isEmpty()) {
+            sb.append("No prescriptions found").append('\n');
+        } else {
+            List<Prescription> prescriptions = new ArrayList<>();
+            for (String prescriptionId : prescriptionHistory) {
+                prescriptions.add(AppointmentManager.getInstance().getPrescriptionById(prescriptionId));
+            }
+            for (Prescription prescription : prescriptions) {
+                sb.append(prescription.getMedicineQuantitiesString()).append('\n');
+            }
         }
         return sb.toString();
     }
 
-    public List<Appointment> getPastAppointments() {
-        return pastAppointmentsFilter.filter(AppointmentManager.getInstance().getAppointments());
+    public void addDiagnosis(String diagnosis) {
+        diagnosisHistory.add(diagnosis);
+    }
+
+    public void addTreatment(String treatment) {
+        treatmentHistory.add(treatment);
+    }
+
+    public void addPrescription(String prescriptionId) {
+        prescriptionHistory.add(prescriptionId);
+    }
+
+    public List<String> getDiagnosisHistory() {
+        return diagnosisHistory;
+    }
+
+    public List<String> getTreatmentHistory() {
+        return treatmentHistory;
+    }
+
+    public List<String> getPrescriptionHistory() {
+        return prescriptionHistory;
+    }
+    public void addDiagnoses(List<String> diagnoses) {
+        diagnosisHistory.addAll(diagnoses);
+    }
+    public void addTreatments(List<String> treatments) {
+        treatmentHistory.addAll(treatments);
+    }
+    public void addPrescriptions(List<String> prescriptions) {
+        prescriptionHistory.addAll(prescriptions);
     }
 }

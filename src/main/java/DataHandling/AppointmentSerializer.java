@@ -1,10 +1,8 @@
 package DataHandling;
 
-import CustomTypes.PrescriptionStatus;
 import CustomTypes.ServiceProvided;
 import Model.Appointment;
 import Model.AppointmentOutcomeRecord;
-import Model.Prescription;
 import Model.ScheduleManagement.TimeSlot;
 
 import java.time.LocalDate;
@@ -42,7 +40,7 @@ public class AppointmentSerializer implements ISerializer<Appointment> {
         apt.setStatus(status);
         // check if there is an outcome record
         if (parts.length > 6) {
-            // Build back the format: "ServiceProvided,Notes,PrescriptionId,MedicationName"
+            // Build back the format: "ServiceProvided,Notes,PrescriptionId"
             StringBuilder serializedOutcomeBuilder = new StringBuilder();
             for (int i = 6; i < parts.length; i++) {
                 serializedOutcomeBuilder.append(parts[i].trim());
@@ -62,38 +60,24 @@ public class AppointmentSerializer implements ISerializer<Appointment> {
     static class AppointmentOutcomeRecordSerializer implements ISerializer<AppointmentOutcomeRecord> {
         PrescriptionSerializer prescriptionSerializer = new PrescriptionSerializer();
 
+        // Format: ServiceProvided,Notes,PrescriptionId
         @Override
         public String serialize(AppointmentOutcomeRecord object) {
             return object.getServiceProvided() + SEPARATOR +
-                    object.getNotes() + SEPARATOR +
-                    prescriptionSerializer.serialize(object.getPrescription());
+                    StringUtils.addQuotes(object.getNotes()) + SEPARATOR +
+                    object.getPrescription().getId();
         }
 
         @Override
         public AppointmentOutcomeRecord deserialize(String data) {
-            String[] parts = data.split(SEPARATOR, -1);
+            //String[] parts = data.split(SEPARATOR, -1);
+            String[] parts = StringUtils.parseLine(data);
             ServiceProvided service = ServiceProvided.valueOf(parts[0].trim().toUpperCase());
             String notes = parts[1].trim();
-            // Build back the format: "PrescriptionId,MedicationName,Status"
-            String serializedPrescription = parts[2].trim() + SEPARATOR + parts[3].trim() + SEPARATOR + parts[4].trim();
-            Prescription prescription = prescriptionSerializer.deserialize(serializedPrescription);
-            return new AppointmentOutcomeRecord(prescription, service, notes);
+            String prescriptionId = parts[2].trim();
+            return new AppointmentOutcomeRecord(prescriptionId, service, notes);
         }
     }
 
-    static class PrescriptionSerializer implements ISerializer<Prescription> {
-        @Override
-        public String serialize(Prescription object) {
-            return object.getId() + SEPARATOR + object.getMedicationName() + SEPARATOR + object.getStatus();
-        }
 
-        @Override
-        public Prescription deserialize(String data) {
-            String[] parts = data.split(SEPARATOR, -1);
-            String id = parts[0].trim();
-            String medicationName = parts[1].trim();
-            PrescriptionStatus status = PrescriptionStatus.valueOf(parts[2].trim().toUpperCase());
-            return new Prescription(id, medicationName, status);
-        }
-    }
 }

@@ -5,7 +5,9 @@ import Model.Staff;
 import Model.User;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A singleton class that manages the list of registered users
@@ -89,5 +91,12 @@ public class UserLoginManager {
      */
     public ArrayList<User> getUsers() {
         return users;
+    }
+    public Set<String> getUserIds() {
+        Set<String> userIds = new HashSet<>();
+        for (User user : users) {
+            userIds.add(user.getId());
+        }
+        return userIds;
     }
 }

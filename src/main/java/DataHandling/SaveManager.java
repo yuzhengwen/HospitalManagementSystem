@@ -1,10 +1,7 @@
 package DataHandling;
 
-import Model.Appointment;
-import Model.Patient;
-import Model.ReplenishmentRequest;
+import Model.*;
 import Model.ScheduleManagement.Schedule;
-import Model.Staff;
 import Singletons.AppointmentManager;
 import Singletons.InventoryManager;
 import Singletons.UserLoginManager;
@@ -31,11 +28,13 @@ public class SaveManager {
     private final PatientSerializer patientSerializer = new PatientSerializer();
     private final StaffSerializer staffSerializer = new StaffSerializer();
     private final AppointmentSerializer appointmentSerializer = new AppointmentSerializer();
+    private final PrescriptionSerializer prescriptionSerializer = new PrescriptionSerializer();
     private final DoctorScheduleSerializer doctorScheduleSerializer = new DoctorScheduleSerializer();
     private final InventorySerializer inventorySerializer = new InventorySerializer();
     private final ReplenishmentRequestSerializer replenishmentRequestSerializer = new ReplenishmentRequestSerializer();
 
     private final String APPOINTMENT_FILE = "Appointments.csv";
+    private final String PRESCRIPTION_FILE = "Prescriptions.csv";
     private final String SCHEDULE_FILE = "DoctorSchedules.csv";
     private final String PATIENT_FILE = "Patient_List.csv";
     private final String STAFF_FILE = "Staff_List.csv";
@@ -112,39 +111,11 @@ public class SaveManager {
     public void savePatients() {
         List<Patient> patients = UserLoginManager.getInstance().getAllPatients();
         List<String> stringsToWrite = new ArrayList<>();
-        stringsToWrite.add("Patient ID,Name,Date of Birth,Gender,Blood Type,Contact Information,Password");
+        stringsToWrite.add("Patient ID,Name,Date of Birth,Gender,Blood Type,Contact Information,Diagnoses,Treatments,Prescription Ids,Password");
         for (Patient patient : patients) {
             stringsToWrite.add(patientSerializer.serialize(patient));
         }
         saveService.saveData(PATIENT_FILE, stringsToWrite);
-    }
-
-    public void saveStaffs() {
-        List<Staff> staffs = UserLoginManager.getInstance().getAllStaffs();
-        List<String> stringsToWrite = new ArrayList<>();
-        stringsToWrite.add("Staff ID,Name,Role,Gender,Age,Password");
-        for (Staff staff : staffs) {
-            stringsToWrite.add(staffSerializer.serialize(staff));
-        }
-        saveService.saveData(STAFF_FILE, stringsToWrite);
-    }
-
-    public void saveAppointments() {
-        List<Appointment> appointments = AppointmentManager.getInstance().getAppointments();
-        List<String> stringsToWrite = new ArrayList<>();
-        //2024-11-04,14:00-15:00,P1001,D001,FOLLOWUP,COMPLETED,DIAGNOSIS,rest more,11,panadol
-        stringsToWrite.add("Date,Time,Patient ID,Doctor ID,Type,Status,Service Provided,Notes,Prescription ID,Medicine");
-        for (Appointment appointment : appointments) {
-            stringsToWrite.add(appointmentSerializer.serialize(appointment));
-        }
-        saveService.saveData(APPOINTMENT_FILE, stringsToWrite);
-    }
-
-    public void saveDoctorSchedules() {
-        Map<String, Schedule> doctorScheduleMap = AppointmentManager.getInstance().getDoctorScheduleMap();
-        String header = "Doctor ID,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday";
-        String serializedDoctorSchedules = doctorScheduleSerializer.serialize(doctorScheduleMap);
-        saveService.saveData(SCHEDULE_FILE, List.of(header, serializedDoctorSchedules));
     }
 
     public void loadPatients() {
@@ -159,6 +130,16 @@ public class SaveManager {
         }
     }
 
+    public void saveStaffs() {
+        List<Staff> staffs = UserLoginManager.getInstance().getAllStaffs();
+        List<String> stringsToWrite = new ArrayList<>();
+        stringsToWrite.add("Staff ID,Name,Role,Gender,Age,Password");
+        for (Staff staff : staffs) {
+            stringsToWrite.add(staffSerializer.serialize(staff));
+        }
+        saveService.saveData(STAFF_FILE, stringsToWrite);
+    }
+
     public void loadStaffs() {
         List<String> serializedStaffs = saveService.readData(STAFF_FILE);
         if (serializedStaffs == null || serializedStaffs.isEmpty()) {
@@ -169,6 +150,17 @@ public class SaveManager {
             Staff s = staffSerializer.deserialize(serializedStaff);
             UserLoginManager.getInstance().addUser(s);
         }
+    }
+
+    public void saveAppointments() {
+        savePrescriptions();
+        List<Appointment> appointments = AppointmentManager.getInstance().getAppointments();
+        List<String> stringsToWrite = new ArrayList<>();
+        stringsToWrite.add("Date,Time,Patient ID,Doctor ID,Type,Status,Service Provided,Notes,Prescription ID");
+        for (Appointment appointment : appointments) {
+            stringsToWrite.add(appointmentSerializer.serialize(appointment));
+        }
+        saveService.saveData(APPOINTMENT_FILE, stringsToWrite);
     }
 
     public void loadAppointments() {
@@ -183,6 +175,37 @@ public class SaveManager {
             appointments.add(a);
         }
         AppointmentManager.getInstance().setAppointments(appointments);
+        loadPrescriptions();
+    }
+
+    private void savePrescriptions() {
+        List<Prescription> prescriptions = AppointmentManager.getInstance().getPrescriptions().values().stream().toList();
+        List<String> stringsToWrite = new ArrayList<>();
+        String header = "Prescription ID,Medicine & Quantities,Prescription Notes";
+        stringsToWrite.add(header);
+        for (Prescription prescription : prescriptions) {
+            stringsToWrite.add(prescriptionSerializer.serialize(prescription));
+        }
+        saveService.saveData(PRESCRIPTION_FILE, stringsToWrite);
+    }
+
+    private void loadPrescriptions() {
+        List<String> serializedPrescriptions = saveService.readData(PRESCRIPTION_FILE);
+        if (serializedPrescriptions == null || serializedPrescriptions.isEmpty()) {
+            return;
+        }
+        serializedPrescriptions.remove(0); // remove the header
+        for (String serializedPrescription : serializedPrescriptions) {
+            Prescription p = prescriptionSerializer.deserialize(serializedPrescription);
+            AppointmentManager.getInstance().addPrescription(p);
+        }
+    }
+
+    public void saveDoctorSchedules() {
+        Map<String, Schedule> doctorScheduleMap = AppointmentManager.getInstance().getDoctorScheduleMap();
+        String header = "Doctor ID,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday";
+        String serializedDoctorSchedules = doctorScheduleSerializer.serialize(doctorScheduleMap);
+        saveService.saveData(SCHEDULE_FILE, List.of(header, serializedDoctorSchedules));
     }
 
     public void loadDoctorSchedules() {
@@ -194,4 +217,5 @@ public class SaveManager {
         Map<String, Schedule> doctorScheduleMap = doctorScheduleSerializer.deserialize(String.join("\n", serializedDoctorSchedules));
         AppointmentManager.getInstance().setDoctorScheduleMap(doctorScheduleMap);
     }
+
 }

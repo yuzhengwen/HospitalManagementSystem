@@ -1,5 +1,6 @@
 package Singletons;
 
+import Model.Prescription;
 import View.EnumView;
 import View.SelectionView;
 
@@ -9,6 +10,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Singleton class to manage user input
@@ -76,6 +78,24 @@ public class InputManager {
     }
 
     /**
+     * Gets a unique string input from user (Useful for unique usernames, ids, etc.)
+     *
+     * @param message        message to display to user
+     * @param existingValues set of existing values to check against
+     * @return unique string entered by user
+     */
+    public String getUniqueString(String message, Set<String> existingValues) {
+        String input;
+        do {
+            input = getString(message);
+            if (existingValues.contains(input)) {
+                System.out.println("Value already exists. Please enter a unique value.");
+            }
+        } while (existingValues.contains(input));
+        return input;
+    }
+
+    /**
      * Gets a boolean input from user
      *
      * @param message message to display to user
@@ -100,6 +120,7 @@ public class InputManager {
     /**
      * Gets a time input from user
      * Default message is "Enter time (HH:mm): "
+     *
      * @return time entered by user
      */
     public LocalTime getTime() {
@@ -122,6 +143,7 @@ public class InputManager {
     /**
      * Gets a date input from user
      * Default message is "Enter date (dd-MM-yyyy): "
+     *
      * @return date entered by user
      */
     public LocalDate getDate() {
@@ -187,7 +209,7 @@ public class InputManager {
      * @see InputManager#getSelection(String, List, boolean)
      */
     public <T> T getSelection(String s, List<T> list) {
-        return getSelection(s, list, false);
+        return getSelection(s, list, false).getSelected();
     }
 
     /**
@@ -199,7 +221,7 @@ public class InputManager {
      * @param <T>       type of items in list
      * @return item selected by user
      */
-    public <T> T getSelection(String s, List<T> list, boolean allowBack) {
+    public <T> SelectionResult<T> getSelection(String s, List<T> list, boolean allowBack) {
         System.out.println(s);
         SelectionView<T> selectionView = new SelectionView<>(list);
         if (allowBack) {
@@ -207,10 +229,10 @@ public class InputManager {
         }
         selectionView.display();
         // verify that a valid selection was made
-        if (selectionView.getSelected() == null) {
-            return getSelection(s, list);
+        if (selectionView.getSelected() == null && !selectionView.backSelected()) {
+            return getSelection(s, list, allowBack);
         }
-        return selectionView.getSelected();
+        return new SelectionResult<>(selectionView.getSelected(), selectionView.backSelected());
     }
 
     /***
@@ -274,4 +296,20 @@ public class InputManager {
         }
         return true;
     }
+
+    public Prescription getPrescription() {
+        Set<String> existingIds = AppointmentManager.getInstance().getPrescriptions().keySet();
+        String prescriptionId = InputManager.getInstance().getUniqueString("Enter prescription ID: ", existingIds);
+        Prescription prescription = new Prescription(prescriptionId);
+        int noOfMedicines = InputManager.getInstance().getInt("Enter the number of prescribed medications: ");
+        for (int i = 0; i < noOfMedicines; i++) {
+            String medicationName = InputManager.getInstance().getString("Enter the name of prescribed medication " + (i + 1) + ": ");
+            int quantity = InputManager.getInstance().getInt("Enter the quantity of medication " + (i + 1) + ": ");
+            prescription.addMedicine(medicationName, quantity);
+        }
+        String prescriptionNotes = InputManager.getInstance().getString("Enter prescription notes: ");
+        prescription.setNotes(prescriptionNotes);
+        return prescription;
+    }
 }
+

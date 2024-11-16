@@ -4,7 +4,9 @@ import Model.Appointment;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Filters appointments based on doctor, patient, date, and status
@@ -14,7 +16,7 @@ public class AppointmentFilter {
     String doctorId = null;
     String patientId = null;
     LocalDate date = null;
-    Appointment.Status status = null;
+    Set<Appointment.Status> statuses = new HashSet<>();
 
     public AppointmentFilter filterByDoctor(String doctorId) {
         this.doctorId = doctorId;
@@ -32,7 +34,7 @@ public class AppointmentFilter {
     }
 
     public AppointmentFilter filterByStatus(Appointment.Status status) {
-        this.status = status;
+        statuses.add(status);
         return this;
     }
 
@@ -59,8 +61,8 @@ public class AppointmentFilter {
         if (date != null) {
             filteredAppointments.removeIf(appointment -> !appointment.getDate().equals(date));
         }
-        if (status != null) {
-            filteredAppointments.removeIf(appointment -> appointment.getStatus() != status);
+        if (!statuses.isEmpty()) {
+            filteredAppointments.removeIf(appointment -> !statuses.contains(appointment.getStatus()));
         }
         return filteredAppointments;
     }

@@ -1,20 +1,24 @@
 package Model;
 
 import CustomTypes.ServiceProvided;
+import Singletons.AppointmentManager;
 
 public class AppointmentOutcomeRecord {
-    private Prescription prescription;
     private ServiceProvided serviceProvided;
     private String notes;
+    private final String prescriptionId;
 
-    public AppointmentOutcomeRecord(Prescription prescription, ServiceProvided serviceProvided, String notes) {
-        this.prescription = prescription;
+    public AppointmentOutcomeRecord(String prescriptionId, ServiceProvided serviceProvided, String notes) {
+        this.prescriptionId = prescriptionId;
         this.serviceProvided = serviceProvided;
         this.notes = notes;
     }
 
+    public String getPrescriptionId() {
+        return prescriptionId;
+    }
     public Prescription getPrescription() {
-        return prescription;
+        return AppointmentManager.getInstance().getPrescriptionById(prescriptionId);
     }
 
     public ServiceProvided getServiceProvided() {
@@ -24,11 +28,13 @@ public class AppointmentOutcomeRecord {
     public String getNotes() {
         return notes;
     }
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 
     @Override
     public String toString() {
-        return "Prescription: " + prescription + '\n' +
-                "ServiceProvided: " + serviceProvided + '\n' +
-                "Notes: " + notes;
+        return "ServiceProvided: " + serviceProvided + '\n' +
+                "Notes: " + notes + '\n' + "Prescriptions: \n" + getPrescription().toString();
     }
 }
