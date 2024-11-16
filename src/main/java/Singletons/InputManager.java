@@ -209,7 +209,7 @@ public class InputManager {
      * @see InputManager#getSelection(String, List, boolean)
      */
     public <T> T getSelection(String s, List<T> list) {
-        return getSelection(s, list, false);
+        return getSelection(s, list, false).getSelected();
     }
 
     /**
@@ -221,7 +221,7 @@ public class InputManager {
      * @param <T>       type of items in list
      * @return item selected by user
      */
-    public <T> T getSelection(String s, List<T> list, boolean allowBack) {
+    public <T> SelectionResult<T> getSelection(String s, List<T> list, boolean allowBack) {
         System.out.println(s);
         SelectionView<T> selectionView = new SelectionView<>(list);
         if (allowBack) {
@@ -229,10 +229,10 @@ public class InputManager {
         }
         selectionView.display();
         // verify that a valid selection was made
-        if (selectionView.getSelected() == null) {
-            return getSelection(s, list);
+        if (selectionView.getSelected() == null && !selectionView.backSelected()) {
+            return getSelection(s, list, allowBack);
         }
-        return selectionView.getSelected();
+        return new SelectionResult<>(selectionView.getSelected(), selectionView.backSelected());
     }
 
     /***
@@ -312,3 +312,4 @@ public class InputManager {
         return prescription;
     }
 }
+

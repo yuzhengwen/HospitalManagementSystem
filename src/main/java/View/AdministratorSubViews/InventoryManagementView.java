@@ -5,7 +5,9 @@ import Model.Inventory;
 import Model.ReplenishmentRequest;
 import Singletons.InputManager;
 import Singletons.InventoryManager;
+import Singletons.SelectionResult;
 import View.Action;
+import View.SelectionView;
 import View.ViewObject;
 
 import java.util.List;
@@ -22,7 +24,8 @@ public class InventoryManagementView extends ViewObject {
         actions.add(new Action("Update Inventory Item", this::updateInventoryItem));
         actions.add(new Action("Set Low Stock Threshold", this::setLowStockThreshold));
         actions.add(new Action("View Items At Low Stock", this::viewLowStockItems));
-        actions.add(new Action("View Replenishment Requests", this::viewReplenishmentRequests));
+        actions.add(new Action("View Completed Replenishment Requests", this::viewCompletedReplenishmentRequests));
+        actions.add(new Action("View Unfulfilled Replenishment Requests", this::viewUnfulfilledReplenishmentRequests));
         actions.add(new Action("Approve Replenishment Request", this::approveReplenishmentRequest));
     }
 
@@ -37,11 +40,7 @@ public class InventoryManagementView extends ViewObject {
     }
 
     private int viewInventory() {
-        System.out.println("Medication Inventory:");
-        System.out.println("--------------------");
-        for (Map.Entry<String, Integer[]> entry : inventory.entrySet()) {
-            System.out.println(entry.getKey() + ": " + "Quantity: " + entry.getValue()[0] + ", Low Stock Threshold: " + entry.getValue()[1]);
-        }
+        System.out.println(inventory);
         return 1;
     }
 
@@ -83,15 +82,24 @@ public class InventoryManagementView extends ViewObject {
         }
         System.out.println("Items at low stock:");
         System.out.println("--------------------");
-        for(String item : lowStockItems) {
-            System.out.println(item+ ": " + "Quantity: " + inventory.getMedicineCount(item) + ", Low Stock Threshold: " + inventory.getLowStockThreshold(item));
+        for (String item : lowStockItems) {
+            System.out.println(item + ": " + "Quantity: " + inventory.getMedicineCount(item) + ", Low Stock Threshold: " + inventory.getLowStockThreshold(item));
         }
         return 1;
     }
 
-    private int viewReplenishmentRequests() {
+    private int viewUnfulfilledReplenishmentRequests() {
         List<ReplenishmentRequest> pendingRequests = InventoryManager.getInstance().getRequestsByStatus(false);
         System.out.println("Pending Replenishment Requests:");
+        System.out.println("--------------------");
+        for (ReplenishmentRequest request : pendingRequests) {
+            System.out.println(request);
+        }
+        return 1;
+    }
+    private int viewCompletedReplenishmentRequests() {
+        List<ReplenishmentRequest> pendingRequests = InventoryManager.getInstance().getRequestsByStatus(true);
+        System.out.println("Completed Replenishment Requests:");
         System.out.println("--------------------");
         for (ReplenishmentRequest request : pendingRequests) {
             System.out.println(request);
@@ -101,8 +109,9 @@ public class InventoryManagementView extends ViewObject {
 
     private int approveReplenishmentRequest() {
         List<ReplenishmentRequest> pendingRequests = InventoryManager.getInstance().getRequestsByStatus(false);
-        ReplenishmentRequest request = InputManager.getInstance().getSelection("Select a request to approve:", pendingRequests, true);
-        if (request == null) return 1;
+        SelectionResult<ReplenishmentRequest> selectionResult = InputManager.getInstance().getSelection("Select a request to approve:", pendingRequests, true);
+        if (selectionResult.isBack()) return 1;
+        ReplenishmentRequest request = selectionResult.getSelected();
         request.setFulfilled(true);
         inventory.addMedicine(request.getMedicineName(), request.getQuantity());
         System.out.println(request.getMedicineName() + " replenished by " + request.getQuantity());

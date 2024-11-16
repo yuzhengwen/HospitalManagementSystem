@@ -12,6 +12,7 @@ import Model.Staff;
 import Singletons.AppointmentFilter;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
+import Singletons.SelectionResult;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -132,8 +133,12 @@ public class PatientView extends UserView<Patient> {
     private Appointment manageAppointments(OperationMode mode) {
         if (OperationMode.SCHEDULE == mode) {
             // select date, timeslot, doctor, type
-            LocalDate date = InputManager.getInstance().getDate();
-            TimeSlotWithDoctor timeSlot = selectTimeSlot(date);
+            LocalDate date;
+            TimeSlotWithDoctor timeSlot;
+            do {
+                date = InputManager.getInstance().getDate();
+                timeSlot = selectTimeSlot(date); // returns null to select another date
+            } while (timeSlot == null);
             List<Staff> doctors = timeSlot.getAvailableDoctors();
             Staff selectedDoctor = InputManager.getInstance().getSelection("Select a doctor: ", doctors);
             Appointment.Type type = selectAppointmentType();
@@ -182,13 +187,14 @@ public class PatientView extends UserView<Patient> {
             }
         }
         // display the available timeslots
-        SelectionView<TimeSlotWithDoctor> timeSlotSelectionView = new SelectionView<>(timeSlotWithDoctors);
-        timeSlotSelectionView.display();
-        while (!timeSlotSelectionView.getSelected().isAvailable()) {
+        SelectionResult<TimeSlotWithDoctor> selectionResult = InputManager.getInstance().getSelection("Select a timeslot: ", timeSlotWithDoctors, true);
+        if (selectionResult.isBack()) return null;
+        TimeSlotWithDoctor selected = selectionResult.getSelected();
+        while (!selected.isAvailable()) {
             System.out.println("Timeslot is unavailable. Please select another timeslot.");
-            timeSlotSelectionView.display();
+            selected = InputManager.getInstance().getSelection("Select a timeslot: ", timeSlotWithDoctors);
         }
-        return timeSlotSelectionView.getSelected();
+        return selected;
     }
 
     private Appointment.Type selectAppointmentType() {

@@ -28,7 +28,7 @@ public class AppointmentManagementView extends ViewObject {
         if (appointments.isEmpty()) {
             System.out.println("No appointments accepted yet");
         } else {
-            Appointment selected = InputManager.getInstance().getSelection("Select an appointment to view: ", appointments, true);
+            Appointment selected = InputManager.getInstance().getSelection("Select an appointment to view: ", appointments);
             System.out.println(selected.getFullDetails());
         }
         return InputManager.getInstance().goBackPrompt();

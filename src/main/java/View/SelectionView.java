@@ -10,6 +10,7 @@ import java.util.List;
 public class SelectionView<T> extends ViewObject {
 
     private T selected;
+    private boolean back = false;
 
     public SelectionView(List<T> list) {
         for (int i = 0; i < list.size(); i++) {
@@ -21,8 +22,15 @@ public class SelectionView<T> extends ViewObject {
         }
     }
     public SelectionView<T> allowBack() {
-        actions.addFirst(new Action("Back", () -> 0));
+        actions.addFirst(new Action("Back", this::back));
         return this;
+    }
+    private int back() {
+        back = true;
+        return 0;
+    }
+    public boolean backSelected() {
+        return back;
     }
 
     @Override

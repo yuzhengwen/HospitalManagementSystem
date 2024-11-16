@@ -6,10 +6,7 @@ import DataHandling.SaveManager;
 import Email.GmailSender;
 import Model.*;
 import Model.ScheduleManagement.Schedule;
-import Singletons.AppointmentFilter;
-import Singletons.AppointmentManager;
-import Singletons.InputManager;
-import Singletons.UserLoginManager;
+import Singletons.*;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -38,6 +35,7 @@ public class DoctorView extends UserView<Staff> {
             printActions();
         } while (getInput() != 0);
     }
+
     private int managePatientRecords() {
         Controller.getInstance().setPreviousView(this);
         List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByDoctorId(user.getId());
@@ -77,6 +75,7 @@ public class DoctorView extends UserView<Staff> {
         }
         return InputManager.getInstance().goBackPrompt();
     }
+
     private int viewCompletedAppointments() {
         Controller.getInstance().setPreviousView(this);
         AppointmentFilter filter = new AppointmentFilter().filterByDoctor(user.getId())
@@ -110,8 +109,9 @@ public class DoctorView extends UserView<Staff> {
         if (appointments.isEmpty()) {
             System.out.println("No appointments accepted yet");
         } else {
-            Appointment selected = InputManager.getInstance().getSelection("Select an appointment to record outcome for: ", appointments, true);
-            if (selected == null) return 1;
+            SelectionResult<Appointment> selectionResult = InputManager.getInstance().getSelection("Select an appointment to record outcome for: ", appointments, true);
+            if (selectionResult.isBack()) return 1;
+            Appointment selected = selectionResult.getSelected();
             Patient patient = (Patient) UserLoginManager.getInstance().getUserById(selected.getPatientId());
             System.out.println("Enter the following details for the appointment outcome");
             System.out.println("--------------------------------------------------------");
@@ -163,8 +163,7 @@ public class DoctorView extends UserView<Staff> {
         if (appointments.isEmpty()) {
             System.out.println("No appointments accepted yet");
         } else {
-            Appointment selected = InputManager.getInstance().getSelection("Select an appointment to view: ", appointments, true);
-            if (selected == null) return 1;
+            Appointment selected = InputManager.getInstance().getSelection("Select an appointment to view: ", appointments);
             System.out.println(selected.getFullDetails());
         }
         return InputManager.getInstance().goBackPrompt();
@@ -178,8 +177,9 @@ public class DoctorView extends UserView<Staff> {
         if (appointments.isEmpty()) {
             System.out.println("No appointment requests found.");
         } else {
-            Appointment selectedAppointment = InputManager.getInstance().getSelection("Select an appointment to accept: ", appointments, true);
-            if (selectedAppointment == null) return 1;
+            SelectionResult<Appointment> selection = InputManager.getInstance().getSelection("Select an appointment to accept: ", appointments, true);
+            if (selection.isBack()) return 1;
+            Appointment selectedAppointment = selection.getSelected();
             AppointmentManager.getInstance().acceptAppointment(selectedAppointment, user.getId());
             System.out.println("Appointment accepted.");
             System.out.println(selectedAppointment);
