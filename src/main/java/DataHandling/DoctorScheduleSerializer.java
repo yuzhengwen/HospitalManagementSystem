@@ -58,7 +58,8 @@ public class DoctorScheduleSerializer implements ISerializer<Map<String, Schedul
                     sb.append(SEPARATOR);
                 }
             }
-            sb.deleteCharAt(sb.length() - 1); // remove the last separator
+            if (!sb.isEmpty() && sb.charAt(sb.length() - 1) == SEPARATOR.charAt(0))
+                sb.deleteCharAt(sb.length() - 1); // remove the last separator
             return sb.toString();
         }
 

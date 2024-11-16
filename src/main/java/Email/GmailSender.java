@@ -94,7 +94,6 @@ public class GmailSender {
         } catch (MessagingException e) {
             System.out.println("Error Creating/Sending email: " + e.getMessage());
         }
-        printLabels(service);
     }
 
     public static void SendTestMail(String toEmail) throws IOException, GeneralSecurityException {

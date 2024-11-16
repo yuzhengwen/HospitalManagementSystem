@@ -1,7 +1,9 @@
 package View;
 
+import CustomTypes.ContactInfo;
 import CustomTypes.Gender;
 import CustomTypes.Role;
+import DataHandling.SaveManager;
 import Model.Patient;
 import Model.Staff;
 import Model.User;
@@ -81,9 +83,11 @@ public class LoginView extends ViewObject {
         switch (role) {
             case Role.PATIENT:
                 LocalDate dob = InputManager.getInstance().getDate("Enter Date of Birth: (dd-MM-yyyy)");
-                String bloodType = InputManager.getInstance().getString("Enter blood type: ");
                 String email = InputManager.getInstance().getString("Enter email: ");
-                user = new Patient(id, password, name, dob, bloodType, gender);
+                String phone = InputManager.getInstance().getString("Enter phone number: ");
+                ContactInfo contactInfo = new ContactInfo(email, phone);
+                user = new Patient(id, password, name, dob, gender);
+                ((Patient) user).setContactInfo(phone,email);
                 break;
             case Role.DOCTOR:
             case Role.PHARMACIST:
@@ -94,6 +98,8 @@ public class LoginView extends ViewObject {
         }
         UserLoginManager.getInstance().addUser(user);
         System.out.println("Account created successfully");
+        SaveManager.getInstance().savePatients();
+        SaveManager.getInstance().saveStaffs();
         return 1;
     }
 

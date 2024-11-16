@@ -66,8 +66,9 @@ public class PatientSerializer implements ISerializer<Patient> {
             password = AESEncryption.decrypt(encryptedPassword, "secret", "salt");
         }
 
-        Patient p = new Patient(id, password, name, dob, bloodType, gender);
-        p.setContactInfo(contactInfo);
+        Patient p = new Patient(id, password, name, dob, gender);
+        p.setBloodType(bloodType);
+        p.setContactInfo(contactInfo.phoneNumber, contactInfo.email);
         if (!diagnosisHistory.isEmpty()) {
             p.addDiagnoses(diagnosisHistory);
         }

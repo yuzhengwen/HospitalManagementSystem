@@ -3,6 +3,7 @@ package Model.ScheduleManagement;
 import Model.Staff;
 import Singletons.AppointmentManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class TimeSlotWithDoctor {
         return doctors;
     }
     public List<Staff> getAvailableDoctors() {
-        List<Staff> availableDoctors = new java.util.ArrayList<>();
+        List<Staff> availableDoctors = new ArrayList<>();
         for (int i = 0; i < doctors.size(); i++) {
             if (availability[i]) {
                 availableDoctors.add(doctors.get(i));

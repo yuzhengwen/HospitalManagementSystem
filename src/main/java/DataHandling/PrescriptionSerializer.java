@@ -21,17 +21,20 @@ public class PrescriptionSerializer implements ISerializer<Prescription> {
         String[] parts = StringUtils.parseLine(data);
         assert parts.length == 4; // id, medicineQuantities, status, notes
         String id = parts[0].trim();
-        String[] medicineQuantities = parts[1].trim().split(",");
+        String serializedMedicineQuantities = parts[1].trim();
         PrescriptionStatus status = PrescriptionStatus.valueOf(parts[2].trim().toUpperCase());
         String notes = parts[3].trim();
 
         Prescription p = new Prescription(id, status);
         p.setNotes(notes);
-        for (int i = 0; i < medicineQuantities.length; i++) {
-            String[] medicineQuantity = medicineQuantities[i].split(":");
-            String medicationName = medicineQuantity[0];
-            int quantity = Integer.parseInt(medicineQuantity[1]);
-            p.addMedicine(medicationName, quantity);
+        if (!serializedMedicineQuantities.isEmpty()) {
+            String[] medicineQuantities = parts[1].trim().split(",");
+            for (String s : medicineQuantities) {
+                String[] medicineQuantity = s.split(":");
+                String medicationName = medicineQuantity[0];
+                int quantity = Integer.parseInt(medicineQuantity[1]);
+                p.addMedicine(medicationName, quantity);
+            }
         }
         return p;
     }

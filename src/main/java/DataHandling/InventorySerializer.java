@@ -11,7 +11,8 @@ public class InventorySerializer implements ISerializer<Inventory> {
             int lowStockThreshold = object.get(medicine)[1];
             sb.append(medicine).append(",").append(quantity).append(",").append(lowStockThreshold).append("\n");
         }
-        sb.deleteCharAt(sb.length() - 1); // Remove the last newline character
+        if (!sb.isEmpty() && sb.charAt(sb.length() - 1) == '\n')
+            sb.deleteCharAt(sb.length() - 1); // Remove the last newline character
         return sb.toString();
     }
 

@@ -1,6 +1,9 @@
 package Singletons;
 
+import Model.Appointment;
 import Model.Prescription;
+import Model.ScheduleManagement.TimeSlot;
+import Model.ScheduleManagement.TimeSlotWithDoctor;
 import View.EnumView;
 import View.SelectionView;
 
@@ -8,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -310,6 +314,39 @@ public class InputManager {
         String prescriptionNotes = InputManager.getInstance().getString("Enter prescription notes: ");
         prescription.setNotes(prescriptionNotes);
         return prescription;
+    }
+    /**
+     * Shows a list of available timeslots for the selected date and allows them to select one.
+     *
+     * @param date The date for which to select a timeslot.
+     * @return The selected timeslot, or null if the user cancels the selection.
+     */
+    public TimeSlotWithDoctor selectTimeSlot(LocalDate date, String patientId) {
+        // get timeslots with doctors for the selected date
+        List<TimeSlotWithDoctor> timeSlotWithDoctors = AppointmentManager.getInstance().getTimeslotWithDoctorList(date);
+        // add patientBusy flag to the timeslots where the patient already has an appointment scheduled
+        AppointmentFilter filter = new AppointmentFilter().filterByPatient(patientId).filterByDate(date)
+                .filterByStatus(Appointment.Status.ACCEPTED).filterByStatus(Appointment.Status.PENDING);
+        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsWithFilter(filter);
+        List<TimeSlot> patientBusyTimeSlots = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            patientBusyTimeSlots.add(appointment.getTimeSlot());
+        }
+        for (TimeSlotWithDoctor timeSlotWithDoctor : timeSlotWithDoctors) {
+            if (patientBusyTimeSlots.contains(timeSlotWithDoctor.getTimeSlot())) {
+                timeSlotWithDoctor.setPatientBusy(true);
+            }
+        }
+        // display the available timeslots
+        SelectionResult<TimeSlotWithDoctor> selectionResult = InputManager.getInstance().getSelection("Select a timeslot: ", timeSlotWithDoctors, true);
+        if (selectionResult.isBack()) return null;
+        // check if the selected timeslot is available
+        TimeSlotWithDoctor selected = selectionResult.getSelected();
+        while (!selected.isAvailable()) {
+            System.out.println("Timeslot is unavailable. Please select another timeslot.");
+            selected = InputManager.getInstance().getSelection("Select a timeslot: ", timeSlotWithDoctors);
+        }
+        return selected;
     }
 }
 
