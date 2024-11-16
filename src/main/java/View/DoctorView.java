@@ -144,7 +144,7 @@ public class DoctorView extends UserView<Staff> {
                 try {
                     GmailSender.sendEmail(patient.getContactInfo().email, "Appointment Outcome", convertEmail(selected, outcome));
                 } catch (GeneralSecurityException | IOException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("Error sending email: " + e.getMessage());
                 }
             }
 
@@ -178,11 +178,16 @@ public class DoctorView extends UserView<Staff> {
         if (appointments.isEmpty()) {
             System.out.println("No appointment requests found.");
         } else {
-            SelectionResult<Appointment> selection = InputManager.getInstance().getSelection("Select an appointment to accept: ", appointments, true);
+            SelectionResult<Appointment> selection = InputManager.getInstance().getSelection("Select an appointment: ", appointments, true);
             if (selection.isBack()) return 1;
             Appointment selectedAppointment = selection.getSelected();
-            AppointmentManager.getInstance().acceptAppointment(selectedAppointment, user.getId());
-            System.out.println("Appointment accepted.");
+            if (InputManager.getInstance().getBoolean("Accept appointment? (Y/N): ")) {
+                AppointmentManager.getInstance().acceptAppointment(selectedAppointment, user.getId());
+                System.out.println("Appointment accepted.");
+            } else {
+                AppointmentManager.getInstance().declineAppointment(selectedAppointment);
+                System.out.println("Appointment declined.");
+            }
             System.out.println(selectedAppointment);
         }
         SaveManager.getInstance().saveAppointments();

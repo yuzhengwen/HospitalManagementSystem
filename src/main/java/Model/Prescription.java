@@ -48,6 +48,9 @@ public class Prescription {
         return sb.toString();
     }
     public String getMedicineQuantitiesString() {
+        if (medicineQuantities.isEmpty()) {
+            return "No medicines found";
+        }
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Integer> entry : medicineQuantities.entrySet()) {
             sb.append(entry.getKey()).append(": ").append(entry.getValue()).append(", ");

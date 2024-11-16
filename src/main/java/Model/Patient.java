@@ -13,12 +13,12 @@ import java.util.Objects;
 public class Patient extends User {
     private LocalDate dob;
     private ContactInfo contactInfo = new ContactInfo();
-    private String bloodType;
+    private String bloodType="Not Specified";
     private final List<String> diagnosisHistory = new ArrayList<>();
     private final List<String> treatmentHistory = new ArrayList<>();
     private final List<String> prescriptionHistory = new ArrayList<>();
 
-    public Patient(String id, String password, String name, LocalDate dob, String bloodType, Gender gender) {
+    public Patient(String id, String password, String name, LocalDate dob, Gender gender) {
         super(id, password, Role.PATIENT, name, gender);
         this.dob = dob;
         this.bloodType = bloodType;
@@ -40,8 +40,9 @@ public class Patient extends User {
         return contactInfo;
     }
 
-    public void setContactInfo(ContactInfo contactInfo) {
-        this.contactInfo = contactInfo;
+    public void setContactInfo(String phone, String email) {
+        contactInfo.phoneNumber = phone;
+        contactInfo.email = email;
     }
 
     public LocalDate getDob() {

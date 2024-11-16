@@ -43,16 +43,14 @@ public class PatientView extends UserView<Patient> {
     private int updateContactInfo() {
         Controller.getInstance().setPreviousView(this);
         // get reference to the patient's contact info
-        ContactInfo contactInfo = user.getContactInfo();
         System.out.println("Current Contact Info:");
-        System.out.println(contactInfo.toString());
+        System.out.println(user.getContactInfo().toString());
         System.out.println("Enter new contact info:");
         String phone = InputManager.getInstance().getString("Phone:");
         String email = InputManager.getInstance().getString("Email:");
-        contactInfo.phoneNumber = phone;
-        contactInfo.email = email;
+        user.setContactInfo(phone, email);
         System.out.println("Contact info updated successfully");
-        System.out.println(contactInfo.toString());
+        System.out.println(user.getContactInfo().toString());
         SaveManager.getInstance().savePatients();
         return InputManager.getInstance().goBackPrompt();
     }
@@ -149,7 +147,10 @@ public class PatientView extends UserView<Patient> {
             AppointmentManager.getInstance().add(newAppointment);
             return newAppointment;
         } else if (OperationMode.EDIT == mode) {
-            Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsByPatientId(user.getId()));
+            AppointmentFilter filter = new AppointmentFilter().filterByPatient(user.getId())
+                    .filterByStatus(Appointment.Status.ACCEPTED)
+                    .filterByStatus(Appointment.Status.PENDING);
+            Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsWithFilter(filter));
             if (selected != null) {
                 LocalDate date;
                 TimeSlotWithDoctor timeSlot;

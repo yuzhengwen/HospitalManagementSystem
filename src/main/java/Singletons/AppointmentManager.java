@@ -239,6 +239,9 @@ public class AppointmentManager {
         appointment.setDoctorId(doctorId);
         appointment.setStatus(Appointment.Status.ACCEPTED);
     }
+    public void declineAppointment(Appointment appointment) {
+        appointment.setStatus(Appointment.Status.CANCELLED);
+    }
 
     /**
      * record the outcome of an appointment
