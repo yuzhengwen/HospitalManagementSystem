@@ -1,13 +1,13 @@
 package Model;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A custom HashMap to store the inventory of the clinic
  * Maps a medicine name to an array of two integers: the first integer is the quantity of the medicine in stock, the second integer is the low stock alert threshold
  */
-public class Inventory extends HashMap<String, Integer[]> {
+public class Inventory extends TreeMap<String, Integer[]> {
     /**
      * Adds a medicine to inventory </br>
      *
@@ -111,5 +111,17 @@ public class Inventory extends HashMap<String, Integer[]> {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    @Override
+    public Integer[] get(Object key) {
+        key = ((String) key).toLowerCase();
+        return super.get(key);
+    }
+
+    @Override
+    public Integer[] put(String key, Integer[] value) {
+        key = key.toLowerCase();
+        return super.put(key, value);
     }
 }

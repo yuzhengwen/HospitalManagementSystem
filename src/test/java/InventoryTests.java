@@ -3,6 +3,8 @@ import Model.Inventory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.TreeMap;
+
 /**
  * Tests for the Inventory class (Model)
  */
@@ -12,8 +14,8 @@ public class InventoryTests {
     @BeforeEach
     public void setUp() {
         inventory.clear();
-        inventory.put("Paracetamol", new Integer[]{10, 5});
-        inventory.put("Ibuprofen", new Integer[]{5, 2});
+        inventory.addMedicine("Paracetamol", 10, 5);
+        inventory.addMedicine("Ibuprofen", 5, 2);
     }
 
     @Test
@@ -96,7 +98,7 @@ Amoxicillin,75,15
         inventory.addMedicine("Amoxicillin", 75, 15);
 
         String serialized = serializer.serialize(inventory);
-        assert (serialized.equals("Paracetamol,100,20\nIbuprofen,50,10\nAmoxicillin,75,15"));
+        assert (serialized.equals("amoxicillin,75,15\nibuprofen,50,10\nparacetamol,100,20"));
         Inventory deserialized = serializer.deserialize(serialized);
 
         assert (deserialized.get("Paracetamol")[0] == 100);

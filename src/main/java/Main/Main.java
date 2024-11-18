@@ -11,21 +11,8 @@ import java.security.GeneralSecurityException;
 
 public class Main {
     public static void main(String[] args) {
-        //uploadTest();
-        //emailTest();
-
         SaveManager.getInstance().loadAllData();
         Controller.UserSessionController.getInstance().showLoginMenu();
-    }
-
-    private static void emailTest() {
-        try {
-            String email = InputManager.getInstance().getString("Enter email:");
-            GmailSender.SendTestMail(email);
-            System.out.println("Email sent successfully");
-        } catch (IOException | GeneralSecurityException e) {
-            System.out.println("Error sending email: " + e.getMessage());
-        }
     }
 
     private static void uploadTest() {
