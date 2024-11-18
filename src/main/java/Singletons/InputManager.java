@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -156,7 +157,7 @@ public class InputManager {
 
     public LocalDate getDate(String message) {
         System.out.println(message);
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu").withResolverStyle(ResolverStyle.STRICT);
         LocalDate date = null;
         boolean valid = false;
         while (!valid) {
@@ -165,7 +166,30 @@ public class InputManager {
                 date = LocalDate.parse(dateString, dateFormat);
                 valid = true;
             } catch (Exception e) {
-                System.out.println("Invalid date format. Please enter the date in dd-MM-yyyy format.");
+                System.out.println("Invalid. Please enter a valid date in dd-MM-yyyy format.");
+            }
+        }
+        return date;
+    }
+    public LocalDate getUpcomingDate() {
+        return getUpcomingDate("Enter an upcoming date (dd-MM-yyyy): ");
+    }
+    public LocalDate getUpcomingDate(String message) {
+        System.out.println(message);
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu").withResolverStyle(ResolverStyle.STRICT);
+        LocalDate date = null;
+        boolean valid = false;
+        while (!valid) {
+            String dateString = scanner.nextLine();
+            try {
+                date = LocalDate.parse(dateString, dateFormat);
+                if (date.isBefore(LocalDate.now())) {
+                    System.out.println("Invalid date. Please enter an upcoming date.");
+                } else {
+                    valid = true;
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid. Please enter a valid upcoming date in dd-MM-yyyy format.");
             }
         }
         return date;

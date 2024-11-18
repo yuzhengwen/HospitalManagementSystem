@@ -11,10 +11,7 @@ import Model.AppointmentOutcomeRecord;
 import Model.Inventory;
 import Model.Prescription;
 import Model.Staff;
-import Singletons.AppointmentManager;
-import Singletons.InputManager;
-import Singletons.InventoryManager;
-import Singletons.SelectionResult;
+import Singletons.*;
 
 public class PharmacistView extends UserView<Staff> {
     public PharmacistView(Staff staff) {
@@ -55,7 +52,10 @@ public class PharmacistView extends UserView<Staff> {
     private int dispenseMedicine() {
         Controller.getInstance().setPreviousView(this);
         Inventory inventory = InventoryManager.getInstance().getInventory();
-        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByStatus(Appointment.Status.COMPLETED); // filter only by completed appointments
+        // get all completed appointments with pending prescriptions
+        AppointmentFilter filter = new AppointmentFilter()
+                .filterByStatus(Appointment.Status.COMPLETED).filterByPrescriptionStatus(PrescriptionStatus.PENDING);
+        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsWithFilter(filter);
         if (appointments.isEmpty()) {
             System.out.println("No completed appointments");
         } else {
@@ -68,7 +68,7 @@ public class PharmacistView extends UserView<Staff> {
                     System.out.println(outcome.toString()); // print the details of the completed appt
                 }
             }
-            while (InputManager.getInstance().getBoolean("Dispense medicine for this appointment? (Y/N)"));
+            while (!InputManager.getInstance().getBoolean("Dispense medicine for this appointment? (Y/N)"));
 
             Prescription prescription = outcome.getPrescription();
             // print check list showing required and available quantities of each medicine in the prescription

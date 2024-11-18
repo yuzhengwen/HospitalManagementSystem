@@ -1,5 +1,6 @@
 package Singletons;
 
+import CustomTypes.PrescriptionStatus;
 import Model.Appointment;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ public class AppointmentFilter {
     String patientId = null;
     LocalDate date = null;
     Set<Appointment.Status> statuses = new HashSet<>();
+    Set<PrescriptionStatus> prescriptionStatuses = new HashSet<>();
 
     public AppointmentFilter filterByDoctor(String doctorId) {
         this.doctorId = doctorId;
@@ -35,6 +37,11 @@ public class AppointmentFilter {
 
     public AppointmentFilter filterByStatus(Appointment.Status status) {
         statuses.add(status);
+        return this;
+    }
+
+    public AppointmentFilter filterByPrescriptionStatus(PrescriptionStatus status) {
+        prescriptionStatuses.add(status);
         return this;
     }
 
@@ -63,6 +70,10 @@ public class AppointmentFilter {
         }
         if (!statuses.isEmpty()) {
             filteredAppointments.removeIf(appointment -> !statuses.contains(appointment.getStatus()));
+        }
+        if (!prescriptionStatuses.isEmpty()) {
+            filteredAppointments.removeIf(appointment -> !prescriptionStatuses
+                    .contains(appointment.getOutcome().getPrescription().getStatus()));
         }
         return filteredAppointments;
     }

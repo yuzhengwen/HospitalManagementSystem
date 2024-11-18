@@ -136,7 +136,7 @@ public class DoctorView extends UserView<Staff> {
                 LocalDate date;
                 TimeSlotWithDoctor timeSlot;
                 do {
-                    date = InputManager.getInstance().getDate();
+                    date = InputManager.getInstance().getUpcomingDate();
                     timeSlot = InputManager.getInstance().selectTimeSlot(date, patient.getId());
                 } while (timeSlot == null); // loop until a valid time slot is selected
                 List<Staff> doctors = timeSlot.getAvailableDoctors();

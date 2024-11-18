@@ -40,9 +40,7 @@ public class StaffManagementView extends ViewObject {
                 System.out.println(staff.getDetailedInfo());
             }
         } else {
-            for (Staff staff : staffList) {
-                System.out.println(staff.getDetailedInfo());
-            }
+            printStaffList(staffList);
         }
         return 1;
     }
@@ -79,6 +77,7 @@ public class StaffManagementView extends ViewObject {
         Staff newStaff = new Staff(id, password, name, role, gender, age);
         UserLoginManager.getInstance().addUser(newStaff);
         System.out.println("Staff added successfully");
+        printAllStaff();
         return 1;
     }
 
@@ -90,6 +89,7 @@ public class StaffManagementView extends ViewObject {
                 .findFirst().ifPresentOrElse(staff -> {
                     UserLoginManager.getInstance().removeUser(staff);
                     System.out.println("Staff removed successfully");
+                    printAllStaff();
                 }, () -> System.out.println("Staff not found"));
         return 1;
     }
@@ -109,8 +109,18 @@ public class StaffManagementView extends ViewObject {
                     staff.setName(name);
                     staff.setAge(age);
                     System.out.println("Staff updated successfully");
+                    printAllStaff();
                 }, () -> System.out.println("Staff not found"));
         return 1;
+    }
+    private void printStaffList(List<Staff> staffList) {
+        for (Staff staff : staffList) {
+            System.out.println(staff.getDetailedInfo());
+        }
+    }
+    private void printAllStaff() {
+        List<Staff> staffList = UserLoginManager.getInstance().getAllStaffs();
+        printStaffList(staffList);
     }
 
     public static class StaffFilter {

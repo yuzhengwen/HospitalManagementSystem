@@ -130,7 +130,7 @@ public class PatientView extends UserView<Patient> {
             LocalDate date;
             TimeSlotWithDoctor timeSlot;
             do {
-                date = InputManager.getInstance().getDate();
+                date = InputManager.getInstance().getUpcomingDate();
                 timeSlot = InputManager.getInstance().selectTimeSlot(date, user.getId());
             } while (timeSlot == null);
             List<Staff> doctors = timeSlot.getAvailableDoctors();
@@ -151,7 +151,7 @@ public class PatientView extends UserView<Patient> {
                 LocalDate date;
                 TimeSlotWithDoctor timeSlot;
                 do {
-                    date = InputManager.getInstance().getDate();
+                    date = InputManager.getInstance().getUpcomingDate();
                     timeSlot = InputManager.getInstance().selectTimeSlot(date, user.getId());
                 } while (timeSlot == null);
                 List<Staff> doctors = timeSlot.getAvailableDoctors();

@@ -16,6 +16,7 @@ public class Inventory extends HashMap<String, Integer[]> {
      * @param lowStockThreshold the low stock threshold for the medicine
      */
     public void addMedicine(String medicine, int quantity, int lowStockThreshold) {
+        medicine = medicine.toLowerCase();
         Integer[] values = new Integer[2];
         int currentQuantity = getOrDefault(medicine, new Integer[]{0, 0})[0];
         values[0] = currentQuantity + quantity;
@@ -32,17 +33,20 @@ public class Inventory extends HashMap<String, Integer[]> {
      * @param quantity the quantity of the medicine to add
      */
     public void addMedicine(String medicine, int quantity) {
+        medicine = medicine.toLowerCase();
         int lowStockThreshold = getOrDefault(medicine, new Integer[]{0, 0})[1];
         addMedicine(medicine, quantity, lowStockThreshold);
     }
 
     public void setLowStockThreshold(String medicine, int lowStockThreshold) {
+        medicine = medicine.toLowerCase();
         Integer[] values = getOrDefault(medicine, new Integer[]{0, 0});
         values[1] = lowStockThreshold;
         put(medicine, values);
     }
 
     public int getLowStockThreshold(String medicine) {
+        medicine = medicine.toLowerCase();
         return getOrDefault(medicine, new Integer[]{0, 0})[1];
     }
 
@@ -54,6 +58,7 @@ public class Inventory extends HashMap<String, Integer[]> {
      * @return true if the quantity of the medicine is less than or equal to the low stock threshold
      */
     public boolean isLowStock(String medicine) {
+        medicine = medicine.toLowerCase();
         Integer[] values = getOrDefault(medicine, new Integer[]{0, 0});
         return values[0] <= values[1];
     }
@@ -73,6 +78,7 @@ public class Inventory extends HashMap<String, Integer[]> {
      * @return true if the medicine was successfully removed, false if the quantity to remove is greater than the current quantity
      */
     public boolean removeMedicine(String medicine, int quantity) {
+        medicine = medicine.toLowerCase();
         Integer[] currentValues = getOrDefault(medicine, new Integer[]{0, 0});
         int currentQuantity = currentValues[0];
         int lowStockThreshold = currentValues[1];
@@ -84,10 +90,12 @@ public class Inventory extends HashMap<String, Integer[]> {
     }
 
     public int getMedicineCount(String medicine) {
+        medicine = medicine.toLowerCase();
         return getOrDefault(medicine, new Integer[]{0, 0})[0];
     }
 
     public void setMedicineCount(String medicine, int quantity) {
+        medicine = medicine.toLowerCase();
         Integer[] values = getOrDefault(medicine, new Integer[]{0, 0});
         values[0] = quantity;
         put(medicine, values);

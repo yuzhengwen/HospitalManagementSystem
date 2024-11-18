@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
  * This class is responsible for serializing and deserializing LocalDate objects to and from String.
  */
 public class DateSerializer implements ISerializer<LocalDate> {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd");
 
     @Override
     public String serialize(LocalDate object) {

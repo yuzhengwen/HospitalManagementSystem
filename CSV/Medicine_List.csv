@@ -1,5 +1,5 @@
 Medicine,Quantity,Low Stock Threshold
-Paracetamol,94,20
-Aspirin,8,0
-Ibuprofen,50,10
-Amoxicillin,75,15
+amoxicillin,75,15
+aspirin,8,0
+ibuprofen,50,10
+paracetamol,91,20
