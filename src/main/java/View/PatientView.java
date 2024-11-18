@@ -1,22 +1,18 @@
 package View;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import Controller.Controller;
-import CustomTypes.ContactInfo;
 import CustomTypes.OperationMode;
 import DataHandling.SaveManager;
 import Model.Appointment;
 import Model.Patient;
-import Model.ScheduleManagement.TimeSlot;
 import Model.ScheduleManagement.TimeSlotWithDoctor;
 import Model.Staff;
 import Singletons.AppointmentFilter;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
-import Singletons.SelectionResult;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PatientView extends UserView<Patient> {
     public PatientView(Patient patient) { // constructor
@@ -129,7 +125,7 @@ public class PatientView extends UserView<Patient> {
     }
 
     private Appointment manageAppointments(OperationMode mode) {
-        if (OperationMode.SCHEDULE == mode) {
+        if (OperationMode.SCHEDULE == mode) { // schedule new appointment
             // select date, timeslot, doctor, type
             LocalDate date;
             TimeSlotWithDoctor timeSlot;
@@ -146,10 +142,10 @@ public class PatientView extends UserView<Patient> {
             newAppointment.setDoctorId(selectedDoctor.getId());
             AppointmentManager.getInstance().add(newAppointment);
             return newAppointment;
-        } else if (OperationMode.EDIT == mode) {
+        } else if (OperationMode.EDIT == mode) { // reschedule existing appointment
             AppointmentFilter filter = new AppointmentFilter().filterByPatient(user.getId())
                     .filterByStatus(Appointment.Status.ACCEPTED)
-                    .filterByStatus(Appointment.Status.PENDING);
+                    .filterByStatus(Appointment.Status.PENDING); // filter and get user to select appointment to edit
             Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsWithFilter(filter));
             if (selected != null) {
                 LocalDate date;
@@ -166,14 +162,17 @@ public class PatientView extends UserView<Patient> {
                 selected.setStatus(Appointment.Status.PENDING);
                 return selected;
             }
-        } else if (OperationMode.DELETE == mode) {
-            Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsByPatientId(user.getId()));
+        } else if (OperationMode.DELETE == mode) { // cancel existing appointment
+            AppointmentFilter filter = new AppointmentFilter().filterByPatient(user.getId())
+                    .filterByStatus(Appointment.Status.ACCEPTED)
+                    .filterByStatus(Appointment.Status.PENDING); // filter only accepted and pending appointments
+            Appointment selected = getSelectedAppointment(AppointmentManager.getInstance().getAppointmentsWithFilter(filter));
             if (selected != null) {
-                AppointmentManager.getInstance().remove(selected);
+                AppointmentManager.getInstance().declineAppointment(selected); // mark as cancelled
                 return selected;
             }
         }
-        return null;
+        return null; // return null if no appointment was selected
     }
 
     private Appointment getSelectedAppointment(List<Appointment> list) {

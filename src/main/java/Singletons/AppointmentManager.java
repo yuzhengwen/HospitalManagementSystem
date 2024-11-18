@@ -1,5 +1,13 @@
 package Singletons;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import Model.Appointment;
 import Model.AppointmentOutcomeRecord;
 import Model.Prescription;
@@ -7,10 +15,6 @@ import Model.ScheduleManagement.Schedule;
 import Model.ScheduleManagement.TimeSlot;
 import Model.ScheduleManagement.TimeSlotWithDoctor;
 import Model.Staff;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.*;
 
 /**
  * Singleton class to manage appointments and schedules
@@ -239,12 +243,18 @@ public class AppointmentManager {
         appointment.setDoctorId(doctorId);
         appointment.setStatus(Appointment.Status.ACCEPTED);
     }
+
+    /**
+     * Sets the status of the appointment to CANCELLED
+     *
+     * @param appointment the appointment to cancel
+     */
     public void declineAppointment(Appointment appointment) {
         appointment.setStatus(Appointment.Status.CANCELLED);
     }
 
     /**
-     * record the outcome of an appointment
+     * record the outcome of an appointment and change status to completed
      *
      * @param doctorId    the id of the doctor recording the outcome
      * @param appointment the appointment to record the outcome for

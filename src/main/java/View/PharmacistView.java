@@ -1,16 +1,20 @@
 package View;
 
+import java.util.List;
+import java.util.Map;
+
 import Controller.Controller;
 import CustomTypes.PrescriptionStatus;
 import DataHandling.SaveManager;
-import Model.*;
+import Model.Appointment;
+import Model.AppointmentOutcomeRecord;
+import Model.Inventory;
+import Model.Prescription;
+import Model.Staff;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
 import Singletons.InventoryManager;
 import Singletons.SelectionResult;
-
-import java.util.List;
-import java.util.Map;
 
 public class PharmacistView extends UserView<Staff> {
     public PharmacistView(Staff staff) {
@@ -51,7 +55,7 @@ public class PharmacistView extends UserView<Staff> {
     private int dispenseMedicine() {
         Controller.getInstance().setPreviousView(this);
         Inventory inventory = InventoryManager.getInstance().getInventory();
-        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByStatus(Appointment.Status.COMPLETED);
+        List<Appointment> appointments = AppointmentManager.getInstance().getAppointmentsByStatus(Appointment.Status.COMPLETED); // filter only by completed appointments
         if (appointments.isEmpty()) {
             System.out.println("No completed appointments");
         } else {
@@ -61,7 +65,7 @@ public class PharmacistView extends UserView<Staff> {
                 if (selectionResult.isBack()) return 1;
                 else {
                     outcome = selectionResult.getSelected().getOutcome();
-                    System.out.println(outcome.toString());
+                    System.out.println(outcome.toString()); // print the details of the completed appt
                 }
             }
             while (InputManager.getInstance().getBoolean("Dispense medicine for this appointment? (Y/N)"));

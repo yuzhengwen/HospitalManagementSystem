@@ -1,13 +1,13 @@
 package View.AdministratorSubViews;
 
+import java.util.List;
+
 import DataHandling.SaveManager;
 import Model.Appointment;
 import Singletons.AppointmentManager;
 import Singletons.InputManager;
 import View.Action;
 import View.ViewObject;
-
-import java.util.List;
 
 public class AppointmentManagementView extends ViewObject {
     public AppointmentManagementView() {
@@ -26,7 +26,7 @@ public class AppointmentManagementView extends ViewObject {
     private int viewAppointments() {
         List<Appointment> appointments = AppointmentManager.getInstance().getAppointments();
         if (appointments.isEmpty()) {
-            System.out.println("No appointments accepted yet");
+            System.out.println("No appointments made yet");
         } else {
             Appointment selected = InputManager.getInstance().getSelection("Select an appointment to view: ", appointments);
             System.out.println(selected.getFullDetails());

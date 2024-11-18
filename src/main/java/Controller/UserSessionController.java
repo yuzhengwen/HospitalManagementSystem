@@ -26,7 +26,7 @@ public class UserSessionController {
             setCurrentUser(loginView.getUser());
             Controller.getInstance().setCurrentUser(currentUser);
             Controller.getInstance().startMainMenu(); // start main menu for the user
-        } else {
+        } else { // if login unsuccessful
             throw new RuntimeException("User not found");
         }
     }

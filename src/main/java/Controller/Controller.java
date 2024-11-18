@@ -1,15 +1,14 @@
 package Controller;
 
-import CustomTypes.OperationMode;
 import CustomTypes.Role;
-import Model.Appointment;
 import Model.Patient;
-import Model.ScheduleManagement.TimeSlot;
-import Model.ScheduleManagement.TimeSlotWithDoctor;
 import Model.Staff;
 import Model.User;
-import Singletons.AppointmentManager;
-import View.*;
+import View.AdministratorView;
+import View.DoctorView;
+import View.PatientView;
+import View.PharmacistView;
+import View.ViewObject;
 
 public class Controller {
     private static Controller instance;
@@ -49,10 +48,10 @@ public class Controller {
             if (role == Role.DOCTOR) { // if the role is doctor
                 new DoctorView((Staff) currentUser).display(); // display the doctor menu
             }
-            if (role == Role.ADMINISTRATOR) {
+            if (role == Role.ADMINISTRATOR) { // if user is an administrator
                 new AdministratorView((Staff) currentUser).display();
             }
-            if (role == Role.PHARMACIST) {
+            if (role == Role.PHARMACIST) { // if user is a pharmacist
                 new PharmacistView((Staff) currentUser).display();
             }
         }
