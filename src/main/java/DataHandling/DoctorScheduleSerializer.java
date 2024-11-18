@@ -75,21 +75,4 @@ public class DoctorScheduleSerializer implements ISerializer<Map<String, Schedul
             return schedule;
         }
     }
-
-    // Test the ScheduleSerializer
-    public static void main(String[] args) {
-        DoctorScheduleSerializer doctorScheduleSerializer = new DoctorScheduleSerializer();
-        ScheduleSerializer scheduleSerializer = new ScheduleSerializer();
-
-        Schedule schedule = new Schedule(null);
-        schedule.setWorkingHours(DayOfWeek.MONDAY, 8, 16);
-        schedule.setWorkingHours(DayOfWeek.TUESDAY, 8, 16);
-        schedule.setWorkingHours(DayOfWeek.WEDNESDAY, 8, 16);
-        schedule.setWorkingHours(DayOfWeek.THURSDAY, 8, 16);
-        schedule.setWorkingHours(DayOfWeek.FRIDAY, 8, 16);
-        String serialized = scheduleSerializer.serialize(schedule);
-        System.out.println(serialized);
-        Schedule deserialized = scheduleSerializer.deserialize(serialized);
-        System.out.println(deserialized.printScheduleCompact());
-    }
 }
